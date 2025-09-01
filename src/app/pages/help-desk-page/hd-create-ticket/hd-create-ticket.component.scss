@@ -1,0 +1,236 @@
+.mat-mdc-card {
+    &.daxa-card {
+        &.create-project-card {
+            .mat-mdc-card-content {
+                .title {
+                    margin-bottom: 20px;
+                }
+                .main-label {
+                    margin-bottom: 12px;
+                }
+            }
+        }
+    }
+}
+::ng-deep {
+    .mat-mdc-card {
+        &.daxa-card {
+            &.create-project-card {
+                .mat-mdc-card-content {
+                    .btn-box {
+                        .mat-mdc-button {
+                            border: 0;
+                            height: auto;
+                            min-width: auto;
+                            min-height: auto;
+                            padding: 13px 40px;
+                            font-weight: normal;
+                            color: var(--whiteColor);
+                            background-color: var(--daxaColor);
+
+                            &:not(:first-child) {
+                                margin-left: 10px;
+                                background-color: var(--dangerColor);
+                            }
+                        }
+                    }
+                }
+                &.rtl-enabled {
+                    .mat-mdc-card-content {
+                        .btn-box {
+                            .mat-mdc-button {
+                                &:not(:first-child) {
+                                    margin: {
+                                        left: 0;
+                                        right: 10px;
+                                    };
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* Max width 767px */
+@media only screen and (max-width : 767px) {
+
+    .mat-mdc-card {
+        &.daxa-card {
+            &.create-project-card {
+                .mat-mdc-card-content {
+                    .title {
+                        margin-bottom: 15px;
+                    }
+                    .main-label {
+                        margin-bottom: 10px;
+                    }
+                }
+            }
+        }
+    }
+    ::ng-deep {
+        .mat-mdc-card {
+            &.daxa-card {
+                &.create-project-card {
+                    .mat-mdc-card-content {
+                        .btn-box {
+                            .mat-mdc-button {
+                                padding: 13px 18px;
+    
+                                &:not(:first-child) {
+                                    margin-left: 8px;
+                                }
+                            }
+                        }
+                    }
+                    &.rtl-enabled {
+                        .mat-mdc-card-content {
+                            .btn-box {
+                                .mat-mdc-button {
+                                    &:not(:first-child) {
+                                        margin: {
+                                            left: 0;
+                                            right: 8px;
+                                        };
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+.team-members-list {
+    img {
+        width: 42px;
+        border-radius: 50%;
+        margin-right: -13px;
+        border: 2px solid var(--whiteColor);
+        
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}
+
+/* Min width 576px to Max width 767px */
+@media only screen and (min-width : 576px) and (max-width : 767px) {}
+
+/* Min width 768px to Max width 991px */
+@media only screen and (min-width : 768px) and (max-width : 991px) {}
+
+/* Min width 992px to Max width 1199px */
+@media only screen and (min-width : 992px) and (max-width : 1199px) {}
+
+/* Min width 1200px to Max width 1399px */
+@media only screen and (min-width: 1200px) and (max-width: 1399px) {}
+
+/* Min width 1600px */
+@media only screen and (min-width: 1600px) {}
+
+
+.example-badges {
+    margin-bottom: -15px;
+    
+    .badge {
+        display: inline-block;
+        margin: {
+            right: 15px;
+            bottom: 15px;
+        };
+    }
+}
+
+
+.success-btn {
+  background-color: #4caf50 !important; /* Material green */
+  color: white !important;
+}
+
+.warn-btn {
+  background-color: #e04242 !important; /* Material green */
+  color: white !important;}
+
+
+
+  .mat-mdc-card {
+    &.daxa-card {
+        &.sales-overview-card {
+            .mat-mdc-card-content {
+                h5 {
+                    margin-bottom: 12px;
+                }
+                .sales-overview-info {
+                    margin-bottom: 14px;
+
+                    .sub-title {
+                        font-size: 14px;
+                        margin-bottom: 6px;
+                    }
+                    .number {
+                        font-size: 20px;
+                    }
+                }
+                .progress-bar-container {
+                    height: 3px;
+                    margin-bottom: 6px;
+                    background: #6258cc;
+
+                    .progress-bar {
+                        height: 100%;
+                        background: var(--whiteColor);
+                    }
+                }
+                .info {
+                    font-size: 14px;
+                }
+            }
+        }
+    }
+}
+
+/* Max width 767px */
+@media only screen and (max-width : 767px) {
+
+    .mat-mdc-card {
+        &.daxa-card {
+            &.sales-overview-card {
+                .mat-mdc-card-content {
+                    .sales-overview-info {
+                        margin-bottom: 15px;
+    
+                        .number {
+                            font-size: 18px;
+                        }
+                    }
+                    .progress-bar-container {
+                        margin-bottom: 5px;
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+/* Min width 576px to Max width 767px */
+@media only screen and (min-width : 576px) and (max-width : 767px) {}
+
+/* Min width 768px to Max width 991px */
+@media only screen and (min-width : 768px) and (max-width : 991px) {}
+
+/* Min width 992px to Max width 1199px */
+@media only screen and (min-width : 992px) and (max-width : 1199px) {}
+
+/* Min width 1200px to Max width 1399px */
+@media only screen and (min-width: 1200px) and (max-width: 1399px) {}
+
+/* Min width 1600px */
+@media only screen and (min-width: 1600px) {}

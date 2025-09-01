@@ -1,0 +1,200 @@
+<!-- Breadcrumb -->
+<div class="breadcrumb-card mb-25 d-md-flex align-items-center justify-content-between">
+    <h5 class="mb-0">
+        {{ editMode ? 'Edit Course' : 'Create Course' }}
+    </h5>
+    <ol class="breadcrumb list-unstyled mt-0 mb-0 pl-0">
+        <li class="breadcrumb-item position-relative">
+            <a routerLink="/" class="d-inline-block position-relative">
+                <i class="ri-home-8-line"></i>
+                Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item position-relative">
+            LMS
+        </li>
+        <li class="breadcrumb-item position-relative">
+            Courses
+        </li>
+        <li class="breadcrumb-item position-relative">
+            {{ editMode ? 'Edit Course' : 'Create Course' }}
+        </li>
+    </ol>
+</div>
+
+<!-- Create Course -->
+<form [formGroup]="courseForm" (ngSubmit)="createCourse()">
+    <div class="row">
+        <div class="col-xxl-12 col-xxxl-8">
+            <mat-card class="daxa-card create-course-card mb-25 border-radius bg-white border-none d-block">
+                <mat-card-header>
+                    <mat-card-title>
+                        <h5 class="mb-0">
+                            
+                                        {{ editMode ? 'Edit Course' : 'Add Course' }}
+
+                        </h5>
+                    </mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="mb-25">
+                                <label class="main-label d-block lh-1 text-black">
+                                    Course Title
+                                </label>
+                                <mat-form-field>
+                                    <mat-label>
+                                        Course title
+                                    </mat-label>
+                                    <input matInput formControlName="service_name">
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="mb-25">
+                                <label class="main-label d-block lh-1 text-black">
+                                    Course Price
+                                </label>
+                                <mat-form-field>
+                                    <mat-label>
+                                        Enter rate
+                                    </mat-label>
+                                    <input matInput formControlName="price">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="mb-25">
+                                <label class="main-label d-block lh-1 text-black">
+                                    Start Date
+                                </label>
+                                <mat-form-field>
+                                    <mat-label>
+                                        Choose a date
+                                    </mat-label>
+                                    <input matInput [matDatepicker]="startDate" formControlName="start_date">
+                                    <mat-datepicker-toggle matIconSuffix [for]="startDate"></mat-datepicker-toggle>
+                                    <mat-datepicker #startDate></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="mb-25">
+                                <label class="main-label d-block lh-1 text-black">
+                                    End Date
+                                </label>
+                                <mat-form-field>
+                                    <mat-label>
+                                        Choose a date
+                                    </mat-label>
+                                    <input matInput [matDatepicker]="endDate" formControlName="end_date">
+                                    <mat-datepicker-toggle matIconSuffix [for]="endDate"></mat-datepicker-toggle>
+                                    <mat-datepicker #endDate></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <!-- <div class="col-sm-3">
+                            <div class="mb-25">
+                                <label class="main-label d-block lh-1 text-black">
+                                    Instructor
+                                </label>
+                                <mat-form-field>
+                                    <mat-label>
+                                        Select
+                                    </mat-label>
+                                    <mat-select formControlName="instructor">
+                                <mat-option *ngFor="let user of users" [value]="user.id">
+                                    {{ user.name }}
+                                </mat-option>
+                            </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div> -->
+                        <div class="col-sm-3">
+                            <div class="mb-25">
+                                <label class="main-label d-block lh-1 text-black">
+                                    Course Category
+                                </label>
+                                <mat-form-field>
+                                    <mat-label>
+                                        Select
+                                    </mat-label>
+                                    <mat-select formControlName="category">
+                                        @for (tag of tagsList; track tag) {
+                                        <mat-option [value]="tag">{{tag}}</mat-option>
+                                        }
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-4 col-sm-6">
+                            <div class="mb-25">
+                                <label class="main-label d-block lh-1 text-black">
+                                     Status
+                                </label>
+                                <mat-form-field>
+                                    <mat-label>
+                                        Select Lead status
+                                    </mat-label>
+                                    <mat-select formControlName="status">
+                                        <mat-option [value]="true">Active</mat-option>
+                                        <mat-option [value]="false">Inactive</mat-option>
+
+                                    </mat-select>
+                                </mat-form-field>
+
+                            </div>
+                        </div>
+
+
+
+
+                       <div class="col-sm-12">
+  <div class="mb-25">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Course Description</mat-label>
+      <textarea
+        matInput
+        id="description"
+        rows="5"
+        formControlName="description"
+        placeholder="Enter description">
+      </textarea>
+    </mat-form-field>
+  </div>
+</div>
+
+                        <div class="col-sm-12">
+                            <div class="mb-25">
+                                <label class="main-label d-block lh-1 text-black">
+                                    Course Avatar
+                                </label>
+                                <file-upload class="file-uploader" [multiple]="multiple"></file-upload>
+                            </div>
+                        </div>
+
+                        <div class="btn-box">
+
+                            <button mat-button type="submit">
+                                <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1" role="status"
+                                    aria-hidden="true"></span>
+
+                                {{ editMode ? 'Edit Course' : 'Create Course' }}
+
+                            </button>
+
+                            <!-- <button mat-button>
+                    Cancel
+                </button> -->
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+
+    </div>
+</form>
