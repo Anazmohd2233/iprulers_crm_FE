@@ -1,6 +1,12 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+    FormBuilder,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -19,74 +25,98 @@ import { CourseService } from '../../../services/course.service';
 import { LeadStatus } from '../../../services/enums';
 
 @Component({
-  selector: 'app-edit-student',
-  imports: [MatCardModule, MatMenuModule, MatButtonModule, RouterLink, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, ReactiveFormsModule, FileUploadModule, NgxEditorModule, CommonModule],
-  templateUrl: './edit-student.component.html',
-  styleUrls: ['./edit-student.component.scss']
+    selector: 'app-edit-student',
+    imports: [
+        MatCardModule,
+        MatMenuModule,
+        MatButtonModule,
+        RouterLink,
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        ReactiveFormsModule,
+        FileUploadModule,
+        NgxEditorModule,
+        CommonModule,
+    ],
+    templateUrl: './edit-student.component.html',
+    styleUrls: ['./edit-student.component.scss'],
 })
 export class EditStudentComponent implements OnInit {
+    studentForm!: FormGroup;
+    studentImage: File | null = null;
+    idProof: File | null = null;
+    certificate: File | null = null;
+    isSubmitting = false;
 
-  // Text Editor
-  editor!: Editor;
-  editorContent: string = '';
-  toolbar: Toolbar = [
-      ['bold', 'italic'],
-      ['underline', 'strike'],
-      ['code', 'blockquote'],
-      ['ordered_list', 'bullet_list'],
-      [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
-      ['link', 'image'],
-      ['text_color', 'background_color'],
-      ['align_left', 'align_center', 'align_right', 'align_justify'],
-  ];
+    // Text Editor
+    editor!: Editor;
+    editorContent: string = '';
+    toolbar: Toolbar = [
+        ['bold', 'italic'],
+        ['underline', 'strike'],
+        ['code', 'blockquote'],
+        ['ordered_list', 'bullet_list'],
+        [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
+        ['link', 'image'],
+        ['text_color', 'background_color'],
+        ['align_left', 'align_center', 'align_right', 'align_justify'],
+    ];
 
-  // File Uploader
-  public multiple: boolean = false;
+    // File Uploader
+    public multiple: boolean = false;
 
-  // Student Form
-  studentForm!: FormGroup;
-  isSubmitting = false;
-  isLoading = false;
-  studentId: number | null = null;
-  editMode:boolean = false;
-  courses: any;
-        page: number = 1;
+    isLoading = false;
+    studentId: number | null = null;
+    editMode: boolean = false;
+    courses: any;
+    page: number = 1;
     LeadStatus = LeadStatus; // <-- Make enum accessible in HTML
 
-  // Options for dropdowns
-  leadSources = ['Website', 'Social Media', 'Referral', 'Advertisement', 'Other'];
-  courseOptions = ['Web Development', 'Mobile Development', 'Data Science', 'UI/UX Design', 'Digital Marketing'];
-  statuses = ['Active', 'Inactive', 'Pending', 'Completed'];
+    // Options for dropdowns
+    leadSources = [
+        'Website',
+        'Social Media',
+        'Referral',
+        'Advertisement',
+        'Other',
+    ];
+    courseOptions = [
+        'Web Development',
+        'Mobile Development',
+        'Data Science',
+        'UI/UX Design',
+        'Digital Marketing',
+    ];
+    statuses = ['Active', 'Inactive', 'Pending', 'Completed'];
 
-  constructor(
-      @Inject(PLATFORM_ID) private platformId: Object,
-      public themeService: CustomizerSettingsService,
-      private formBuilder: FormBuilder,
-      private studentService: StudentService,
-      private router: Router,
-      private route: ActivatedRoute,
-      private toastr: ToastrService,
-                              private courseService: CourseService,
-      
-  ) {
-     
-  }
+    constructor(
+        @Inject(PLATFORM_ID) private platformId: Object,
+        public themeService: CustomizerSettingsService,
+        private formBuilder: FormBuilder,
+        private studentService: StudentService,
+        private router: Router,
+        private route: ActivatedRoute,
+        private toastr: ToastrService,
+        private courseService: CourseService
+    ) {}
 
-  ngOnInit(): void {
-      this.getCourseList();
-      
-      if (isPlatformBrowser(this.platformId)) {
-          this.editor = new Editor();
-      }
+    ngOnInit(): void {
+        this.getCourseList();
 
-      // Get student ID from route parameters
-       // ✅ Get ID from query params
+        if (isPlatformBrowser(this.platformId)) {
+            this.editor = new Editor();
+        }
+
+        // Get student ID from route parameters
+        // ✅ Get ID from query params
         this.route.queryParams.subscribe((params) => {
             this.studentId = params['student_id'] || null;
 
             console.log('📌 Received student ID:', this.studentId);
-
-            
 
             if (this.studentId) {
                 this.editMode = true;
@@ -95,129 +125,185 @@ export class EditStudentComponent implements OnInit {
         });
 
         this.initializeForm();
-  }
+    }
 
-  ngOnDestroy(): void {
-      if (isPlatformBrowser(this.platformId) && this.editor) {
-          this.editor.destroy();
-      }
-  }
+    ngOnDestroy(): void {
+        if (isPlatformBrowser(this.platformId) && this.editor) {
+            this.editor.destroy();
+        }
+    }
 
-  private initializeForm(): void {
-      this.studentForm = this.formBuilder.group({
-          student_name: ['', [Validators.required, Validators.minLength(2)]],
-          email: ['', [Validators.required]],
-          phone: ['', [Validators.required,]],
-        //   lead_source: ['', Validators.required],
-          courses: ['', Validators.required],
-        //   status: ['', Validators.required],
-          description: ['']
-      });
-  }
+    private initializeForm(): void {
+        this.studentForm = this.formBuilder.group({
+            firstName: ['', Validators.required],
+            // lastName: ['', Validators.required],
+            phone: ['', Validators.required],
+            whatsappNumber: ['', Validators.required],
+            email: ['', [Validators.required, Validators.email]],
+            gender: ['', Validators.required],
+            maritalStatus: [''],
+            dob: ['', Validators.required],
+            residenceCountry: ['', Validators.required],
+            address: [''],
+            nationality: ['', Validators.required],
+            qualification: [''],
+            orgName: ['', Validators.required],
+            jobTitle: [''],
+            visaStatus: [''],
+            otherStatus: ['', Validators.required],
+            emirates: ['', Validators.required],
+        });
+    }
 
-  private loadStudentData(): void {
-      if (!this.studentId) return;
+    private loadStudentData(): void {
+        if (!this.studentId) return;
 
-      this.isLoading = true;
-      this.studentService.getStudentById(this.studentId).subscribe({
-          next: (response) => {
-              if (response && response.success) {
-                  const student = response.customer;
-                  
-                  // Populate form with student data
-                  this.studentForm.patchValue({
-                      student_name: student.customer_name || '',
-                      email: student.email || '',
-                      phone: student.phone || '',
-                    //   lead_source: student.lead_source || '',
-                      courses: student.courses.id || '',
-                    //   status: student.status || '',
-                      description: student.description || ''
-                  });
+        this.isLoading = true;
+        this.studentService.getStudentById(this.studentId).subscribe({
+            next: (response) => {
+                if (response && response.success) {
+                    const student = response.customer;
 
-                  // Set editor content
-                  this.editorContent = student.notes || '';
-                  this.isLoading = false;
-              } else {
-                  this.toastr.error('Failed to load student data', 'Error');
-                  this.isLoading = false;
-              }
-          },
-          error: (error) => {
-              console.error('Error loading student:', error);
-              this.toastr.error('Error loading student data', 'Error');
-              this.isLoading = false;
+                    // Populate form with student data
+                    this.studentForm.patchValue({
+                        firstName: student.firstName || '',
+                        phone: student.phone || '',
+                        whatsappNumber: student.whatsappNumber || '',
+                        email: student.email || '',
+                        gender: student.gender || '',
+                        maritalStatus: student.maritalStatus || '',
+                        dob: student.dob || '',
+                        residenceCountry: student.residenceCountry || '',
+                        address: student.address || '',
+                        nationality: student.nationality || '',
+                        qualification: student.qualification || '',
+                        orgName: student.orgName || '',
+                        jobTitle: student.jobTitle || '',
+                        visaStatus: student.visaStatus || '',
+                        otherStatus: student.otherStatus || '',
+                        emirates: student.emirates || '',
+                    });
 
-              // Handle authentication errors
-              if (error.status === 401 || error.status === 403) {
-                  console.error('Authentication failed, redirecting to login');
-                  localStorage.removeItem('Authorization');
-                  this.router.navigate(['/authentication']);
-              }
-          }
-      });
-  }
+                    // Set editor content
+                    this.editorContent = student.notes || '';
+                    this.isLoading = false;
+                } else {
+                    this.toastr.error('Failed to load student data', 'Error');
+                    this.isLoading = false;
+                }
+            },
+            error: (error) => {
+                console.error('Error loading student:', error);
+                this.toastr.error('Error loading student data', 'Error');
+                this.isLoading = false;
 
-  onSubmit(): void {
-   
+                // Handle authentication errors
+                if (error.status === 401 || error.status === 403) {
+                    console.error(
+                        'Authentication failed, redirecting to login'
+                    );
+                    localStorage.removeItem('Authorization');
+                    this.router.navigate(['/authentication']);
+                }
+            },
+        });
+    }
 
-      if (this.studentForm.valid && this.studentId) {
-          this.isSubmitting = true;
+    onSubmit(): void {
+        if (this.studentForm.valid) {
+            console.log('✅ Form Submitted:', this.studentForm.value);
 
-          const formData = {
-              student_name: this.studentForm.value.student_name,
-              email: this.studentForm.value.email,
-              phone: this.studentForm.value.phone,
-              lead_source: this.studentForm.value.lead_source,
-              courses: this.studentForm.value.courses,
-              status: this.studentForm.value.status,
-              description: this.studentForm.value.description,
-          };
+            const formData = new FormData();
 
-          this.studentService.updateStudent(formData, this.studentId).subscribe({
-              next: (response) => {
-                  if (response && response.success) {
-                      this.toastr.success('Student updated successfully', 'Success');
-                    
-                  } else {
-                      this.toastr.error('Failed to update student', 'Error');
-                  }
-                  this.isSubmitting = false;
-              },
-              error: (error) => {
-                  console.error('Error updating student:', error);
-                  this.toastr.error('Error updating student', 'Error');
-                  this.isSubmitting = false;
+            Object.keys(this.studentForm.controls).forEach((key) => {
+                formData.append(key, this.studentForm.get(key)?.value);
+            });
 
-                  // Handle authentication errors
-                  if (error.status === 401 || error.status === 403) {
-                      console.error('Authentication failed, redirecting to login');
-                      localStorage.removeItem('Authorization');
-                      this.router.navigate(['/authentication']);
-                  }
-              }
-          });
-      } else {
-          this.markFormGroupTouched();
-      }
-  }
+            if (this.studentImage)
+                formData.append('studentImage', this.studentImage);
 
-  onCancel(): void {
-      this.router.navigate(['/students']);
-  }
+            if (this.idProof) formData.append('idProof', this.idProof);
 
-  private markFormGroupTouched(): void {
-      Object.keys(this.studentForm.controls).forEach(key => {
-          const control = this.studentForm.get(key);
-          control?.markAsTouched();
-      });
-  }
+            if (this.certificate)
+                formData.append('certificate', this.certificate);
 
+            this.studentService
+                .updateStudent(formData, this.studentId)
+                .subscribe({
+                    next: (response) => {
+                        if (response && response.success) {
 
+                                            this.loadStudentData();
 
+                            this.certificate = null;
+                            this.studentImage = null;
+                            this.idProof = null;
+                            this.toastr.success(
+                                'Updated successfully',
+                                'Success'
+                            );
+                        } else {
+                            this.toastr.error(
+                                'Failed to Update student',
+                                'Error'
+                            );
+                        }
+                        this.isSubmitting = false;
+                    },
+                    error: (error) => {
+                        console.error('Error Updated student:', error);
+                        this.toastr.error('Error Updated student', 'Error');
+                        this.isSubmitting = false;
+                    },
+                });
+        } else {
+            console.log('❌ Invalid Form');
+            this.studentForm.markAllAsTouched();
+        }
+    }
+    onFileSelected(event: any, type: string) {
+        console.log('📂 File Upload Event:', event);
 
+        let file: File | null = null;
 
-        private getCourseList(): void {
+        if (event instanceof File) {
+            file = event; // case: emits single File
+        } else if (Array.isArray(event)) {
+            file = event[0]; // case: emits array of Files
+        } else if (event?.file) {
+            file = event.file; // case: emits { file: File, ... }
+        } else if (event?.target?.files?.length) {
+            file = event.target.files[0]; // fallback: native input
+        }
+
+        if (file) {
+            if (type === 'studentImage') this.studentImage = file;
+            if (type === 'idProof') this.idProof = file;
+            if (type === 'certificate') this.certificate = file;
+            console.log('✅ File captured:', file.name);
+        } else {
+            console.warn('⚠️ No file detected from event:', event);
+        }
+    }
+
+    removeFile(type: string) {
+        if (type === 'studentImage') this.studentImage = null;
+        if (type === 'idProof') this.idProof = null;
+        if (type === 'certificate') this.certificate = null;
+    }
+
+    onCancel(): void {
+        this.router.navigate(['/students']);
+    }
+
+    private markFormGroupTouched(): void {
+        Object.keys(this.studentForm.controls).forEach((key) => {
+            const control = this.studentForm.get(key);
+            control?.markAsTouched();
+        });
+    }
+
+    private getCourseList(): void {
         // let params = new HttpParams();
 
         // params = params.set('user_type', 'USER');

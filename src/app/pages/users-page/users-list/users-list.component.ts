@@ -35,8 +35,8 @@ export class UsersListComponent {
     displayedColumns: string[] = [
         'id',
         'name',
-        'school_type',
-        'location',
+        // 'school_type',
+        // 'location',
         'phone',
         'designation',
         'type',
@@ -76,11 +76,11 @@ export class UsersListComponent {
 
                     this.ELEMENT_DATA = users.map((u: any) => ({
                         id: u.id || 'N/A',
-                        school_type : u.school_type || 'N/A',
+                        // school_type : u.school_type || 'N/A',
                         name: u.name || 'N/A',
                         email: u.email || 'N/A',
                         type: u.user_type || 'N/A',
-                        location:u?.location?.name,
+                        // location:u?.location?.name,
 
                         phone: u.phone || '-',
                         designation: u.designation || '-',
@@ -104,10 +104,10 @@ export class UsersListComponent {
 export interface PeriodicElement {
     id: any;
     name: string;
-    location: any;
+    // location: any;
     phone: string;
     type: string;
-    school_type: any;
+    // school_type: any;
     designation: string;
     status: string;
     action: any;

@@ -36,7 +36,7 @@
             <div class="row">
                 <div class="col-lg-8">
 
-                    <mat-card class="daxa-card sales-overview-card mb-25 border-radius bg-primary border-none d-block"
+                    <!-- <mat-card class="daxa-card sales-overview-card mb-25 border-radius bg-primary border-none d-block"
                         *ngIf="editMode">
                         <mat-card-content>
                             <h5 class="text-white">
@@ -71,13 +71,11 @@
                             <div class="progress-bar-container">
                                 <div class="progress-bar" [style.width.%]="progress"></div>
                             </div>
-                            <!-- <span class="info d-block text-white">
-            20% increase in last month
-        </span> -->
+                           
                         </mat-card-content>
-                    </mat-card>
+                    </mat-card> -->
                     <div class="row">
-                        <!-- <div class="col-md-4 col-sm-6 mb-25">
+                        <div class="col-md-4 col-sm-6 mb-25">
                             <div class="mb-25">
                                 <label class="main-label d-block lh-1 text-black">
                                     Task Title *
@@ -94,8 +92,8 @@
                                     </mat-error>
                                 </mat-form-field>
                             </div>
-                        </div> -->
-                        <div class="col-md-4 col-sm-6 mb-25">
+                        </div>
+                        <!-- <div class="col-md-4 col-sm-6 mb-25">
                             <div class="mb-25">
                                 <label class="main-label d-block lh-1 text-black">
                                     School Name
@@ -105,7 +103,6 @@
                                     <mat-label>
                                         Select
                                     </mat-label>
-                                    <!-- 'multiple' for multiple select -->
                                     <mat-select multiple formControlName="school_name" *ngIf="!editMode">
                                         <mat-option *ngFor="let school of school" [value]="school.id">
                                             {{ school.school_name }}
@@ -122,7 +119,7 @@
 
 
                             </div>
-                        </div>
+                        </div> -->
 
                         <!-- <div class="col-md-4 col-sm-6 mb-25">
                             <div class="mb-25">
@@ -298,10 +295,10 @@
                     <span>Add Expence</span>
                 </button>
 
-                <button mat-button type="button" (click)="openDialog_add_student()" *ngIf="editMode">
+                <!-- <button mat-button type="button" (click)="openDialog_add_student()" *ngIf="editMode">
 
                     <span>Add Student</span>
-                </button>
+                </button> -->
                 <!-- <button mat-button type="button" (click)="onCancel()">
                     Cancel
                 </button> -->

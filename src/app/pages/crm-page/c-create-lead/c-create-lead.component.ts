@@ -73,15 +73,13 @@ export class CCreateLeadComponent {
         private leadsService: LeadsService,
         private usersService: UsersService,
         private toastr: ToastrService,
-                private courseService: CourseService,
-                 private router: Router,
-        
+        private courseService: CourseService,
+        private router: Router
     ) {}
 
     ngOnInit(): void {
-
-                this.getUserList();
-this.getCourseList();
+        this.getUserList();
+        this.getCourseList();
         // ✅ Get ID from query params
         this.route.queryParams.subscribe((params) => {
             this.contactId = params['contact_id'] || null;
@@ -111,13 +109,13 @@ this.getCourseList();
 
     initializeleadForm() {
         this.leadForm = this.fb.group({
-            contact_id: ['', Validators.required],
+            // contact_id: ['', Validators.required],
             customer_name: ['', Validators.required],
             email: [''],
             phone: ['', Validators.required],
             courses: [''],
             status: ['', Validators.required],
-            lead_source: ['', Validators.required],
+            lead_source: [''],
             created_date: [''],
             assign_to: ['', Validators.required],
         });
@@ -127,20 +125,20 @@ this.getCourseList();
         this.contactService.getContactById(id).subscribe({
             next: (response) => {
                 if (response.success) {
-                    const contact = response.contact;
+                    const contact = response?.contact;
 
                     // ✅ Patch form values
                     this.leadForm.patchValue({
-                        contact_id: contact.unique_id,
-                        customer_name: contact.contact_name,
-                        email: contact.email,
-                        phone: contact.phone,
-                        courses: contact.courses.id,
-                        status: contact.status,
-                        lead_source: contact.lead_source,
+                        contact_id: contact?.unique_id,
+                        customer_name: contact?.contact_name,
+                        email: contact?.email,
+                        phone: contact?.phone,
+                        courses: contact?.courses?.id,
+                        status: contact?.status,
+                        lead_source: contact?.lead_source,
                     });
                 } else {
-                    console.log('Lead not found.')
+                    console.log('Lead not found.');
                     // this.toastr.error('Lead not found.', 'Error');
                 }
             },
@@ -231,9 +229,8 @@ this.getCourseList();
                 },
             });
         } else {
-            if(this.contactId){
-                            formData.append('contact', this.contactId);
-
+            if (this.contactId) {
+                formData.append('contact', this.contactId);
             }
             this.leadsService.createLead(formData).subscribe({
                 next: (response) => {
@@ -286,9 +283,7 @@ this.getCourseList();
         });
     }
 
-
-
-       private getCourseList(): void {
+    private getCourseList(): void {
         // let params = new HttpParams();
 
         // params = params.set('user_type', 'USER');
@@ -308,7 +303,7 @@ this.getCourseList();
         });
     }
 
-      onCancel(): void {
+    onCancel(): void {
         this.router.navigate(['/crm-page/leads']);
     }
 }

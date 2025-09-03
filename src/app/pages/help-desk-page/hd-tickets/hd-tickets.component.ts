@@ -50,8 +50,8 @@ import { HttpParams } from '@angular/common/http';
 export class HdTicketsComponent implements OnInit {
     displayedColumns: string[] = [
         'ticketID',
-        // 'title',
-        'school',
+        'title',
+        // 'school',
         'priority',
         'createdDate',
         'dueDate',
@@ -127,7 +127,7 @@ export class HdTicketsComponent implements OnInit {
         return {
             id: task.id,
             ticketID: `#${task.id || 'N/A'}`,
-            // title: task.task_title || 'No Title',
+            title: task.task_title || 'No Title',
             // type: task.task_type,
             createdDate: task.createdAt
                 ? new Date(task.createdAt).toLocaleDateString()
@@ -136,7 +136,7 @@ export class HdTicketsComponent implements OnInit {
                 ? new Date(task.due_date).toLocaleDateString()
                 : 'N/A',
             priority: task.priority || 'Medium',
-            school:task?.school?.school_name || 'N/A',
+            // school:task?.school?.school_name || 'N/A',
 
             status: task.status,
             action: {
@@ -243,8 +243,8 @@ export class HdTicketsComponent implements OnInit {
 export interface TaskElement {
     id: any;
     ticketID: string;
-    // title: string;
-    school: any;
+    title: string;
+    // school: any;
     priority: string;
     createdDate: string;
     dueDate: string;

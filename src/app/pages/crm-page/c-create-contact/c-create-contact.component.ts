@@ -103,9 +103,9 @@ export class CCreateContactComponent {
             contact_name: ['', Validators.required],
             email: [''],
             phone: ['', Validators.required],
-            // courses: [''],
+            courses: [''],
             // status: ['', Validators.required],
-            // lead_source: [''],
+            lead_source: [''],
             contact_owner: [''],
         });
     }

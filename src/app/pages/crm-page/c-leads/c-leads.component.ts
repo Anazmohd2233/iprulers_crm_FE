@@ -51,7 +51,7 @@ export class CLeadsComponent {
 
     displayedColumns: string[] = [
         // 'select',
-        'contact_id',
+        // 'contact_id',
         'customer_name',
         'email',
         'phone',
@@ -129,9 +129,9 @@ export class CLeadsComponent {
 
                     this.ELEMENT_DATA = leads.map((u: any) => ({
                         id: u.id,
-                        contact_id: u.unique_id || 'N/A',
+                        // contact_id: u.unique_id || 'N/A',
 
-                        customer_name: u.contact_name || 'N/A',
+                        customer_name: u.customer_name || 'N/A',
                         email: u.email || 'N/A',
                         phone: u.phone || '-',
 
@@ -160,7 +160,7 @@ export class CLeadsComponent {
 }
 
 export interface PeriodicElement {
-    contact_id: string;
+    // contact_id: string;
     customer_name: any;
     email: string;
     phone: string;

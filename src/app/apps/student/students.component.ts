@@ -54,7 +54,7 @@ export class StudentsComponent {
 
     displayedColumns: string[] = [
         // 'select',
-        'studentID',
+        // 'studentID',
         'name',
         'email',
         'phone',
@@ -151,7 +151,7 @@ export class StudentsComponent {
 
                     this.ELEMENT_DATA = students.map((u: any) => ({
                         id: u.id,
-                        studentID: u.unique_id || 'N/A',
+                        // studentID: u.unique_id || 'N/A',
                         name: u.customer_name || 'N/A',
                         email: u.email || 'N/A',
                         lead_source: u.lead_source || 'N/A',
@@ -187,7 +187,7 @@ export class StudentsComponent {
 
 export interface PeriodicElement {
     id: any;
-    studentID: string;
+    // studentID: string;
     name: any;
     email: string;
     phone: string;
