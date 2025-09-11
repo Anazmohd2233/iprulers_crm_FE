@@ -19,10 +19,10 @@ export class PaymentsService {
 
     
 
-    // updateLead(formData: any, leads_id: any): Observable<any> {
-    //     const apiUrl = `${this.apiUrl}/admin/leads/update/${leads_id}`;
-    //     return this.http.patch<any>(apiUrl, formData);
-    // }
+    updatePayment(formData: any, leads_id: any): Observable<any> {
+        const apiUrl = `${this.apiUrl}/admin/payments/update/${leads_id}`;
+        return this.http.patch<any>(apiUrl, formData);
+    }
 
     getPayment(page: number, params?: HttpParams): Observable<any> {
         const url = `${this.apiUrl}/admin/payments/list/${page}`;

@@ -17,6 +17,10 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { ToastrService } from 'ngx-toastr';
 import { PaymentsService } from '../../../services/payments.service';
+import {
+    MatSlideToggleChange,
+    MatSlideToggleModule,
+} from '@angular/material/slide-toggle';
 
 @Component({
     selector: 'app-invoices',
@@ -37,12 +41,18 @@ import { PaymentsService } from '../../../services/payments.service';
         FormsModule,
         NgIf,
         NgFor,
+        MatSlideToggleModule,
     ],
     templateUrl: './invoices.component.html',
     styleUrl: './invoices.component.scss',
 })
 export class InvoicesComponent {
     // Student Form
+
+    @ViewChild('confirmDialog') confirmDialog!: TemplateRef<any>;
+    private toggleEvent: any;
+    private toggleId!: number;
+
     isSubmitting = false;
     isLoading = false;
     studentId: any;
@@ -52,7 +62,8 @@ export class InvoicesComponent {
     page: number = 1;
     pageSize: number = 20;
     totalRecords: number = 0;
-        student: any;
+    paymentStatus: boolean = false;
+    student: any;
     ELEMENT_DATA: PeriodicElement[] = [];
     displayedColumns: string[] = [
         'student_name',
@@ -61,6 +72,7 @@ export class InvoicesComponent {
         'installment_amount',
         'due_date',
         'is_paid',
+        'approve',
         'action',
     ];
     dataSource = new MatTableDataSource<PeriodicElement>(this.ELEMENT_DATA);
@@ -87,13 +99,13 @@ export class InvoicesComponent {
         this.getPaymentList();
     }
 
-     ngAfterViewInit() {
+    ngAfterViewInit() {
         // listen to paginator changes
         console.log('**********page changed**********');
         this.paginator.page.subscribe((event) => {
             this.page = event.pageIndex + 1; // MatPaginator is 0-based, API is 1-based
             this.pageSize = event.pageSize;
-        this.getPaymentList();
+            this.getPaymentList();
         });
     }
 
@@ -191,8 +203,8 @@ export class InvoicesComponent {
             next: (response) => {
                 if (response && response.success) {
                     const payments = response.data?.payment || [];
-                                                            this.totalRecords = response.data?.total;
-
+                    this.paymentStatus = payments.is_paid;
+                    this.totalRecords = response.data?.total;
 
                     this.ELEMENT_DATA = payments.map((u: any) => ({
                         id: u.id,
@@ -205,7 +217,7 @@ export class InvoicesComponent {
                         due_date: u.due_date || 'N/A',
 
                         is_paid: u.is_paid,
-
+                        approve: '',
                         action: '',
                     }));
 
@@ -220,6 +232,69 @@ export class InvoicesComponent {
             },
         });
     }
+
+    onToggle(event: any, id: number) {
+        this.toggleEvent = event;
+        this.toggleId = id;
+
+        this.dialog.open(this.confirmDialog, {
+            width: '350px',
+            data: { isChecked: event.checked },
+        });
+    }
+
+    confirmAction() {
+        const isChecked = this.toggleEvent.checked;
+        console.log('Confirmed for id:', this.toggleId, '->', isChecked);
+
+        if (isChecked) {
+            this.updatePayment('true');
+        } else {
+            this.updatePayment('false');
+        }
+
+        this.dialog.closeAll();
+    }
+
+    cancelAction() {
+        this.toggleEvent.source.checked = !this.toggleEvent.checked;
+        this.dialog.closeAll();
+    }
+
+    updatePayment(status: any) {
+        const formData = new FormData();
+        formData.append('is_paid', status);
+
+        this.paymentsService.updatePayment(formData, this.toggleId).subscribe({
+            next: (response) => {
+                if (response.success) {
+                    this.isSubmitting = false;
+                    this.toastr.success(
+                        'Payment Updated successfully',
+                        'Success'
+                    );
+                    this.getPaymentList();
+
+                    console.log('✅ Payment Updated successfully');
+                } else {
+                    this.isSubmitting = false;
+
+                    this.toastr.error(
+                        response.message || 'Failed to Update Payment.',
+                        'Error'
+                    );
+                    console.error('❌ add failed:', response.message);
+                }
+            },
+            error: (error) => {
+                this.isSubmitting = false;
+
+                this.toastr.error('Something went wrong.', 'Error');
+
+                console.error('❌ API error:', error);
+            },
+        });
+    }
 }
 
 export interface PeriodicElement {
@@ -229,5 +304,6 @@ export interface PeriodicElement {
     installment_amount: any;
     due_date: any;
     is_paid: any;
+    approve: any;
     action: any;
 }

@@ -52,6 +52,7 @@ import {
     MatDialogRef,
     MatDialogTitle,
 } from '@angular/material/dialog';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
     selector: 'app-profile02-student',
@@ -80,6 +81,8 @@ import {
         NgIf,
         MatTooltipModule,
          MatDialogModule,
+                 MatSlideToggleModule,
+
     ],
 
     templateUrl: './profile-student.component.html',
@@ -110,11 +113,19 @@ export class ProfileStudentComponent implements OnInit {
     editMode: boolean = false;
     paymentForm!: FormGroup;
     courses: any;
-    page: number = 1;
+ page: number = 1;
+    pageSize: number = 20;
+    totalRecords: number = 0;
+        paymentStatus: boolean = false;
     student: any;
+
     ELEMENT_DATA: PeriodicElement[] = [];
     isModalOpen: boolean = false;
         dialogRef!: MatDialogRef<any>; // store reference
+
+            @ViewChild('confirmDialog') confirmDialog!: TemplateRef<any>;
+    private toggleEvent: any;
+    private toggleId!: number;
 
 
     animal: string = '';
@@ -125,6 +136,8 @@ export class ProfileStudentComponent implements OnInit {
         'installment_amount',
         'due_date',
         'is_paid',
+                'approve',
+
         // 'action',
     ];
     dataSource = new MatTableDataSource<PeriodicElement>(this.ELEMENT_DATA);
@@ -132,9 +145,6 @@ export class ProfileStudentComponent implements OnInit {
 
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-    ngAfterViewInit() {
-        this.dataSource.paginator = this.paginator;
-    }
 
     // Options for dropdowns
     leadSources = [
@@ -187,6 +197,16 @@ export class ProfileStudentComponent implements OnInit {
             }
         });
         this.initializeForm();
+    }
+
+     ngAfterViewInit() {
+        // listen to paginator changes
+        console.log('**********page changed**********');
+        this.paginator.page.subscribe((event) => {
+            this.page = event.pageIndex + 1; // MatPaginator is 0-based, API is 1-based
+            this.pageSize = event.pageSize;
+                this.loadStudentData();
+        });
     }
 
     ngOnDestroy(): void {
@@ -330,6 +350,70 @@ export class ProfileStudentComponent implements OnInit {
             maxWidth: '100vw', // prevents overflow
         });
     }
+
+    
+    onToggle(event: any, id: number) {
+        this.toggleEvent = event;
+        this.toggleId = id;
+
+        this.dialog.open(this.confirmDialog, {
+            width: '350px',
+            data: { isChecked: event.checked },
+        });
+    }
+
+    confirmAction() {
+        const isChecked = this.toggleEvent.checked;
+        console.log('Confirmed for id:', this.toggleId, '->', isChecked);
+
+        if (isChecked) {
+            this.updatePayment('true');
+        } else {
+            this.updatePayment('false');
+        }
+
+        this.dialog.closeAll();
+    }
+
+    cancelAction() {
+        this.toggleEvent.source.checked = !this.toggleEvent.checked;
+        this.dialog.closeAll();
+    }
+
+    updatePayment(status: any) {
+        const formData = new FormData();
+        formData.append('is_paid', status);
+
+        this.paymentsService.updatePayment(formData, this.toggleId).subscribe({
+            next: (response) => {
+                if (response.success) {
+                    this.isSubmitting = false;
+                    this.toastr.success(
+                        'Payment Updated successfully',
+                        'Success'
+                    );
+                this.loadStudentData();
+
+                    console.log('✅ Payment Updated successfully');
+                } else {
+                    this.isSubmitting = false;
+
+                    this.toastr.error(
+                        response.message || 'Failed to Update Payment.',
+                        'Error'
+                    );
+                    console.error('❌ add failed:', response.message);
+                }
+            },
+            error: (error) => {
+                this.isSubmitting = false;
+
+                this.toastr.error('Something went wrong.', 'Error');
+
+                console.error('❌ API error:', error);
+            },
+        });
+    }
 }
 
 export interface PeriodicElement {
@@ -338,5 +422,7 @@ export interface PeriodicElement {
     installment_amount: any;
     due_date: any;
     is_paid: any;
+        approve: any;
+
     action: any;
 }

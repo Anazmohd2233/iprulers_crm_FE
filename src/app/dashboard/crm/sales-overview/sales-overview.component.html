@@ -1,11 +1,11 @@
 <mat-card class="daxa-card sales-overview-card mb-25 border-radius bg-primary border-none d-block">
     <mat-card-content>
-
+        
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="text-white">
-                Lead Status
+                Payment Status
             </h5>
-            <!-- <div>
+            <div>
                 <button type="button" mat-button class="card-header-menu-btn" [matMenuTriggerFor]="cardHeaderMenu">
                     {{ dateForm.value.start | date }} &nbsp;|&nbsp; {{ dateForm.value.end | date }}
                 </button>
@@ -30,37 +30,39 @@
                       <p>End Date: {{ dateForm.value.end | date }}</p>
                       
                 </mat-menu>                  
-            </div> -->
+            </div>
         </div>
         <div class="sales-overview-info d-flex align-items-center justify-content-between">
             <div>
                 <span class="sub-title d-block text-white">
-                    Total Strength
+                    Total Collection Due
                 </span>
                 <span class="number d-block text-white fw-medium lh-1">
-                    {{totalStrength}}
+                    9,586
                 </span>
             </div>
             <div>
                 <span class="sub-title d-block text-white">
-                    Collected Contacts
+                    Collected Amount
                 </span>
                 <span class="number d-block text-white fw-medium lh-1">
-                    {{total_collected_data}} </span>
+                    3,507
+                </span>
             </div>
-            <div>
+            <!-- <div>
                 <span class="sub-title d-block text-white">
-                    Balance
+                    Today’s Sales
                 </span>
                 <span class="number d-block text-white fw-medium lh-1">
-                    {{balance}} </span>
-            </div>
+                    357
+                </span>
+            </div> -->
         </div>
         <div class="progress-bar-container">
             <div class="progress-bar" [style.width.%]="progress"></div>
         </div>
-        <!-- <span class="info d-block text-white">
+        <span class="info d-block text-white">
             20% increase in last month
-        </span> -->
+        </span>
     </mat-card-content>
 </mat-card>

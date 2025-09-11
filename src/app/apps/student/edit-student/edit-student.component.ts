@@ -227,13 +227,15 @@ export class EditStudentComponent implements OnInit {
             if (this.certificate)
                 formData.append('certificate', this.certificate);
 
-            this.studentService
+            if (this.editMode) {
+
+
+                    this.studentService
                 .updateStudent(formData, this.studentId)
                 .subscribe({
                     next: (response) => {
                         if (response && response.success) {
-
-                                            this.loadStudentData();
+                            this.loadStudentData();
 
                             this.certificate = null;
                             this.studentImage = null;
@@ -252,10 +254,46 @@ export class EditStudentComponent implements OnInit {
                     },
                     error: (error) => {
                         console.error('Error Updated student:', error);
-                        this.toastr.error('Error Updated student', 'Error');
+                        this.toastr.error('Error Update student', 'Error');
                         this.isSubmitting = false;
                     },
                 });
+            }else{
+
+
+                      this.studentService
+                .createStudent(formData)
+                .subscribe({
+                    next: (response) => {
+                        if (response && response.success) {
+                            
+                            this.router.navigate(['/student']);
+
+                            this.certificate = null;
+                            this.studentImage = null;
+                            this.idProof = null;
+                            this.toastr.success(
+                                'Created successfully',
+                                'Success'
+                            );
+                        } else {
+                            this.toastr.error(
+                                'Failed to Create student',
+                                'Error'
+                            );
+                        }
+                        this.isSubmitting = false;
+                    },
+                    error: (error) => {
+                        console.error('Error Create student:', error);
+                        this.toastr.error('Error Create student', 'Error');
+                        this.isSubmitting = false;
+                    },
+                });
+
+            }
+
+        
         } else {
             console.log('❌ Invalid Form');
             this.studentForm.markAllAsTouched();

@@ -11,6 +11,12 @@ export class StudentService {
 
     constructor(private http: HttpClient) {}
 
+
+       createStudent(formData: any): Observable<any> {
+        const apiUrl = `${this.apiUrl}/admin/customer/create`;
+        return this.http.post<any>(apiUrl, formData);
+    }
+
    
     updateStudent(formData: any, student_id: any): Observable<any> {
         const apiUrl = `${this.apiUrl}/admin/customer/update/${student_id}`;

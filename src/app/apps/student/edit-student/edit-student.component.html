@@ -14,7 +14,9 @@
             CRM
         </li>
         <li class="breadcrumb-item position-relative">
-            Edit Student
+          
+                        {{ editMode ? 'Edit Student' : 'Create Student' }}
+
         </li>
     </ol>
 </div>
@@ -341,7 +343,7 @@
                 <button mat-button type="submit">
                     <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1" role="status"
                         aria-hidden="true"></span>
-                    Edit Student
+                  {{ editMode ? 'Edit Student' : 'Create Student' }}
                 </button>
             </div>
         </form>

@@ -152,11 +152,11 @@ export class StudentsComponent {
                     this.ELEMENT_DATA = students.map((u: any) => ({
                         id: u.id,
                         // studentID: u.unique_id || 'N/A',
-                        name: u.customer_name || 'N/A',
+                        name: u.firstName || 'N/A',
                         email: u.email || 'N/A',
                         lead_source: u.lead_source || 'N/A',
                         phone: u.phone || '-',
-                        courses: u.courses.service_name || '-',
+                        courses: u?.courses?.service_name || '-',
                         createdDate: u.created_date || '-',
                         status: u.status,
                         action: '', // we will handle icons directly in template

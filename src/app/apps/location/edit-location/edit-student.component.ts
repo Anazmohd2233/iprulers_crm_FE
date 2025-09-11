@@ -103,7 +103,6 @@ export class EditLocationComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-
         if (isPlatformBrowser(this.platformId)) {
             this.editor = new Editor();
         }
@@ -133,8 +132,7 @@ export class EditLocationComponent implements OnInit {
     private initializeForm(): void {
         this.studentForm = this.formBuilder.group({
             name: ['', [Validators.required]],
-                        status: [''],
-
+            status: [''],
         });
     }
 
@@ -182,7 +180,6 @@ export class EditLocationComponent implements OnInit {
                     .subscribe({
                         next: (response) => {
                             if (response && response.success) {
-                          
                                 this.toastr.success(
                                     'Location updated successfully',
                                     'Success'
@@ -208,8 +205,8 @@ export class EditLocationComponent implements OnInit {
                 this.schoolService.createLocation(formData).subscribe({
                     next: (response) => {
                         if (response && response.success) {
-                                  this.studentForm.reset();
-                                this.router.navigate(['/location']);
+                            this.studentForm.reset();
+                            this.router.navigate(['/location']);
                             this.toastr.success(
                                 'Location created successfully',
                                 'Success'
@@ -244,6 +241,4 @@ export class EditLocationComponent implements OnInit {
             control?.markAsTouched();
         });
     }
-
-   
 }

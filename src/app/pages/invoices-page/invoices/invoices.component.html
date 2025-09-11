@@ -134,6 +134,18 @@
             </td>
           </ng-container>
 
+          <ng-container matColumnDef="approve">
+            <th mat-header-cell *matHeaderCellDef>
+              Payment
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <!-- [checked]="tracking" -->
+
+              <mat-slide-toggle [checked]="element.is_paid" (change)="onToggle($event,element.id)">
+              </mat-slide-toggle>
+            </td>
+          </ng-container>
+
           <!-- Action Column -->
           <ng-container matColumnDef="action">
             <th mat-header-cell *matHeaderCellDef> Action </th>
@@ -168,57 +180,25 @@
 
         </table>
       </div>
- <mat-paginator [length]="totalRecords" [pageSize]="20" showFirstLastButtons>
-            </mat-paginator>    </div>
+      <mat-paginator [length]="totalRecords" [pageSize]="20" showFirstLastButtons>
+      </mat-paginator>
+    </div>
   </mat-card-content>
 
 </mat-card>
 
-<ng-template #installmentDialog>
-  <h2 mat-dialog-title>Convert to Installments</h2>
+
+
+
+<!-- Confirmation Modal -->
+<ng-template #confirmDialog let-data>
+  <h2 mat-dialog-title>Confirm Action</h2>
   <mat-dialog-content>
-    <p>Course Fee: ${{courseFee}}</p>
-    <!-- <mat-form-field>
-      <mat-label>Number of Installments</mat-label>
-      <input matInput type="number" [(ngModel)]="installmentCount" min="1">
-    </mat-form-field>
-    <button mat-stroked-button color="primary" (click)="generateInstallments()">Generate</button> -->
-    <mat-form-field appearance="outline">
-      <mat-label>Number of Installments</mat-label>
-      <input matInput type="number" [(ngModel)]="installmentCount" min="1">
-      <button mat-button matSuffix color="primary" (click)="generateInstallments()">
-        <i class="material-symbols-outlined" style="font-size: 16px !important;">
-          autorenew
-        </i>
-        Generate
-      </button>
-    </mat-form-field>
-
-    <div class="d-flex justify-content-end w-100" style="margin-top: 15px !important;">
-      <button *ngIf="installments.length" mat-stroked-button color="warn" (click)="clearInstallments()">Clear</button>
-    </div>
-
-    <div *ngIf="installments.length">
-      <div class="row">
-        <div *ngFor="let inst of installments; let i = index" class="mt-2 border p-2 rounded col-md-6 col-lg-6">
-          <p>Installment {{i + 1}}</p>
-          <mat-form-field>
-            <mat-label>Amount</mat-label>
-            <input matInput type="number" [(ngModel)]="inst.amount" (blur)="onAmountChange(i)">
-          </mat-form-field>
-
-          <mat-form-field appearance="fill">
-            <mat-label>Date</mat-label>
-            <input matInput [matDatepicker]="picker" [(ngModel)]="inst.date">
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-          </mat-form-field>
-        </div>
-      </div>
-    </div>
+    Are you sure you want to mark this payment as 
+    <b>{{ data.isChecked ? 'Paid' : 'Unpaid' }}</b>?
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <button mat-flat-button (click)="closeModal()">Close</button>
-    <button mat-flat-button color="primary" (click)="saveInstallments()">Save</button>
+    <button mat-button (click)="cancelAction()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="confirmAction()">Confirm</button>
   </mat-dialog-actions>
 </ng-template>
