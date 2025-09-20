@@ -25,13 +25,22 @@
     [class.rtl-enabled]="themeService.isRTLEnabled()">
     <mat-card-header>
         <mat-card-title>
-            <form class="search-box position-relative">
+            <!-- <form class="search-box position-relative">
                 <i class="material-symbols-outlined">
                     search
                 </i>
                 <input type="text" class="input-search d-block w-100 border-none outline-0"
                     placeholder="Search contact..." (keyup)="applyFilter($event)" #input>
-            </form>
+            </form> -->
+                        <mat-form-field appearance="outline" class="w-80">
+                <mat-label>Search contact</mat-label>
+                <input matInput [ngModelOptions]="{standalone: true}" [(ngModel)]="searchField" (keyup)="applyFilter()">
+
+                <!-- Clear button -->
+                <button *ngIf="searchField" mat-icon-button matSuffix (click)="clearSearch()">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </mat-form-field>
         </mat-card-title>
         <mat-card-subtitle class="d-flex align-items-center justify-content-between filter-container gap-2">
 
@@ -44,6 +53,49 @@
       <mat-option value="Low">Low</mat-option>
     </mat-select>
   </mat-form-field> -->
+
+            <mat-form-field appearance="fill" class="small-form-field m-0">
+                <mat-label>Course</mat-label>
+                <mat-select (selectionChange)="filterCourse($event)">
+                    <mat-form-field appearance="outline" class="w-80">
+
+                        <input [ngModelOptions]="{standalone: true}" matInput [(ngModel)]="searchFieldCourse"
+                            (keyup)="searchCourse()" placeholder="search course...">
+
+                        <!-- Clear button -->
+                        <button *ngIf="searchFieldCourse" mat-icon-button matSuffix (click)="clearSearchCourse()">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </mat-form-field>
+                    <mat-option value="">All</mat-option>
+                    <mat-option *ngFor="let s of courses" [value]="s.id">
+                        {{ s.service_name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+        <div *ngIf="user_type == 'ADMIN'">
+
+                <mat-form-field appearance="fill" class="small-form-field m-0">
+                    <mat-label>User</mat-label>
+                    <mat-select (selectionChange)="filterUser($event)">
+                        <mat-form-field appearance="outline" class="w-80">
+
+                            <input [ngModelOptions]="{standalone: true}" matInput [(ngModel)]="searchFieldUser"
+                                (keyup)="searchUser()" placeholder="search user...">
+
+                            <!-- Clear button -->
+                            <button *ngIf="searchFieldUser" mat-icon-button matSuffix (click)="clearSearchUser()">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </mat-form-field>
+                        <mat-option value="">All</mat-option>
+                        <mat-option *ngFor="let s of users" [value]="s.id">
+                            {{ s.name }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
 
             <a mat-button class="add-new-btn m-0" routerLink="/crm-page/create-contact">
                 + Add Contact
@@ -245,7 +297,7 @@
 
                     <!-- Row shown when there is no matching data. -->
                     <tr class="mat-row" *matNoDataRow>
-                        <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+                        <td class="mat-cell" colspan="4">No data matching the filter </td>
                     </tr>
 
                 </table>

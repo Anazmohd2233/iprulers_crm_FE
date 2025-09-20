@@ -61,11 +61,25 @@
                                     <mat-label>
                                         Enter rate
                                     </mat-label>
-                                    <input matInput formControlName="price">
+                                    <input type="number" matInput formControlName="price">
                                 </mat-form-field>
                             </div>
                         </div>
-                        <div class="col-sm-3">
+
+                          <div class="col-sm-3">
+                            <div class="mb-25">
+                                <label class="main-label d-block lh-1 text-black">
+                                    Course Duration
+                                </label>
+                                <mat-form-field>
+                                    <mat-label>
+                                        Enter Duration in Months
+                                    </mat-label>
+                                    <input type="number" matInput formControlName="duration">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <!-- <div class="col-sm-3">
                             <div class="mb-25">
                                 <label class="main-label d-block lh-1 text-black">
                                     Start Date
@@ -79,8 +93,8 @@
                                     <mat-datepicker #startDate></mat-datepicker>
                                 </mat-form-field>
                             </div>
-                        </div>
-                        <div class="col-sm-3">
+                        </div> -->
+                        <!-- <div class="col-sm-3">
                             <div class="mb-25">
                                 <label class="main-label d-block lh-1 text-black">
                                     End Date
@@ -94,7 +108,7 @@
                                     <mat-datepicker #endDate></mat-datepicker>
                                 </mat-form-field>
                             </div>
-                        </div>
+                        </div> -->
                         <!-- <div class="col-sm-3">
                             <div class="mb-25">
                                 <label class="main-label d-block lh-1 text-black">
@@ -138,7 +152,7 @@
                                 </label>
                                 <mat-form-field>
                                     <mat-label>
-                                        Select Lead status
+                                        Select  status
                                     </mat-label>
                                     <mat-select formControlName="status">
                                         <mat-option [value]="true">Active</mat-option>

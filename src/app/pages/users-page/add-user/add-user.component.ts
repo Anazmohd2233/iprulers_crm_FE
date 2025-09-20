@@ -14,7 +14,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FileUploadModule } from '@iplab/ngx-file-upload';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -66,7 +66,9 @@ export class AddUserComponent {
         private usersService: UsersService,
         private toastr: ToastrService,
         private route: ActivatedRoute, // 👈 Inject ActivatedRoute
-        private schoolService: SchoolService
+        private schoolService: SchoolService,
+                        private router: Router,
+
     ) {}
 
     ngOnInit(): void {
@@ -97,7 +99,7 @@ export class AddUserComponent {
             status: [''],
             password: [''],
             user_type: ['', Validators.required],
-            location: ['', [Validators.required]],
+            // location: ['', [Validators.required]],
         });
     }
 
@@ -164,6 +166,8 @@ export class AddUserComponent {
                     this.userForm.reset();
                     this.toastr.success('User Added successfully', 'Success');
                     console.log('✅ User Added successfully');
+                                                                            this.router.navigate(['/users']);
+
                 } else {
                     this.isSubmitting = false;
 

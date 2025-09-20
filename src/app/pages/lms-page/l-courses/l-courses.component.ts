@@ -61,8 +61,8 @@ export class LCoursesComponent {
         'service_name',
         'description',
         'price',
-        'start_date',
-        'end_date',
+        'duration',
+        // 'end_date',
         'category',
         'status',
         'action',
@@ -132,9 +132,9 @@ export class LCoursesComponent {
                         price: u.price || 'N/A',
                         status: u.status || '-',
 
-                        start_date: u.start_date || 'N/A',
+                        duration: u.duration || 'N/A',
 
-                        end_date: u.end_date || '-',
+                        // end_date: u.end_date || '-',
                         category: u.category || 'N/A',
 
                         action: '', // we will handle icons directly in template
@@ -157,8 +157,8 @@ export interface PeriodicElement {
     service_name: string;
     description: any;
     price: string;
-    start_date: Date;
-    end_date: Date;
+    duration: any;
+    // end_date: Date;
     category: string;
     status: string;
 }

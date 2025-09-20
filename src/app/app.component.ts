@@ -7,10 +7,15 @@ import { FooterComponent } from './common/footer/footer.component';
 import { CustomizerSettingsComponent } from './customizer-settings/customizer-settings.component';
 import { CustomizerSettingsService } from './customizer-settings/customizer-settings.service';
 import { ToggleService } from './common/sidebar/toggle.service';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @Component({
     selector: 'app-root',
-    imports: [RouterOutlet, CommonModule, SidebarComponent, HeaderComponent, FooterComponent, CustomizerSettingsComponent, NgClass],
+    imports: [RouterOutlet, CommonModule, SidebarComponent, HeaderComponent, FooterComponent, CustomizerSettingsComponent, NgClass,   MatInputModule,
+   MatDatepickerModule,
+   MatNativeDateModule],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss'
 })

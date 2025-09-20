@@ -111,14 +111,16 @@ export class StudentRegFormComponent {
             qualification: [''],
             orgName: ['', Validators.required],
             jobTitle: [''],
-            visaStatus: [''],
+            // visaStatus: [''],
             status: ['', Validators.required],
-            emirates: ['', Validators.required],
+            // emirates: ['', Validators.required],
         });
     }
 
     onSubmit(): void {
         if (this.studentForm.valid) {
+            this.isSubmitting = true;
+
             console.log('✅ Form Submitted:', this.studentForm.value);
 
             const formData = new FormData();

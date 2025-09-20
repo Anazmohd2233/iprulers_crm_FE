@@ -1,4 +1,4 @@
-import { NgIf } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -19,6 +19,10 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatIcon } from '@angular/material/icon';
+import { FormsModule } from '@angular/forms';
+import { UsersService } from '../../../services/users.service';
+import { CourseService } from '../../../services/course.service';
 
 @Component({
     selector: 'app-c-contacts',
@@ -49,6 +53,10 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
         NgIf,
         MatTooltipModule,
         MatProgressBarModule,
+        MatIcon,
+                FormsModule, // ✅ needed for [(ngModel)]
+                NgFor
+
     ],
     templateUrl: './c-contacts.component.html',
     styleUrl: './c-contacts.component.scss',
@@ -60,6 +68,14 @@ export class CContactsComponent {
     pageSize: number = 20;
     totalRecords: number = 0;
     contacts: any;
+        searchField: string = ''; // Initialize the property
+    searchFieldUser: string = '';
+    users: any;
+        user_type: any;
+    searchFieldCourse: string = '';
+    courses: any;
+
+
 
     
     displayedColumns: string[] = [
@@ -80,6 +96,23 @@ export class CContactsComponent {
     selection = new SelectionModel<PeriodicElement>(true, []);
 
     @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+     constructor(
+        public themeService: CustomizerSettingsService,
+        private contactService: ContactService,
+        private toastr: ToastrService,
+                private usersService: UsersService,
+                        private courseService: CourseService
+                
+
+    ) {}
+
+    ngOnInit(): void {
+        this.getContactList();
+                this.getUserList();
+        this.getCourseList();
+
+    }
 
     ngAfterViewInit() {
         // listen to paginator changes
@@ -105,7 +138,22 @@ export class CContactsComponent {
         }
         this.selection.select(...this.dataSource.data);
     }
+      filterUser(event: any) {
+        console.log('***event***', event.value);
 
+        let params = new HttpParams();
+
+        params = params.set('userId', event.value);
+        this.getContactList(params);
+    }
+   clearSearchUser() {
+        this.searchFieldUser = ''; // Clear the input by setting the property to an empty string
+        this.getUserList();
+    }
+     searchUser() {
+        console.log('user search keyword', this.searchFieldUser);
+        this.getUserList(this.searchFieldUser);
+    }
     filterCreatedDate(event: any) {
         // this.createdDateFilter = event.value;
         this.applyAllFilters();
@@ -129,6 +177,47 @@ export class CContactsComponent {
         // this.statusFilter = event.value;
         this.applyAllFilters();
     }
+
+    filterCourse(event: any) {
+        console.log('***event***', event.value);
+
+        let params = new HttpParams();
+
+        params = params.set('schoolId', event.value);
+        this.getCourseList(params);
+    }
+       searchCourse() {
+        console.log('course search keyword', this.searchFieldCourse);
+        this.getCourseList(this.searchFieldCourse);
+    }
+      clearSearchCourse() {
+        this.searchFieldCourse = ''; // Clear the input by setting the property to an empty string
+        this.getCourseList();
+    }
+
+       private getCourseList(search?: any): void {
+        let params = new HttpParams().set('status', true);
+
+        if (search) {
+            params = params.set('search', search);
+        }
+
+        this.courseService.getCourse(this.page,params).subscribe({
+            next: (response) => {
+                if (response && response.success) {
+                    this.courses = response.data?.services || [];
+                } else {
+                    // this.toastr.error('Failed to load users', 'Failed');
+                    console.error('Failed to load courses:', response?.message);
+                }
+            },
+            error: (error) => {
+                console.error('API error:', error);
+            },
+        });
+    }
+
+
 
     resetFilters() {
         // this.createdDateFilter = null;
@@ -154,24 +243,43 @@ export class CContactsComponent {
         }`;
     }
 
-    // Search Filter
-    applyFilter(event: Event) {
-        const filterValue = (event.target as HTMLInputElement).value;
+  
+
+      applyFilter() {
+        // const filterValue = (event.target as HTMLInputElement).value;
         // this.dataSource.filter = filterValue.trim().toLowerCase();
 
-        let params = new HttpParams().set('search', filterValue);
+        let params = new HttpParams().set('search', this.searchField);
         this.getContactList(params);
     }
 
-    constructor(
-        public themeService: CustomizerSettingsService,
-        private contactService: ContactService,
-        private toastr: ToastrService
-    ) {}
-
-    ngOnInit(): void {
+       clearSearch() {
         this.getContactList();
+
+        this.searchField = ''; // Clear the input by setting the property to an empty string
     }
+   private getUserList(search?: any): void {
+        let params = new HttpParams().set('user_type', 'USER');
+
+        if (search) {
+            params = params.set('search', search);
+        }
+
+        this.usersService.getUsers(this.page, params).subscribe({
+            next: (response) => {
+                if (response && response.success) {
+                    this.users = response.data?.users || [];
+                } else {
+                    // this.toastr.error('Failed to load users', 'Failed');
+                    console.error('Failed to load users:', response?.message);
+                }
+            },
+            error: (error) => {
+                console.error('API error:', error);
+            },
+        });
+    }
+   
 
     private getContactList(params?: any): void {
         this.contactService.getContact(this.page, params).subscribe({

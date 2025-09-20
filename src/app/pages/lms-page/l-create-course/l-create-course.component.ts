@@ -16,7 +16,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FileUploadModule } from '@iplab/ngx-file-upload';
 import { NgxEditorModule, Editor, Toolbar } from 'ngx-editor';
 import { CustomizerSettingsService } from '../../../customizer-settings/customizer-settings.service';
@@ -63,6 +63,8 @@ export class LCreateCourseComponent {
         private route: ActivatedRoute,
         private fb: FormBuilder,
         private courseService: CourseService,
+                                private router: Router,
+        
         
     ) {}
 
@@ -131,10 +133,11 @@ export class LCreateCourseComponent {
             service_name: ['', Validators.required],
             description: [''],
             price: ['', Validators.required],
-            start_date: ['', Validators.required],
-            end_date: ['', Validators.required],
-            category: ['', Validators.required],
+            // start_date: ['', Validators.required],
+            // end_date: ['', Validators.required],
+            category: [''],
             status: ['', Validators.required],
+            duration: [''],
             // instructor: ['', Validators.required],
         });
     }
@@ -167,23 +170,25 @@ export class LCreateCourseComponent {
 
                     // ✅ Patch form values
                     this.courseForm.patchValue({
-                        service_name: service.service_name,
-                        description: service.description,
-                        price: service.price,
-                        status: service.status,
-                        start_date: service.start_date,
-                        end_date: service.end_date,
-                        category: service.category,
+                        service_name: service?.service_name,
+                        description: service?.description,
+                        price: service?.price,
+                        status: service?.status,
+                                                duration: service?.duration,
+
+                        // start_date: service.start_date,
+                        // end_date: service.end_date,
+                        category: service?.category,
 
                         // assign_to: service.assign_to.id,
                     });
                 } else {
-                    this.toastr.error('Lead not found.', 'Error');
+                    this.toastr.error('Course not found.', 'Error');
                 }
             },
             error: (err) => {
-                console.error('❌ Error loading Lead:', err);
-                this.toastr.error('Failed to load Lead details.', 'Error');
+                console.error('❌ Error loading Course:', err);
+                this.toastr.error('Failed to load Course details.', 'Error');
             },
         });
     }
@@ -237,6 +242,8 @@ export class LCreateCourseComponent {
             this.courseService.createCourse(formData).subscribe({
                 next: (response) => {
                     if (response.success) {
+                                                                                                    this.router.navigate(['/lms-page']);
+
                         this.isSubmitting = false;
                         this.courseForm.reset();
                         this.toastr.success(
