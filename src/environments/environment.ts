@@ -7,6 +7,6 @@ export const environment = {
 
     //Domain name
     //for ip rulers
-    baseBaseUrl: 'http://localhost:4200',
+    // baseBaseUrl: 'http://localhost:4200',
     // baseBaseUrl: 'https://iprulers.nestcrm.app',
 };

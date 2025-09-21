@@ -152,7 +152,7 @@ export const routes: Routes = [
             { path: 'invoice', component: InoviceComponent },
         ],
     },
-    { path: 'student-registration/:token', component: StudentRegFormComponent }, //public form
+    { path: 'student-registration', component: StudentRegFormComponent }, //public form
      {path: 'link-expired', component: LinkError} ,// This line will remain down from the whole pages component list
           {path: 'student_success', component: ComingSoonPageComponent} ,// This line will remain down from the whole pages component list
 

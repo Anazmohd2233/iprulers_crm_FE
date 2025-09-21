@@ -78,8 +78,15 @@ export class StudentRegFormComponent {
             this.editor = new Editor();
         }
 
-                const token = this.route.snapshot.paramMap.get('token');
-        this.tokenCheck(token);
+        //         const token = this.route.snapshot.paramMap.get('token');
+        // this.tokenCheck(token);
+
+         this.route.queryParamMap.subscribe(params => {
+      const token =  params.get('token');
+            console.log('::::::::::::::Token::::::::::::',token);
+
+this.tokenCheck(token);
+    });
     }
 
     ngOnDestroy(): void {
