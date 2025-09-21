@@ -149,9 +149,9 @@ export class EditStudentComponent implements OnInit {
             qualification: [''],
             orgName: ['', Validators.required],
             jobTitle: [''],
-            visaStatus: [''],
+            // visaStatus: [''],
             otherStatus: ['', Validators.required],
-            emirates: ['', Validators.required],
+            // emirates: ['', Validators.required],
         });
     }
 

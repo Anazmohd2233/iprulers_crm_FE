@@ -47,6 +47,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SelectionModel } from '@angular/cdk/collections';
 import { SchoolService } from '../../../services/school.service';
+import { LeadsService } from '../../../services/lead.service';
 
 @Component({
     selector: 'app-hd-create-ticket',
@@ -187,7 +188,8 @@ export class HdCreateTicketComponent {
         private toastr: ToastrService,
         private route: ActivatedRoute,
         private dialog: MatDialog,
-        private schoolService: SchoolService
+        private schoolService: SchoolService,
+        private leadsService:   LeadsService
     ) {
         this.initializeForm();
         this.initializeExpenceForm();
@@ -195,8 +197,10 @@ export class HdCreateTicketComponent {
 
     ngOnInit(): void {
         //  this.getExpenceList();
+                this.getLeadList();
+
         this.getUserList();
-        this.getSchoolList();
+        // this.getSchoolList();
 
         this.route.queryParams.subscribe((params) => {
             this.taskId = params['task_id'] || null;
@@ -230,6 +234,7 @@ export class HdCreateTicketComponent {
             due_time: [''],
             note: [''],
             taskImage: [''],
+            lead_id: [''],
             // location: [''],
             // school_name: [[]],
             // school_name_edit: [''],
@@ -377,15 +382,15 @@ export class HdCreateTicketComponent {
         });
     }
 
-    private getSchoolList(): void {
+    private getLeadList(): void {
         let params = new HttpParams();
 
-        params = params.set('status', true);
+        // params = params.set('status', true);
 
-        this.schoolService.getSchool(this.page, params).subscribe({
+        this.leadsService.getLead(this.page, params).subscribe({
             next: (response) => {
                 if (response && response.success) {
-                    this.school = response.data?.school || [];
+                    this.school = response.data?.leads || [];
                 } else {
                     // this.toastr.error('Failed to load users', 'Failed');
                     console.error('Failed to load school:', response?.message);

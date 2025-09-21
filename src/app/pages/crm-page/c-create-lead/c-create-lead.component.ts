@@ -117,7 +117,7 @@ export class CCreateLeadComponent {
             status: ['', Validators.required],
             lead_source: [''],
             created_date: [''],
-            assign_to: ['', Validators.required],
+            assign_to: [''],
         });
     }
 
@@ -241,6 +241,8 @@ export class CCreateLeadComponent {
                             'Lead Added successfully',
                             'Success'
                         );
+                                                                                this.router.navigate(['/crm-page/leads']);
+
                         console.log('✅ Lead Added successfully');
                     } else {
                         this.isSubmitting = false;
