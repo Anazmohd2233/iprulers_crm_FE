@@ -44,7 +44,7 @@ export class StudentsComponent {
 
     
     
-      link: string = `${environment.baseBaseUrl}/student-registration`;
+      link: string = '';
 
 
 
@@ -148,6 +148,7 @@ export class StudentsComponent {
                     const students = response.data?.customer || [];
                                         this.totalRecords = response.data?.total;
 
+                            this.link = response?.data?.latestLink?.link || '';
 
                     this.ELEMENT_DATA = students.map((u: any) => ({
                         id: u.id,
@@ -180,9 +181,36 @@ export class StudentsComponent {
         });
     }
 
-    // editStudent(id: number) {
-    //     this.router.navigate(['/edit-student', id]);
-    // }
+    genarateLink() {
+
+        
+      
+
+         this.studentService
+                .generateLink()
+                .subscribe({
+                    next: (response) => {
+                        if (response && response.success) {
+                            
+                            this.link = response?.data?.link;
+                     
+                            this.toastr.success(
+                                'Link Generated successfully',
+                                'Success'
+                            );
+                        } else {
+                            this.toastr.error(
+                                'Failed to Generate Link',
+                                'Error'
+                            );
+                        }
+                    },
+                    error: (error) => {
+                        console.error('Error Generate Link:', error);
+                        this.toastr.error('Error Generate Link', 'Error');
+                    },
+                });
+    }
 }
 
 export interface PeriodicElement {

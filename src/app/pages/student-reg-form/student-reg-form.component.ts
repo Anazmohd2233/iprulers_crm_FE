@@ -15,12 +15,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FileUploadModule } from '@iplab/ngx-file-upload';
 import { NgxEditorModule, Editor, Toolbar } from 'ngx-editor';
 import { CustomizerSettingsService } from '../../customizer-settings/customizer-settings.service';
 import { StudentService } from '../../services/student.services';
-import { Router } from 'express';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -54,6 +53,7 @@ export class StudentRegFormComponent {
     option: string[] = ['option2'];
     // File Uploader
     public multiple: boolean = false;
+      valid: boolean = false;
 
     // Select Value
     contactStatusSelected = 'option1';
@@ -77,6 +77,9 @@ export class StudentRegFormComponent {
             // Initialize the editor only in the browser
             this.editor = new Editor();
         }
+
+                const token = this.route.snapshot.paramMap.get('token');
+        this.tokenCheck(token);
     }
 
     ngOnDestroy(): void {
@@ -93,26 +96,48 @@ export class StudentRegFormComponent {
         public themeService: CustomizerSettingsService,
         private fb: FormBuilder,
         private studentService: StudentService,
-        private toastr: ToastrService
+        private toastr: ToastrService,
+          private route: ActivatedRoute,   // ✅ for params
+  private router: Router  
     ) {}
     private initializeForm(): void {
         this.studentForm = this.fb.group({
-            firstName: ['', Validators.required],
-            lastName: ['', Validators.required],
-            phone: ['', Validators.required],
-            whatsappNumber: ['', Validators.required],
-            email: ['', [Validators.required, Validators.email]],
-            gender: ['', Validators.required],
-            maritalStatus: [''],
-            dob: ['', Validators.required],
-            residenceCountry: ['', Validators.required],
-            address: [''],
-            nationality: ['', Validators.required],
-            qualification: [''],
-            orgName: ['', Validators.required],
-            jobTitle: [''],
+            // firstName: ['', Validators.required],
+            // lastName: ['', Validators.required],
+            // phone: ['', Validators.required],
+            // whatsappNumber: ['', Validators.required],
+            // email: ['', [Validators.required, Validators.email]],
+            // gender: ['', Validators.required],
+            // maritalStatus: [''],
+            // dob: ['', Validators.required],
+            // residenceCountry: ['', Validators.required],
+            // address: [''],
+            // nationality: ['', Validators.required],
+            // qualification: [''],
+            // orgName: ['', Validators.required],
+            // jobTitle: [''],
+            //        status: ['', Validators.required],
+
+                   
             // visaStatus: [''],
-            status: ['', Validators.required],
+            // emirates: ['', Validators.required],
+
+                   firstName: ['a', Validators.required],
+            lastName: ['a', Validators.required],
+            phone: ['1', Validators.required],
+            whatsappNumber: ['1', Validators.required],
+            email: ['anas@gmail', [Validators.required, Validators.email]],
+            gender: ['male', Validators.required],
+            maritalStatus: ['single'],
+            dob: ['Mon Sep 29 2025 00:00:00 GMT+0530 (India Standard Time)', Validators.required],
+            residenceCountry: ['1', Validators.required],
+            address: ['1'],
+            nationality: ['1', Validators.required],
+            qualification: ['1'],
+            orgName: ['1', Validators.required],
+            jobTitle: ['1'],
+            // visaStatus: [''],
+            status: ['company', Validators.required],
             // emirates: ['', Validators.required],
         });
     }
@@ -140,6 +165,8 @@ export class StudentRegFormComponent {
             this.studentService.createContactPublic(formData).subscribe({
                 next: (response) => {
                     if (response && response.success) {
+                                  this.router.navigate(['/student_success']);
+
                         this.studentForm.reset();
                         this.certificate = null;
                         this.studentImage = null;
@@ -190,5 +217,30 @@ export class StudentRegFormComponent {
         if (type === 'studentImage') this.studentImage = null;
         if (type === 'idProof') this.idProof = null;
         if (type === 'certificate') this.certificate = null;
+    }
+
+    tokenCheck(token:any) {
+
+  if (token) {
+    this.studentService.validateStudentLink(token).subscribe({
+      next: (res) => {
+        if (res.success) {
+            this.valid=res.data.valid;
+          console.log('✅ Link valid');
+        } else {
+          this.toastr.error(res.message || 'Link expired', 'Error');
+        //   this.router.navigate(['/link-expired']);
+        }
+      },
+      error: () => {
+        this.toastr.error('Invalid or expired link', 'Error');
+        // this.router.navigate(['/link-expired']); 
+      }
+    });
+  } else {
+    this.toastr.error('Missing token in URL', 'Error');
+    // this.router.navigate(['/link-expired']); 
+  }
+
     }
 }

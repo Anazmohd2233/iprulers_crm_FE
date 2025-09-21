@@ -72,6 +72,8 @@ import { LocationComponent } from './apps/location/students.component';
 import { EditLocationComponent } from './apps/location/edit-location/edit-student.component';
 import { SchoolComponent } from './apps/school/students.component';
 import { AddSchoolComponent } from './apps/school/edit-school/edit-student.component';
+import { LinkError } from './apps/student/error/not-found.component';
+import { ComingSoonPageComponent } from './pages/success/coming-soon-page.component';
 
 // import { HdReportsComponent } from './pages/hd-reports/hd-reports.component';
 
@@ -108,6 +110,7 @@ export const routes: Routes = [
         component: EditStudentComponent,
         canActivate: [AuthGuard],
     },
+    
 
     {
         path: 'location',
@@ -149,7 +152,11 @@ export const routes: Routes = [
             { path: 'invoice', component: InoviceComponent },
         ],
     },
-    { path: 'student-registration', component: StudentRegFormComponent }, //public form
+    { path: 'student-registration/:token', component: StudentRegFormComponent }, //public form
+     {path: 'link-expired', component: LinkError} ,// This line will remain down from the whole pages component list
+          {path: 'student_success', component: ComingSoonPageComponent} ,// This line will remain down from the whole pages component list
+
+    
     {
         path: 'lms-page',
         component: LmsPageComponent,

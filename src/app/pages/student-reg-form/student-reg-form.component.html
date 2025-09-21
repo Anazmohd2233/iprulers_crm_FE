@@ -7,7 +7,7 @@
         <li class="breadcrumb-item position-relative">
             <a href="javascript: void(0)" class="d-inline-block position-relative">
                 <i class="ri-home-8-line"></i>
-                ITDECK
+                IP Rulers
             </a>
         </li>
         <li class="breadcrumb-item position-relative">
@@ -21,7 +21,8 @@
 
 
 
-<mat-card class="daxa-card edit-contact-card reg-form-container mb-25 border-radius bg-white border-none d-block px-4">
+<mat-card class="daxa-card edit-contact-card reg-form-container mb-25 border-radius bg-white border-none d-block px-4" *ngIf="valid">
+   
   <mat-card-content>
     <form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
       <div class="row">
@@ -60,7 +61,7 @@
             <label class="main-label d-block lh-1 text-black">Contact Number *</label>
             <mat-form-field>
               <mat-label>Enter mobile number</mat-label>
-              <input matInput formControlName="phone" />
+              <input type="number" matInput formControlName="phone" />
             </mat-form-field>
             <div *ngIf="studentForm.get('phone')?.touched && studentForm.get('phone')?.invalid" class="text-danger">
               Contact Number is required
@@ -74,7 +75,7 @@
             <label class="main-label d-block lh-1 text-black">Whatsapp Number *</label>
             <mat-form-field>
               <mat-label>Enter whatsapp number</mat-label>
-              <input matInput formControlName="whatsappNumber" />
+              <input type="number" matInput formControlName="whatsappNumber" />
             </mat-form-field>
             <div *ngIf="studentForm.get('whatsappNumber')?.touched && studentForm.get('whatsappNumber')?.invalid" class="text-danger">
               Whatsapp Number is required
@@ -334,4 +335,17 @@
       </div>
     </form>
   </mat-card-content>
+</mat-card>
+
+<mat-card class="daxa-card error-card mb-25 pt-0 border-radius bg-white border-none d-block text-center" *ngIf="!valid">
+    <mat-card-content>
+        <img src="images/error.png" alt="error-image">
+        <h3>
+            OOPS! Contact Admin.
+        </h3>
+        <p>
+            Link Expired or Invalid !!
+        </p>
+    
+    </mat-card-content>
 </mat-card>

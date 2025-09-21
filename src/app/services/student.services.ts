@@ -28,6 +28,8 @@ export class StudentService {
         return this.http.get<any>(apiUrl);
     }
 
+
+    
   
 
     getStudentById(student_id: number, params?: HttpParams): Observable<any> {
@@ -41,5 +43,13 @@ export class StudentService {
         return this.http.post<any>(apiUrl, formData);
     }
 
+      generateLink(formdata?:any): Observable<any> {
+        const apiUrl = `${this.apiUrl}/admin/customer/generate-link`;
+        return this.http.post<any>(apiUrl,formdata);
+    }
 
+       validateStudentLink(token: any): Observable<any> {
+        const apiUrl = `${this.apiUrl}/admin/customer/validate-link/${token}`;
+        return this.http.get<any>(apiUrl);
+    }
 }
