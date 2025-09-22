@@ -97,20 +97,20 @@ export class HdCreateTicketComponent {
     ];
 
     ELEMENT_DATA: PeriodicElement[] = [];
-    
 
     displayedColumns: string[] = [
-        'date',
-        'start_point',
-        'end_point',
-        'kilometer',
-        'travel_expence',
-        'food_expence',
-        'other_expence',
-        'total',
+        'calling_date',
+        'next_call_date',
 
-        // 'action',
+        'communication_type',
+        'call_status',
+        'student_response',
+        'interest_level',
+        'comments',
+
+        'action',
     ];
+
     dataSource = new MatTableDataSource<PeriodicElement>(this.ELEMENT_DATA);
     selection = new SelectionModel<PeriodicElement>(true, []);
 
@@ -143,7 +143,7 @@ export class HdCreateTicketComponent {
             return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
         }
         return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${
-            row.start_point + 1
+            row.interest_level + 1
         }`;
     }
 
@@ -176,6 +176,7 @@ export class HdCreateTicketComponent {
     taskData: any;
     dialogRef!: MatDialogRef<any>; // store reference
     dialogRef_Students!: MatDialogRef<any>; // store reference
+    expandedElement: any | null = null;
 
     @ViewChild('taskDialog') taskDialog!: TemplateRef<any>;
     @ViewChild('taskDialog_student') taskDialog_student!: TemplateRef<any>;
@@ -191,7 +192,7 @@ export class HdCreateTicketComponent {
         private route: ActivatedRoute,
         private dialog: MatDialog,
         private schoolService: SchoolService,
-        private leadsService:   LeadsService
+        private leadsService: LeadsService
     ) {
         this.initializeForm();
         this.initializeExpenceForm();
@@ -199,21 +200,20 @@ export class HdCreateTicketComponent {
 
     ngOnInit(): void {
         //  this.getExpenceList();
-                this.getLeadList();
+        this.getLeadList();
 
         this.getUserList();
         // this.getSchoolList();
 
         this.route.queryParams.subscribe((params) => {
             this.taskId = params['task_id'] || null;
-                        this.leadId = params['lead_id'] || null;
+            this.leadId = params['lead_id'] || null;
 
             console.log('📌 Received taskId ID:', this.taskId);
             console.log('📌 Received leadId ID:', this.leadId);
 
-
             // If we have an ID, it’s an edit — fetch contact details
-                      if (this.leadId) {
+            if (this.leadId) {
                 // this.leadFromContactMode = true;
                 this.loadLeadDetails(this.leadId);
             }
@@ -371,10 +371,9 @@ export class HdCreateTicketComponent {
     get due_date() {
         return this.taskForm.get('due_date');
     }
-        get lead_id() {
+    get lead_id() {
         return this.taskForm.get('lead_id');
     }
-
 
     private getUserList(): void {
         let params = new HttpParams();
@@ -423,7 +422,7 @@ export class HdCreateTicketComponent {
                     this.contactCount = response.contactCount;
                     this.taskData = response.task;
                     const task = response.task;
-                    const expence = response.task.expence;
+                    const tasklog = response.task.tasklog;
                     this.taskSchool = response.task.school;
                     this.progress =
                         (response.contactCount / task.school?.strength) * 100;
@@ -440,17 +439,16 @@ export class HdCreateTicketComponent {
                         // school_name_edit: task?.school?.id,
                     });
 
-                    this.ELEMENT_DATA = expence.map((u: any) => ({
+                    this.ELEMENT_DATA = tasklog.map((u: any) => ({
                         id: u.id,
-                        date: u.date || 'N/A',
 
-                        start_point: u.start_point || 'N/A',
-                        end_point: u.end_point || 'N/A',
-                        kilometer: u.kilometer || 'N/A',
-                        other_expence: u.other_expence || '-',
-                        travel_expence: u.travel_expence || '-',
-                        food_expence: u.food_expence || '-',
-                        total: u.total || '-',
+                        calling_date: u.calling_date || 'N/A',
+                        next_call_date: u.next_call_date || 'N/A',
+                        communication_type: u.communication_type || 'N/A',
+                        call_status: u.call_status || '-',
+                        comments: u.comments || '-',
+                        student_response: u.student_response || '-',
+                        interest_level: u.interest_level || '-',
 
                         // action: '', // we will handle icons directly in template
                     }));
@@ -471,11 +469,11 @@ export class HdCreateTicketComponent {
     createExpence(): void {
         if (this.expenceForm.valid) {
             // Cast your form value to correct type
-            const expenses: Expense[] = this.expenceForm.value.expenses;
+            const expenses: any[] = this.expenceForm.value.expenses;
 
             const payload = {
                 task_id: this.taskId,
-                expenses: expenses.map((exp: Expense) => ({
+                logs: expenses.map((exp: any) => ({
                     ...exp,
                 })),
             };
@@ -635,12 +633,13 @@ export class HdCreateTicketComponent {
 
     createExpenseGroup(): FormGroup {
         return this.formBuilder.group({
-            date: ['', Validators.required],
-            start_point: ['', Validators.required],
-            end_point: ['', Validators.required],
-            kilometer: ['', Validators.required],
-            food_expence: ['', Validators.required],
-            other_expence: [''],
+            calling_date: [''],
+            communication_type: [''],
+            call_status: [''],
+            student_response: [''],
+            interest_level: [''],
+            comments: [''],
+            next_call_date: [''],
         });
     }
 
@@ -749,15 +748,14 @@ export class HdCreateTicketComponent {
         });
     }
 
-        loadLeadDetails(id: any) {
+    loadLeadDetails(id: any) {
         this.leadsService.getLeadById(id).subscribe({
             next: (response) => {
                 if (response.success) {
-                       const leads = response.leads;
+                    const leads = response.leads;
 
                     // ✅ Patch form values
                     this.taskForm.patchValue({
-                        
                         lead_id: leads.id,
 
                         assigned_to: leads?.assign_to?.id,
@@ -773,15 +771,10 @@ export class HdCreateTicketComponent {
             },
         });
     }
-}
-
-interface Expense {
-    date: string;
-    start_point: string;
-    end_point: string;
-    kilometer: number;
-    food_expence: number;
-    other_expence: number;
+    toggleExpand(element: any) {
+        this.expandedElement =
+            this.expandedElement === element ? null : element;
+    }
 }
 
 interface Students {
@@ -791,15 +784,14 @@ interface Students {
 
 export interface PeriodicElement {
     id: any;
-    date: string;
-    start_point: any;
-    end_point: string;
-    kilometer: string;
-    travel_expence: string;
+    calling_date: string;
+    next_call_date: any;
+    communication_type: string;
+    call_status: string;
+    student_response: string;
 
-    food_expence: string;
-    other_expence: number;
+    interest_level: string;
+    comments: number;
 
-    total: Number;
-    // action: any;
+    action: any;
 }
