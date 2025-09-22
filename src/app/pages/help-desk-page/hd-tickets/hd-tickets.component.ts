@@ -52,6 +52,8 @@ export class HdTicketsComponent implements OnInit {
         'ticketID',
         'title',
         // 'school',
+                 'lead',
+
         'priority',
         'createdDate',
         'dueDate',
@@ -121,9 +123,7 @@ export class HdTicketsComponent implements OnInit {
 
     private mapApiTaskToElement(task: any): TaskElement {
         // Use placeholder image service for missing images
-        const defaultAvatar =
-            'https://via.placeholder.com/40x40/007bff/ffffff?text=U';
-
+    
         return {
             id: task.id,
             ticketID: `#${task.id || 'N/A'}`,
@@ -135,6 +135,7 @@ export class HdTicketsComponent implements OnInit {
             dueDate: task.due_date
                 ? new Date(task.due_date).toLocaleDateString()
                 : 'N/A',
+                lead: task?.leads?.customer_name || 'N/A',
             priority: task.priority || 'Medium',
             // school:task?.school?.school_name || 'N/A',
 
@@ -246,6 +247,8 @@ export interface TaskElement {
     title: string;
     // school: any;
     priority: string;
+    lead: string;
+
     createdDate: string;
     dueDate: string;
     status: any;

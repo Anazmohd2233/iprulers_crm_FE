@@ -137,10 +137,10 @@ export class CLeadsComponent {
 
                         lead_source: u.lead_source || 'N/A',
 
-                        courses: u.courses.service_name || '-',
+                        courses: u?.courses?.service_name || '-',
                         created_date: u.created_date || 'N/A',
 
-                        assign_to: u.assign_to || 'N/A',
+                        assign_to: u?.assign_to?.name || 'N/A',
 
                         status: u.status,
                         action: '', // we will handle icons directly in template
@@ -161,6 +161,7 @@ export class CLeadsComponent {
 
 export interface PeriodicElement {
     // contact_id: string;
+    id:any;
     customer_name: any;
     email: string;
     phone: string;

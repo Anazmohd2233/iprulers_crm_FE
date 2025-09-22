@@ -79,6 +79,12 @@ import { ComingSoonPageComponent } from './pages/success/coming-soon-page.compon
 
 export const routes: Routes = [
     { path: '', redirectTo: 'authentication', pathMatch: 'full' },
+
+     { path: 'student-registration', component: StudentRegFormComponent }, //public form
+    { path: 'link-expired', component: LinkError }, // This line will remain down from the whole pages component list
+    { path: 'student_success', component: ComingSoonPageComponent }, // This line will remain down from the whole pages component list
+
+    
     { path: 'crm', component: CrmComponent, canActivate: [AuthGuard] },
     // {path: 'report', component: HdReportsComponent},
     // {path: 'team-report', component: ProjectManagementComponent},
@@ -110,7 +116,6 @@ export const routes: Routes = [
         component: EditStudentComponent,
         canActivate: [AuthGuard],
     },
-    
 
     {
         path: 'location',
@@ -152,11 +157,7 @@ export const routes: Routes = [
             { path: 'invoice', component: InoviceComponent },
         ],
     },
-    { path: 'student-registration', component: StudentRegFormComponent }, //public form
-     {path: 'link-expired', component: LinkError} ,// This line will remain down from the whole pages component list
-          {path: 'student_success', component: ComingSoonPageComponent} ,// This line will remain down from the whole pages component list
-
-    
+   
     {
         path: 'lms-page',
         component: LmsPageComponent,

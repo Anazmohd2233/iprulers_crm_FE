@@ -53,7 +53,7 @@ export class StudentRegFormComponent {
     option: string[] = ['option2'];
     // File Uploader
     public multiple: boolean = false;
-      valid: boolean = false;
+    valid: boolean = false;
 
     // Select Value
     contactStatusSelected = 'option1';
@@ -76,17 +76,18 @@ export class StudentRegFormComponent {
         if (isPlatformBrowser(this.platformId)) {
             // Initialize the editor only in the browser
             this.editor = new Editor();
+                  this.route.queryParamMap.subscribe((params) => {
+            const token = params.get('token');
+            console.log('::::::::::::::Token::::::::::::', token);
+
+            this.tokenCheck(token);
+        });
         }
 
         //         const token = this.route.snapshot.paramMap.get('token');
         // this.tokenCheck(token);
 
-         this.route.queryParamMap.subscribe(params => {
-      const token =  params.get('token');
-            console.log('::::::::::::::Token::::::::::::',token);
-
-this.tokenCheck(token);
-    });
+  
     }
 
     ngOnDestroy(): void {
@@ -104,8 +105,8 @@ this.tokenCheck(token);
         private fb: FormBuilder,
         private studentService: StudentService,
         private toastr: ToastrService,
-          private route: ActivatedRoute,   // ✅ for params
-  private router: Router  
+        private route: ActivatedRoute, // ✅ for params
+        private router: Router
     ) {}
     private initializeForm(): void {
         this.studentForm = this.fb.group({
@@ -123,13 +124,10 @@ this.tokenCheck(token);
             qualification: [''],
             orgName: ['', Validators.required],
             jobTitle: [''],
-                   status: ['', Validators.required],
+            status: ['', Validators.required],
 
-                   
             // visaStatus: [''],
             // emirates: ['', Validators.required],
-
-                 
         });
     }
 
@@ -156,7 +154,7 @@ this.tokenCheck(token);
             this.studentService.createContactPublic(formData).subscribe({
                 next: (response) => {
                     if (response && response.success) {
-                                  this.router.navigate(['/student_success']);
+                        this.router.navigate(['/student_success']);
 
                         this.studentForm.reset();
                         this.certificate = null;
@@ -210,28 +208,29 @@ this.tokenCheck(token);
         if (type === 'certificate') this.certificate = null;
     }
 
-    tokenCheck(token:any) {
-
-  if (token) {
-    this.studentService.validateStudentLink(token).subscribe({
-      next: (res) => {
-        if (res.success) {
-            this.valid=res.data.valid;
-          console.log('✅ Link valid');
+    tokenCheck(token: any) {
+        if (token) {
+            this.studentService.validateStudentLink(token).subscribe({
+                next: (res) => {
+                    if (res.success) {
+                        this.valid = res.data.valid;
+                        console.log('✅ Link valid');
+                    } else {
+                        this.toastr.error(
+                            res.message || 'Link expired',
+                            'Error'
+                        );
+                        //   this.router.navigate(['/link-expired']);
+                    }
+                },
+                error: () => {
+                    this.toastr.error('Invalid or expired link', 'Error');
+                    // this.router.navigate(['/link-expired']);
+                },
+            });
         } else {
-          this.toastr.error(res.message || 'Link expired', 'Error');
-        //   this.router.navigate(['/link-expired']);
+            this.toastr.error('Missing token in URL', 'Error');
+            // this.router.navigate(['/link-expired']);
         }
-      },
-      error: () => {
-        this.toastr.error('Invalid or expired link', 'Error');
-        // this.router.navigate(['/link-expired']); 
-      }
-    });
-  } else {
-    this.toastr.error('Missing token in URL', 'Error');
-    // this.router.navigate(['/link-expired']); 
-  }
-
     }
 }

@@ -97,6 +97,7 @@ export class HdCreateTicketComponent {
     ];
 
     ELEMENT_DATA: PeriodicElement[] = [];
+    
 
     displayedColumns: string[] = [
         'date',
@@ -165,6 +166,7 @@ export class HdCreateTicketComponent {
     school: any;
     taskSchool: any;
     contactCount: any;
+    leadId: string | null = null; // 👈 Store the ID here
 
     page: number = 1;
     TaskActivity = TaskActivity;
@@ -204,9 +206,17 @@ export class HdCreateTicketComponent {
 
         this.route.queryParams.subscribe((params) => {
             this.taskId = params['task_id'] || null;
+                        this.leadId = params['lead_id'] || null;
+
             console.log('📌 Received taskId ID:', this.taskId);
+            console.log('📌 Received leadId ID:', this.leadId);
+
 
             // If we have an ID, it’s an edit — fetch contact details
+                      if (this.leadId) {
+                // this.leadFromContactMode = true;
+                this.loadLeadDetails(this.leadId);
+            }
             if (this.taskId) {
                 this.editMode = true;
                 this.loadTaskDetails();
@@ -229,8 +239,8 @@ export class HdCreateTicketComponent {
             task_title: ['', [Validators.required, Validators.minLength(3)]],
             // activity: [[]],
             priority: ['', Validators.required],
-            assigned_to: ['', Validators.required],
-            due_date: ['', Validators.required],
+            assigned_to: [''],
+            due_date: [''],
             due_time: [''],
             note: [''],
             taskImage: [''],
@@ -361,6 +371,10 @@ export class HdCreateTicketComponent {
     get due_date() {
         return this.taskForm.get('due_date');
     }
+        get lead_id() {
+        return this.taskForm.get('lead_id');
+    }
+
 
     private getUserList(): void {
         let params = new HttpParams();
@@ -418,8 +432,9 @@ export class HdCreateTicketComponent {
                     this.taskForm.patchValue({
                         task_title: task.task_title,
                         priority: task.priority,
-                        assigned_to: task.assigned_to.id,
+                        assigned_to: task?.assigned_to.id,
                         due_date: task.due_date,
+                        lead_id: task?.leads?.id,
                         note: task.note,
                         taskImage: task.task_image_url,
                         // school_name_edit: task?.school?.id,
@@ -730,6 +745,31 @@ export class HdCreateTicketComponent {
                 this.toastr.error('Something went wrong.', 'Error');
 
                 console.error('❌ API error:', error);
+            },
+        });
+    }
+
+        loadLeadDetails(id: any) {
+        this.leadsService.getLeadById(id).subscribe({
+            next: (response) => {
+                if (response.success) {
+                       const leads = response.leads;
+
+                    // ✅ Patch form values
+                    this.taskForm.patchValue({
+                        
+                        lead_id: leads.id,
+
+                        assigned_to: leads?.assign_to?.id,
+                    });
+                } else {
+                    console.log('Lead not found.');
+                    // this.toastr.error('Lead not found.', 'Error');
+                }
+            },
+            error: (err) => {
+                console.error('❌ Error loading contact:', err);
+                // this.toastr.error('Failed to load contact details.', 'Error');
             },
         });
     }

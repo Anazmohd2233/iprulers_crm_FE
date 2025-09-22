@@ -157,16 +157,16 @@ export class CCreateLeadComponent {
 
                     // ✅ Patch form values
                     this.leadForm.patchValue({
-                        contact_id: leads.unique_id,
-                        customer_name: leads.customer_name,
-                        email: leads.email,
-                        phone: leads.phone,
-                        courses: leads.courses.id,
-                        status: leads.status,
-                        lead_source: leads.lead_source,
-                        created_date: leads.created_date,
+                        contact_id: leads?.unique_id,
+                        customer_name: leads?.customer_name,
+                        email: leads?.email,
+                        phone: leads?.phone,
+                        courses: leads?.courses.id,
+                        status: leads?.status,
+                        lead_source: leads?.lead_source,
+                        created_date: leads?.created_date,
 
-                        assign_to: leads.assign_to.id,
+                        assign_to: leads?.assign_to?.id,
                     });
                 } else {
                     this.toastr.error('Lead not found.', 'Error');

@@ -164,8 +164,8 @@
                             Assign to
                         </th>
                         <td mat-cell *matCellDef="let element">
-                            User
-                            <!-- {{element.courses}} -->
+                            <!-- User -->
+                            {{element.assign_to}}
                         </td>
                     </ng-container>
 
@@ -214,11 +214,11 @@
                         </th>
                         <td mat-cell *matCellDef="let element">
                             <div class="action-info">
-                                <a routerLink="/crm-page/profile" mat-button matTooltip="View Lead"
+                                <!-- <a routerLink="/crm-page/profile" mat-button matTooltip="View Lead"
                                     matTooltipPosition="above">
                                     <i class="material-symbols-outlined">
                                         visibility </i>
-                                </a>
+                                </a> -->
 
 
                                 <a mat-button [routerLink]="'/crm-page/create-lead'"
@@ -233,10 +233,13 @@
 
 
                                 <a mat-button routerLink="/task/create-task" matTooltip="Create Task"
+                                [queryParams]="{lead_id: element.id }"
                                     matTooltipPosition="above">
                                     <i class="material-symbols-outlined">
                                         add_task </i>
                                 </a>
+
+                                       
                                 <!-- <button type="button" mat-button matTooltip="Delete" matTooltipPosition="above">
                                     <i class="material-symbols-outlined">
                                         delete </i>

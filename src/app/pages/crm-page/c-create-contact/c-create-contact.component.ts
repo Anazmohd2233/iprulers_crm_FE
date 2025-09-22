@@ -104,7 +104,7 @@ export class CCreateContactComponent {
             email: [''],
             phone: ['', Validators.required],
             courses: [''],
-            // status: ['', Validators.required],
+            status: [''],
             lead_source: [''],
             contact_owner: [''],
         });
@@ -212,8 +212,8 @@ export class CCreateContactComponent {
                         contact_name: contact.contact_name,
                         email: contact.email,
                         phone: contact.phone,
-                        // courses: contact.courses?.id,
-                        // status: contact.status,
+                        courses: contact.courses?.id,
+                        status: contact.status,
                         lead_source: contact.lead_source,
                         contact_owner: contact?.contact_owner?.id || null,
                     });
