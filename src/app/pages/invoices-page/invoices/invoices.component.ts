@@ -7,9 +7,19 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import {
+    MatDialogModule,
+    MatDialog,
+    MatDialogRef,
+} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormGroup, FormsModule } from '@angular/forms';
+import {
+    FormBuilder,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
+} from '@angular/forms';
 import { NgFor, NgIf } from '@angular/common';
 import { CustomizerSettingsService } from '../../../customizer-settings/customizer-settings.service';
 import { MatInputModule } from '@angular/material/input';
@@ -21,6 +31,8 @@ import {
     MatSlideToggleChange,
     MatSlideToggleModule,
 } from '@angular/material/slide-toggle';
+import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
     selector: 'app-invoices',
@@ -42,6 +54,9 @@ import {
         NgIf,
         NgFor,
         MatSlideToggleModule,
+        MatSelectModule,
+        ReactiveFormsModule,
+        MatIconModule,
     ],
     templateUrl: './invoices.component.html',
     styleUrl: './invoices.component.scss',
@@ -52,6 +67,8 @@ export class InvoicesComponent {
     @ViewChild('confirmDialog') confirmDialog!: TemplateRef<any>;
     private toggleEvent: any;
     private toggleId!: number;
+
+    dialogRef!: MatDialogRef<any>;
 
     isSubmitting = false;
     isLoading = false;
@@ -64,12 +81,16 @@ export class InvoicesComponent {
     totalRecords: number = 0;
     paymentStatus: boolean = false;
     student: any;
+    expandedElement: any | null = null;
+
     ELEMENT_DATA: PeriodicElement[] = [];
     displayedColumns: string[] = [
         'student_name',
         'course_name',
         'payment_type',
         'installment_amount',
+        'paid_amount',
+        'balance',
         'due_date',
         'is_paid',
         'approve',
@@ -91,12 +112,22 @@ export class InvoicesComponent {
         public themeService: CustomizerSettingsService,
         private dialog: MatDialog,
         private toastr: ToastrService,
-        private paymentsService: PaymentsService
+        private paymentsService: PaymentsService,
+        private formBuilder: FormBuilder
     ) {}
 
     ngOnInit(): void {
         // Check if user is authenticated
         this.getPaymentList();
+        this.initializePyamentForm();
+    }
+
+    initializePyamentForm() {
+        this.paymentForm = this.formBuilder.group({
+            payment_date: ['', Validators.required],
+            mode_of_payment: ['', Validators.required],
+            amount: ['', [Validators.required, Validators.min(1)]],
+        });
     }
 
     ngAfterViewInit() {
@@ -209,13 +240,15 @@ export class InvoicesComponent {
                     this.ELEMENT_DATA = payments.map((u: any) => ({
                         id: u.id,
                         student_id: u.student.id,
-                        student_name: u.student.customer_name || 'N/A',
-                        course_name: u.course.service_name || 'N/A',
+                        student_name: u.student.firstName || 'N/A',
+                        course_name: u?.course?.service_name || 'N/A',
 
                         payment_type: u.payment_type || 'N/A',
-                        installment_amount: u.installment_amount || 'N/A',
+                        installment_amount: u.installment_amount || 0,
+                        balance: u.balance_amount || 0,
+                        paid_amount: u.paid_amount || 0,
                         due_date: u.due_date || 'N/A',
-
+                        history: u?.history || [],
                         is_paid: u.is_paid,
                         approve: '',
                         action: '',
@@ -239,61 +272,97 @@ export class InvoicesComponent {
 
         this.dialog.open(this.confirmDialog, {
             width: '350px',
-            data: { isChecked: event.checked },
+            // data: { isChecked: event.checked },
         });
     }
 
-    confirmAction() {
-        const isChecked = this.toggleEvent.checked;
-        console.log('Confirmed for id:', this.toggleId, '->', isChecked);
+    openConfirmDialog(id: any) {
+        this.dialogRef = this.dialog.open(this.confirmDialog, {
+            width: '800',
+            data: { id: id },
+        });
 
-        if (isChecked) {
-            this.updatePayment('true');
-        } else {
-            this.updatePayment('false');
-        }
+        this.dialogRef.afterClosed().subscribe((result) => {
+            if (result) {
+                                        
 
-        this.dialog.closeAll();
+            }
+        });
     }
+
+    onCancel(): void {
+  this.paymentForm.reset();   // clear the form
+  this.dialogRef.close(false); // close dialog
+}
+
+
+    // confirmAction() {
+    //     const isChecked = this.toggleEvent.checked;
+    //     console.log('Confirmed for id:', this.toggleId, '->', isChecked);
+
+    //     if (isChecked) {
+    //         this.updatePayment('true');
+    //     } else {
+    //         this.updatePayment('false');
+    //     }
+
+    //     this.dialog.closeAll();
+    // }
 
     cancelAction() {
         this.toggleEvent.source.checked = !this.toggleEvent.checked;
         this.dialog.closeAll();
     }
 
-    updatePayment(status: any) {
-        const formData = new FormData();
-        formData.append('is_paid', status);
+    onSubmitPayment(id: any) {
+        if (this.paymentForm.valid) {
+            const formData = new FormData();
+            Object.keys(this.paymentForm.controls).forEach((key) => {
+                formData.append(key, this.paymentForm.get(key)?.value);
+            });
 
-        this.paymentsService.updatePayment(formData, this.toggleId).subscribe({
-            next: (response) => {
-                if (response.success) {
+            this.paymentsService.updatePayment(formData, id).subscribe({
+                next: (response) => {
+                    if (response.success) {
+                        this.paymentForm.reset();
+
+                        this.isSubmitting = false;
+                        this.toastr.success(
+                            'Payment Updated successfully',
+                            'Success'
+                        );
+                        this.getPaymentList();
+
+                        this.dialog.closeAll();
+                    } else {
+                        this.isSubmitting = false;
+
+                        this.toastr.error(
+                            response.message || 'Failed to Update Payment.',
+                            'Error'
+                        );
+                        console.error('❌ add failed:', response.message);
+                    }
+                },
+                error: (error) => {
                     this.isSubmitting = false;
-                    this.toastr.success(
-                        'Payment Updated successfully',
-                        'Success'
-                    );
-                    this.getPaymentList();
 
-                    console.log('✅ Payment Updated successfully');
-                } else {
-                    this.isSubmitting = false;
+                    const errMsg =
+                        error?.error?.message || 'Something went wrong.';
 
-                    this.toastr.error(
-                        response.message || 'Failed to Update Payment.',
-                        'Error'
-                    );
-                    console.error('❌ add failed:', response.message);
-                }
-            },
-            error: (error) => {
-                this.isSubmitting = false;
+                    this.toastr.error(errMsg, 'Error');
 
-                this.toastr.error('Something went wrong.', 'Error');
+                    console.error('❌ API error:', error);
+                },
+            });
+        } else {
+            this.toastr.error('Please fill all required fields.', 'Error');
+        }
+    }
 
-                console.error('❌ API error:', error);
-            },
-        });
+    toggleExpand(element: any) {
+        this.expandedElement =
+            this.expandedElement === element ? null : element;
     }
 }
 
@@ -302,8 +371,14 @@ export interface PeriodicElement {
     course_name: any;
     payment_type: any;
     installment_amount: any;
+
+    balance: any;
+
+    paid_amount: any;
+
     due_date: any;
     is_paid: any;
     approve: any;
+    history: any;
     action: any;
 }

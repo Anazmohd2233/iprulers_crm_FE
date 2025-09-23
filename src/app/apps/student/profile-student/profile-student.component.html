@@ -2,8 +2,23 @@
     <div class="col-xxxl-3">
 
         <div class="row">
-            <!-- LEFT SIDE -->
-            <div class="col-xxxl-3">
+
+            <div class="row mb-25">
+                <div class="col-auto">
+                    <button mat-raised-button class="success-btn" type="button" (click)="downloadPdf()"
+                        [disabled]="isLoading">
+                        <span *ngIf="!isLoading">Download as PDF</span>
+                        <span *ngIf="isLoading">
+                            <i class="spinner-border spinner-border-sm me-2"></i> Downloading...
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+
+
+
+            <div class="col-xxxl-3" id="captureSection">
                 <mat-card class="daxa-card profile-card mb-25 border-radius bg-white border-none d-block"
                     [class.component-dark-theme]="themeService.isDark()"
                     [class.rtl-enabled]="themeService.isRTLEnabled()">
@@ -18,24 +33,75 @@
                     <mat-card-content>
                         <div class="user d-flex align-items-center">
                             <div class="image">
-                                <img src="images/profile.jpg" class="rounded-circle" alt="profile-image" />
+                                <img [src]="student?.studentImageUrl && student.studentImageUrl.trim() !== '' ? student.studentImageUrl : 'images/profile.jpg'"
+                                    class="rounded-circle" alt="Student Image" />
                             </div>
+
+
                             <div class="title">
-                                <span class="d-block fw-medium">{{student?.firstName}}</span>
+                                <span class="d-block fw-medium"> {{ student?.firstName }} {{ student?.lastName || ''
+                                    }}</span>
                                 <span class="d-block text-body">{{student?.email}}</span>
                             </div>
                         </div>
-                        <span class="sub-title d-block fw-medium">About Me</span>
-                        <p>
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
-                            been the industry's standard dummy text ever since the 1500s.
-                        </p>
 
-                        <ul class="info-list pl-0 mb-0 mt-0 list-unstyled">
-                            <li><span class="text-body">User ID:</span> {{student?.id}}</li>
-                            <li><span class="text-body">Phone:</span> {{student?.phone}}</li>
-                            <li><span class="text-body">Created Date:</span>{{student?.created_date}}</li>
-                        </ul>
+                        <div class="row mb-25">
+                            <!-- Column 1: General Info -->
+                            <div class="col-4">
+                                <ul class="info-list pl-0 mb-0 mt-0 list-unstyled">
+                                    <li><span class="text-body fw-medium">User ID:</span> # {{ student?.id }}</li>
+                                    <li><span class="text-body fw-medium">Gender:</span> {{ student?.gender || '-' }}
+                                    </li>
+
+                                    <li><span class="text-body fw-medium">Email:</span> {{ student?.email || '-' }}</li>
+                                    <li><span class="text-body fw-medium">Phone:</span> {{ student?.phone || '-' }}</li>
+                                    <li><span class="text-body fw-medium">Created Date:</span> {{ student?.createdAt |
+                                        date:'medium' }}</li>
+                                    <li><span class="text-body fw-medium">Status:</span> {{ student?.status || '-' }}
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Column 2: Personal Info -->
+                            <div class="col-4">
+                                <ul class="info-list pl-0 mb-0 mt-0 list-unstyled">
+                                    <li><span class="text-body fw-medium">Marital Status:</span> {{
+                                        student?.maritalStatus || '-' }}</li>
+                                    <li><span class="text-body fw-medium">Date of Birth:</span> {{ student?.dob |
+                                        date:'longDate' }}</li>
+                                    <li><span class="text-body fw-medium">Nationality:</span> {{ student?.nationality ||
+                                        '-' }}</li>
+                                    <li><span class="text-body fw-medium">Address:</span> {{ student?.address || '-' }}
+                                    </li>
+                                    <li><span class="text-body fw-medium">Residence Country:</span> {{
+                                        student?.residenceCountry || '-' }}</li>
+                                    <!-- <li><span class="text-body fw-medium">Emirates:</span> {{ student?.emirates || '-'
+                                        }}</li> -->
+                                </ul>
+                            </div>
+
+                            <!-- Column 3: Education / Job / About -->
+                            <div class="col-4">
+                                <ul class="info-list pl-0 mb-0 mt-0 list-unstyled">
+                                    <li><span class="text-body fw-medium">Qualification:</span> {{
+                                        student?.qualification || '-' }}</li>
+                                    <li><span class="text-body fw-medium">Organization:</span> {{ student?.orgName ||
+                                        '-' }}</li>
+                                    <li><span class="text-body fw-medium">Job Title:</span> {{ student?.jobTitle || '-'
+                                        }}</li>
+                                    <!-- <li><span class="text-body fw-medium">Visa Status:</span> {{ student?.visaStatus ||
+                                        student?.visa_status || '-' }}</li> -->
+                                    <li><span class="text-body fw-medium">Other Status:</span> {{ student?.otherStatus
+                                        || '-' }}</li>
+
+                                    <li><span class="text-body fw-medium">About Me:</span> {{ student?.description ||
+                                        'N/A' }}</li>
+                                </ul>
+                            </div>
+                        </div>
+
+
+
                     </mat-card-content>
                 </mat-card>
 
@@ -169,17 +235,9 @@
             <mat-card-content>
                 <div class="all-projects-table">
                     <div class="table-responsive">
-                        <table mat-table [dataSource]="dataSource">
+                        <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
 
-                            <!-- ID Column -->
-                            <!-- <ng-container matColumnDef="id">
-                        <th mat-header-cell *matHeaderCellDef>
-                            ID
-                        </th>
-                        <td mat-cell *matCellDef="let element">
-                            {{element.id}}
-                        </td>
-                    </ng-container> -->
+
 
                             <!-- Project Name Column -->
                             <ng-container matColumnDef="course_name">
@@ -201,7 +259,6 @@
                                 </td>
                             </ng-container>
 
-
                             <!-- Start Date Column -->
                             <ng-container matColumnDef="installment_amount">
                                 <th mat-header-cell *matHeaderCellDef>
@@ -211,7 +268,23 @@
                                     {{element.installment_amount}}
                                 </td>
                             </ng-container>
+                            <ng-container matColumnDef="paid_amount">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    Paid Amount
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    {{element.paid_amount}}
+                                </td>
+                            </ng-container>
 
+                            <ng-container matColumnDef="balance">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    Balance
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    {{element.balance}}
+                                </td>
+                            </ng-container>
                             <!-- End Date Column -->
                             <ng-container matColumnDef="due_date">
                                 <th mat-header-cell *matHeaderCellDef>
@@ -247,55 +320,111 @@
                                 </th>
                                 <td mat-cell *matCellDef="let element">
                                     <!-- [checked]="tracking" -->
+                                    <button mat-raised-button class="success-btn" type="button"
+                                        (click)="openConfirmDialog(element.id)">Pay</button>
 
-                                    <mat-slide-toggle [checked]="element.is_paid"
-                                        (change)="onToggle($event,element.id)">
-                                    </mat-slide-toggle>
                                 </td>
                             </ng-container>
 
                             <!-- Action Column -->
-                            <!-- <ng-container matColumnDef="action">
-                                <th mat-header-cell *matHeaderCellDef>
-                                    Action
-                                </th>
+                            <ng-container matColumnDef="action">
+                                <th mat-header-cell *matHeaderCellDef> Action </th>
                                 <td mat-cell *matCellDef="let element">
                                     <div class="action-info">
-                                        <button (click)="openDialog()" type="button" mat-button matTooltip="Delete"
+                                        <a mat-button routerLink="/profile"
+                                            [queryParams]="{ student_id: element.student_id }" matTooltip="View"
                                             matTooltipPosition="above">
                                             <i class="material-symbols-outlined">
-                                                edit
+                                                visibility
                                             </i>
+                                        </a>
+
+                                        <button mat-icon-button (click)="toggleExpand(element)">
+                                            <mat-icon matTooltip="Show Details">
+                                                {{expandedElement === element ? 'expand_less' : 'expand_more'}}
+                                            </mat-icon>
                                         </button>
 
-                                        <button mat-button type="button" (click)="openDialog()">
 
-                                            <i class="material-symbols-outlined">
-                                                edit
-                                            </i>
-                                        </button>
-
-
-
-
-                                        <button type="button" mat-button matTooltip="Delete" matTooltipPosition="above">
-                                            <i class="material-symbols-outlined">
-                                                {{element.action.delete}}
-                                            </i>
-                                        </button>
                                     </div>
                                 </td>
-                            </ng-container> -->
+                            </ng-container>
 
-                            <!-- ✅ No data row -->
-                            <tr class="mat-row" *matNoDataRow>
-                                <td class="mat-cell text-center" [attr.colspan]="displayedColumns.length">
-                                    No payments found
+
+                            <ng-container matColumnDef="expandedDetail">
+                                <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+                                    <div *ngIf="expandedElement === element && element.history?.length > 0">
+
+
+
+
+
+                                        <!-- 🔹 Header Row -->
+                                        <div class="row fw-bold text-center mb-25">
+                                            <div class="col-2">Amount</div>
+                                            <div class="col-1"></div>
+
+                                            <div class="col-2">Mode</div>
+                                            <div class="col-1"></div>
+
+                                            <div class="col-2">Date</div>
+                                            <div class="col-1"></div>
+
+                                            <div class="col-2">Voucher</div>
+                                            <div class="col-1"></div>
+
+                                        </div>
+
+                                        <!-- 🔹 Data Rows -->
+                                        <div *ngFor="let d of element.history" class="row mb-2 me-2 text-center">
+                                            <div class="col-2 alert alert-dark">
+                                                {{ d.amount }}
+                                            </div>
+                                            <div class="col-1"></div>
+
+                                            <div class="col-2 alert alert-dark">
+                                                {{ d.mode_of_transaction }}
+                                            </div>
+                                            <div class="col-1"></div>
+
+                                            <div class="col-2 alert alert-dark">
+                                                {{ d.payment_date }}
+                                            </div>
+                                            <div class="col-1"></div>
+
+                                            <div class="col-2 alert alert-dark">
+                                                <mat-icon matTooltip="Download Voucher">
+                                                    download
+                                                </mat-icon>
+                                            </div>
+                                            <div class="col-1"></div>
+
+                                        </div>
+
+
+
+                                    </div>
                                 </td>
-                            </tr>
+                            </ng-container>
+
+
+
+
+
+
 
                             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"
+                                [class.expanded]="expandedElement === row">
+                            </tr>
+
+                            <!-- Expanded Row -->
+                            <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+
+                            <tr class="mat-row" *matNoDataRow>
+                                <td class="mat-cell" colspan="10">No data matching the filter </td>
+                            </tr>
 
                         </table>
                     </div>
@@ -310,15 +439,56 @@
 
 
 
-<!-- Confirmation Modal -->
 <ng-template #confirmDialog let-data>
-    <h2 mat-dialog-title>Confirm Action</h2>
-    <mat-dialog-content>
-        Are you sure you want to mark this payment as
-        <b>{{ data.isChecked ? 'Paid' : 'Unpaid' }}</b>?
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-        <button mat-button (click)="cancelAction()">Cancel</button>
-        <button mat-raised-button color="primary" (click)="confirmAction()">Confirm</button>
-    </mat-dialog-actions>
+    <h1 mat-dialog-title class="confirm-title">Payment</h1>
+
+    <div mat-dialog-content class="confirm-content">
+        <form [formGroup]="paymentSubmitForm">
+            <div class="row border p-2 mb-25 rounded">
+
+                <!-- Date -->
+                <div class="col-md-4 col-sm-5 mb-25">
+                    <mat-form-field class="w-100">
+                        <mat-label>Payment Date</mat-label>
+                        <input matInput [matDatepicker]="payDate" formControlName="payment_date">
+                        <mat-datepicker-toggle matIconSuffix [for]="payDate"></mat-datepicker-toggle>
+                        <mat-datepicker #payDate></mat-datepicker>
+                    </mat-form-field>
+                </div>
+
+                <!-- Mode of Payment -->
+                <div class="col-md-4 col-sm-5 mb-25">
+                    <mat-form-field class="w-100">
+                        <mat-label>Mode of Payment</mat-label>
+                        <mat-select formControlName="mode_of_payment">
+                            <mat-option value="cash">Cash</mat-option>
+                            <mat-option value="cheque">Cheque</mat-option>
+                            <mat-option value="online">Online Transfer</mat-option>
+                            <mat-option value="upi">UPI</mat-option>
+                            <mat-option value="card">Card</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <!-- Amount -->
+                <div class="col-md-4 col-sm-5 mb-25">
+                    <mat-form-field class="w-100">
+                        <mat-label>Amount</mat-label>
+                        <input type="number" matInput formControlName="amount">
+                    </mat-form-field>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    <div mat-dialog-actions class="confirm-actions">
+        <button mat-flat-button color="warn" class="confirm-btn" (click)="onCancel()">
+            Cancel
+        </button>
+        <button mat-flat-button color="primary" class="confirm-btn" [disabled]="paymentSubmitForm.invalid"
+            (click)="onSubmitPaymentConfirmation(data.id)" cdkFocusInitial>
+            Submit
+        </button>
+    </div>
 </ng-template>

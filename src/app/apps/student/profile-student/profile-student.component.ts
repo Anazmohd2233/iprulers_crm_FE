@@ -1,5 +1,6 @@
 import { CommonModule, isPlatformBrowser, NgIf } from '@angular/common';
 import {
+    ChangeDetectorRef,
     Component,
     Inject,
     OnInit,
@@ -54,6 +55,9 @@ import {
 } from '@angular/material/dialog';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+
 @Component({
     selector: 'app-profile02-student',
     imports: [
@@ -80,9 +84,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
         MatPaginatorModule,
         NgIf,
         MatTooltipModule,
-         MatDialogModule,
-                 MatSlideToggleModule,
-
+        MatDialogModule,
+        MatSlideToggleModule,
     ],
 
     templateUrl: './profile-student.component.html',
@@ -112,21 +115,24 @@ export class ProfileStudentComponent implements OnInit {
     studentId: any;
     editMode: boolean = false;
     paymentForm!: FormGroup;
+    paymentSubmitForm!: FormGroup;
+    expandedElement: any | null = null;
+    pdfHead: boolean = false;
+
     courses: any;
- page: number = 1;
+    page: number = 1;
     pageSize: number = 20;
     totalRecords: number = 0;
-        paymentStatus: boolean = false;
+    paymentStatus: boolean = false;
     student: any;
 
     ELEMENT_DATA: PeriodicElement[] = [];
     isModalOpen: boolean = false;
-        dialogRef!: MatDialogRef<any>; // store reference
+    dialogRef!: MatDialogRef<any>; // store reference
 
-            @ViewChild('confirmDialog') confirmDialog!: TemplateRef<any>;
+    @ViewChild('confirmDialog') confirmDialog!: TemplateRef<any>;
     private toggleEvent: any;
     private toggleId!: number;
-
 
     animal: string = '';
 
@@ -134,17 +140,20 @@ export class ProfileStudentComponent implements OnInit {
         'course_name',
         'payment_type',
         'installment_amount',
+        'paid_amount',
+        'balance',
         'due_date',
         'is_paid',
-                'approve',
-
-        // 'action',
+        'approve',
+        'action',
     ];
+
     dataSource = new MatTableDataSource<PeriodicElement>(this.ELEMENT_DATA);
     @ViewChild('taskDialog') taskDialog!: TemplateRef<any>;
 
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
+    @ViewChild('installmentDialog') installmentDialog!: TemplateRef<any>;
 
     // Options for dropdowns
     leadSources = [
@@ -173,7 +182,8 @@ export class ProfileStudentComponent implements OnInit {
         private toastr: ToastrService,
         private paymentsService: PaymentsService,
         private courseService: CourseService,
-        public dialog: MatDialog
+        public dialog: MatDialog,
+        private cdr: ChangeDetectorRef
     ) {}
 
     ngOnInit(): void {
@@ -199,13 +209,13 @@ export class ProfileStudentComponent implements OnInit {
         this.initializeForm();
     }
 
-     ngAfterViewInit() {
+    ngAfterViewInit() {
         // listen to paginator changes
         console.log('**********page changed**********');
         this.paginator.page.subscribe((event) => {
             this.page = event.pageIndex + 1; // MatPaginator is 0-based, API is 1-based
             this.pageSize = event.pageSize;
-                this.loadStudentData();
+            this.loadStudentData();
         });
     }
 
@@ -223,7 +233,69 @@ export class ProfileStudentComponent implements OnInit {
             start_date: ['', Validators.required],
         });
 
+        this.paymentSubmitForm = this.fb.group({
+            payment_date: ['', Validators.required],
+            mode_of_payment: ['', Validators.required],
+            amount: ['', [Validators.required, Validators.min(1)]],
+        });
+
         // Optional: reset emi_months if payment_type is FULL
+    }
+
+    onSubmitPaymentConfirmation(id: any) {
+        if (this.paymentSubmitForm.valid) {
+            const formData = new FormData();
+            Object.keys(this.paymentSubmitForm.controls).forEach((key) => {
+                formData.append(key, this.paymentSubmitForm.get(key)?.value);
+            });
+
+            this.paymentsService.updatePayment(formData, id).subscribe({
+                next: (response) => {
+                    if (response.success) {
+                        this.paymentSubmitForm.reset();
+
+                        this.isSubmitting = false;
+                        this.toastr.success(
+                            'Payment Updated successfully',
+                            'Success'
+                        );
+                        this.loadStudentData();
+
+                        this.dialog.closeAll();
+                    } else {
+                        this.isSubmitting = false;
+
+                        this.toastr.error(
+                            response.message || 'Failed to Update Payment.',
+                            'Error'
+                        );
+                        console.error('❌ add failed:', response.message);
+                    }
+                },
+                error: (error) => {
+                    this.isSubmitting = false;
+
+                    const errMsg =
+                        error?.error?.message || 'Something went wrong.';
+
+                    this.toastr.error(errMsg, 'Error');
+
+                    console.error('❌ API error:', error);
+                },
+            });
+        } else {
+            this.toastr.error('Please fill all required fields.', 'Error');
+        }
+    }
+
+    onCancel(): void {
+        this.paymentSubmitForm.reset(); // clear the form
+        this.dialogRef.close(false); // close dialog
+    }
+
+    toggleExpand(element: any) {
+        this.expandedElement =
+            this.expandedElement === element ? null : element;
     }
 
     private loadStudentData(): void {
@@ -244,8 +316,11 @@ export class ProfileStudentComponent implements OnInit {
                         course_name: u.course.service_name || 'N/A',
 
                         payment_type: u.payment_type || 'N/A',
-                        installment_amount: u.installment_amount || 'N/A',
+                        installment_amount: u.installment_amount || 0,
+                        balance: u.balance_amount || 0,
+                        paid_amount: u.paid_amount || 0,
                         due_date: u.due_date || 'N/A',
+                        history: u?.history || [],
 
                         is_paid: u.is_paid,
 
@@ -344,14 +419,13 @@ export class ProfileStudentComponent implements OnInit {
         });
     }
 
-        openDialog() {
+    openDialog() {
         this.dialogRef = this.dialog.open(this.taskDialog, {
             width: '85%',
             maxWidth: '100vw', // prevents overflow
         });
     }
 
-    
     onToggle(event: any, id: number) {
         this.toggleEvent = event;
         this.toggleId = id;
@@ -392,7 +466,7 @@ export class ProfileStudentComponent implements OnInit {
                         'Payment Updated successfully',
                         'Success'
                     );
-                this.loadStudentData();
+                    this.loadStudentData();
 
                     console.log('✅ Payment Updated successfully');
                 } else {
@@ -414,15 +488,120 @@ export class ProfileStudentComponent implements OnInit {
             },
         });
     }
+
+    openConfirmDialog(id: any) {
+        this.dialogRef = this.dialog.open(this.confirmDialog, {
+            width: '800',
+            data: { id: id },
+        });
+
+        this.dialogRef.afterClosed().subscribe((result) => {
+            if (result) {
+                // if (title === 'Check In') {
+                //     this.checkIn();
+                // } else if (title === 'Check Out') {
+                //     this.checkOut();
+                // }
+            }
+        });
+    }
+
+    downloadPdf() {
+        this.pdfHead = true;
+
+        // Wait for Angular to apply *ngIf
+        this.cdr.detectChanges();
+
+        setTimeout(() => {
+            const element = document.getElementById('captureSection');
+            if (!element) return;
+
+            this.isLoading = true;
+
+            const images = Array.from(element.querySelectorAll('img'));
+            const allImagesLoaded = Promise.all(
+                images.map((img) => {
+                    if (img.complete) return Promise.resolve();
+                    return new Promise((resolve) => {
+                        img.onload = img.onerror = resolve;
+                    });
+                })
+            );
+
+            allImagesLoaded.then(() => {
+                html2canvas(element, {
+                    scrollY: -window.scrollY,
+                    useCORS: true,
+                    scale: 2,
+                })
+                    .then((canvas) => {
+                        const imgData = canvas.toDataURL('image/png');
+                        const pdf = new jsPDF('p', 'mm', 'a4');
+                        const pdfWidth = pdf.internal.pageSize.getWidth();
+                        const pdfHeight =
+                            (canvas.height * pdfWidth) / canvas.width;
+
+                        if (pdfHeight > pdf.internal.pageSize.getHeight()) {
+                            let heightLeft = pdfHeight;
+                            let position = 0;
+
+                            pdf.addImage(
+                                imgData,
+                                'PNG',
+                                0,
+                                position,
+                                pdfWidth,
+                                pdfHeight
+                            );
+                            heightLeft -= pdf.internal.pageSize.getHeight();
+
+                            while (heightLeft > 0) {
+                                position = heightLeft - pdfHeight;
+                                pdf.addPage();
+                                pdf.addImage(
+                                    imgData,
+                                    'PNG',
+                                    0,
+                                    position,
+                                    pdfWidth,
+                                    pdfHeight
+                                );
+                                heightLeft -= pdf.internal.pageSize.getHeight();
+                            }
+                        } else {
+                            pdf.addImage(
+                                imgData,
+                                'PNG',
+                                0,
+                                0,
+                                pdfWidth,
+                                pdfHeight
+                            );
+                        }
+
+                        pdf.save(`${this.student.firstName || 'student'}.pdf`);
+                        this.isLoading = false;
+                        this.pdfHead = false;
+                    })
+                    .catch(() => {
+                        this.isLoading = false;
+                        this.pdfHead = false;
+                    });
+            });
+        }, 100); // Wait 100ms for DOM update (can adjust if needed)
+    }
 }
 
 export interface PeriodicElement {
     course_name: any;
     payment_type: any;
     installment_amount: any;
+    balance: any;
+
+    paid_amount: any;
     due_date: any;
     is_paid: any;
-        approve: any;
-
+    approve: any;
+    history: any;
     action: any;
 }
