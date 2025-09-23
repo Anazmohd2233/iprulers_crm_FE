@@ -5,7 +5,7 @@
     </h5>
     <ol class="breadcrumb list-unstyled mt-0 mb-0 pl-0">
         <li class="breadcrumb-item position-relative">
-            <a routerLink="/" class="d-inline-block position-relative">
+            <a routerLink="/crm" class="d-inline-block position-relative">
                 <i class="ri-home-8-line"></i>
                 Dashboard
             </a>
@@ -32,7 +32,7 @@
                 <input type="text" class="input-search d-block w-100 border-none outline-0"
                     placeholder="Search contact..." (keyup)="applyFilter($event)" #input>
             </form> -->
-                        <mat-form-field appearance="outline" class="w-80">
+            <mat-form-field appearance="outline" class="w-80">
                 <mat-label>Search contact</mat-label>
                 <input matInput [ngModelOptions]="{standalone: true}" [(ngModel)]="searchField" (keyup)="applyFilter()">
 
@@ -54,7 +54,9 @@
     </mat-select>
   </mat-form-field> -->
 
-            <mat-form-field appearance="fill" class="small-form-field m-0">
+            <!-- *****************************working course filter********************** -->
+
+            <!-- <mat-form-field appearance="fill" class="small-form-field m-0">
                 <mat-label>Course</mat-label>
                 <mat-select (selectionChange)="filterCourse($event)">
                     <mat-form-field appearance="outline" class="w-80">
@@ -62,7 +64,7 @@
                         <input [ngModelOptions]="{standalone: true}" matInput [(ngModel)]="searchFieldCourse"
                             (keyup)="searchCourse()" placeholder="search course...">
 
-                        <!-- Clear button -->
+                    
                         <button *ngIf="searchFieldCourse" mat-icon-button matSuffix (click)="clearSearchCourse()">
                             <mat-icon>close</mat-icon>
                         </button>
@@ -72,9 +74,9 @@
                         {{ s.service_name }}
                     </mat-option>
                 </mat-select>
-            </mat-form-field>
+            </mat-form-field> -->
 
-        <div *ngIf="user_type == 'ADMIN'">
+            <!-- <div *ngIf="user_type == 'ADMIN'">
 
                 <mat-form-field appearance="fill" class="small-form-field m-0">
                     <mat-label>User</mat-label>
@@ -84,7 +86,7 @@
                             <input [ngModelOptions]="{standalone: true}" matInput [(ngModel)]="searchFieldUser"
                                 (keyup)="searchUser()" placeholder="search user...">
 
-                            <!-- Clear button -->
+                   
                             <button *ngIf="searchFieldUser" mat-icon-button matSuffix (click)="clearSearchUser()">
                                 <mat-icon>close</mat-icon>
                             </button>
@@ -95,7 +97,7 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
-            </div>
+            </div> -->
 
             <a mat-button class="add-new-btn m-0" routerLink="/crm-page/create-contact">
                 + Add Contact
@@ -186,7 +188,7 @@
                         </td>
                     </ng-container>
 
-                     <ng-container matColumnDef="owner">
+                    <ng-container matColumnDef="owner">
                         <th mat-header-cell *matHeaderCellDef>
                             Contact Owner
                         </th>

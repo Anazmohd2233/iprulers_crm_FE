@@ -5,7 +5,7 @@
     </h5>
     <ol class="breadcrumb list-unstyled mt-0 mb-0 pl-0">
         <li class="breadcrumb-item position-relative">
-            <a routerLink="/" class="d-inline-block position-relative">
+            <a routerLink="/crm" class="d-inline-block position-relative">
                 <i class="ri-home-8-line"></i>
                 Dashboard
             </a>
@@ -52,13 +52,22 @@
     [class.rtl-enabled]="themeService.isRTLEnabled()">
     <mat-card-header>
         <mat-card-title>
-            <form class="search-box position-relative">
+            <!-- <form class="search-box position-relative">
                 <i class="material-symbols-outlined">
                     search
                 </i>
                 <input type="text" class="input-search d-block w-100 border-none outline-0" placeholder="Search lead..."
                     (keyup)="applyFilter($event)" #input>
-            </form>
+            </form> -->
+            <mat-form-field appearance="outline" class="w-80">
+                <mat-label>Search Lead</mat-label>
+                <input matInput [ngModelOptions]="{standalone: true}" [(ngModel)]="searchField" (keyup)="applyFilter()">
+
+
+                <button *ngIf="searchField" mat-icon-button matSuffix (click)="clearSearch()">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </mat-form-field>
         </mat-card-title>
         <mat-card-subtitle>
             <a mat-button class="add-new-btn" routerLink="/crm-page/create-lead">
@@ -233,13 +242,12 @@
 
 
                                 <a mat-button routerLink="/task/create-task" matTooltip="Create Task"
-                                [queryParams]="{lead_id: element.id }"
-                                    matTooltipPosition="above">
+                                    [queryParams]="{lead_id: element.id }" matTooltipPosition="above">
                                     <i class="material-symbols-outlined">
                                         add_task </i>
                                 </a>
 
-                                       
+
                                 <!-- <button type="button" mat-button matTooltip="Delete" matTooltipPosition="above">
                                     <i class="material-symbols-outlined">
                                         delete </i>
@@ -258,8 +266,9 @@
 
                 </table>
             </div>
- <mat-paginator [length]="totalRecords" [pageSize]="20" showFirstLastButtons>
-            </mat-paginator>        </div>
+            <mat-paginator [length]="totalRecords" [pageSize]="20" showFirstLastButtons>
+            </mat-paginator>
+        </div>
         <!-- </mat-tab> -->
 
         <!-- <mat-tab>

@@ -18,6 +18,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { CLeadKanbanComponent } from '../c-lead-kanban/c-lead-kanban.component';
 import { LeadsService } from '../../../services/lead.service';
 import { ToastrService } from 'ngx-toastr';
+import { HttpParams } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
     selector: 'app-c-leads',
@@ -37,6 +41,11 @@ import { ToastrService } from 'ngx-toastr';
         MatTableModule,
         MatButtonModule,
         CLeadKanbanComponent,
+                        FormsModule, // ✅ needed for [(ngModel)]
+        MatFormFieldModule,
+                MatInputModule,
+
+
     ],
     templateUrl: './c-leads.component.html',
     styleUrl: './c-leads.component.scss',
@@ -48,6 +57,7 @@ export class CLeadsComponent {
     pageSize: number = 20;
     totalRecords: number = 0;
     leads: any;
+        searchField: string = ''; // Initialize the property
 
     displayedColumns: string[] = [
         // 'select',
@@ -67,6 +77,17 @@ export class CLeadsComponent {
 
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
+    
+    constructor(
+        public themeService: CustomizerSettingsService,
+        private leadsService: LeadsService,
+        private toastr: ToastrService
+    ) {}
+
+    ngOnInit(): void {
+        this.getLeadsList();
+    }
+
      ngAfterViewInit() {
         // listen to paginator changes
         console.log('**********page changed**********');
@@ -75,6 +96,14 @@ export class CLeadsComponent {
             this.pageSize = event.pageSize;
         this.getLeadsList();
         });
+    }
+
+          applyFilter() {
+        // const filterValue = (event.target as HTMLInputElement).value;
+        // this.dataSource.filter = filterValue.trim().toLowerCase();
+
+        let params = new HttpParams().set('search', this.searchField);
+        this.getLeadsList(params);
     }
 
     /** Whether the number of selected elements matches the total number of rows. */
@@ -103,24 +132,17 @@ export class CLeadsComponent {
         }`;
     }
 
-    // Search Filter
-    applyFilter(event: Event) {
-        const filterValue = (event.target as HTMLInputElement).value;
-        this.dataSource.filter = filterValue.trim().toLowerCase();
-    }
+  
 
-    constructor(
-        public themeService: CustomizerSettingsService,
-        private leadsService: LeadsService,
-        private toastr: ToastrService
-    ) {}
 
-    ngOnInit(): void {
+        clearSearch() {
         this.getLeadsList();
+
+        this.searchField = ''; // Clear the input by setting the property to an empty string
     }
 
-    private getLeadsList(): void {
-        this.leadsService.getLead(this.page).subscribe({
+    private getLeadsList(params?: any): void {
+        this.leadsService.getLead(this.page,params).subscribe({
             next: (response) => {
                 if (response && response.success) {
                                                             this.totalRecords = response.data?.total;

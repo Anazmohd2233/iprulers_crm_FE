@@ -25,7 +25,7 @@ export class StudentService {
 
     getStudent(page: number, params?: HttpParams): Observable<any> {
         const apiUrl = `${this.apiUrl}/admin/customer/list/${page}`;
-        return this.http.get<any>(apiUrl);
+        return this.http.get<any>(apiUrl, { params });
     }
 
 

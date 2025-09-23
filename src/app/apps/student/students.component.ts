@@ -12,12 +12,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CustomizerSettingsService } from '../../customizer-settings/customizer-settings.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ToastrService } from 'ngx-toastr';
 import { StudentService } from '../../services/student.services';
 import { environment } from '../../../environments/environment';
+import { HttpParams } from '@angular/common/http';
 
 @Component({
     selector: 'app-students',
@@ -35,6 +36,7 @@ import { environment } from '../../../environments/environment';
         MatIconModule,
         ReactiveFormsModule,
         MatInputModule,
+        FormsModule, // ✅ needed for [(ngModel)]
     ],
     templateUrl: './students.component.html',
     styleUrl: './students.component.scss',
@@ -42,15 +44,13 @@ import { environment } from '../../../environments/environment';
 export class StudentsComponent {
     ELEMENT_DATA: PeriodicElement[] = [];
 
-    
-    
-      link: string = '';
-
-
+    link: string = '';
+    searchField: string = ''; // Initialize the property
 
     page: number = 1;
     pageSize: number = 20;
-    totalRecords: number = 0;    students: any;
+    totalRecords: number = 0;
+    students: any;
 
     displayedColumns: string[] = [
         // 'select',
@@ -69,13 +69,25 @@ export class StudentsComponent {
 
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-      ngAfterViewInit() {
+    constructor(
+        public themeService: CustomizerSettingsService,
+        private snackBar: MatSnackBar,
+        private toastr: ToastrService,
+        private studentService: StudentService,
+        private router: Router
+    ) {}
+
+    ngOnInit(): void {
+        this.getStudentList();
+    }
+
+    ngAfterViewInit() {
         // listen to paginator changes
         console.log('**********page changed**********');
         this.paginator.page.subscribe((event) => {
             this.page = event.pageIndex + 1; // MatPaginator is 0-based, API is 1-based
             this.pageSize = event.pageSize;
-        this.getStudentList();
+            this.getStudentList();
         });
     }
 
@@ -106,25 +118,11 @@ export class StudentsComponent {
     }
 
     // Search Filter
-    applyFilter(event: Event) {
-        const filterValue = (event.target as HTMLInputElement).value;
-        this.dataSource.filter = filterValue.trim().toLowerCase();
-    }
-
-    constructor(
-        public themeService: CustomizerSettingsService,
-        private snackBar: MatSnackBar,
-        private toastr: ToastrService,
-        private studentService: StudentService,
-        private router: Router
-    ) {}
 
     classApplied = false;
     toggleClass() {
         this.classApplied = !this.classApplied;
     }
-    
-
 
     copyToClipboard(input: HTMLInputElement) {
         input.select();
@@ -136,19 +134,29 @@ export class StudentsComponent {
         });
     }
 
-    ngOnInit(): void {
-        this.getStudentList();
+    applyFilter() {
+        // const filterValue = (event.target as HTMLInputElement).value;
+        // this.dataSource.filter = filterValue.trim().toLowerCase();
+
+        let params = new HttpParams().set('search', this.searchField);
+        this.getStudentList(params);
     }
 
-    private getStudentList(): void {
+    clearSearch() {
+        this.getStudentList();
+
+        this.searchField = ''; // Clear the input by setting the property to an empty string
+    }
+
+    private getStudentList(params?: any): void {
         console.log('********getting student*******');
-        this.studentService.getStudent(this.page).subscribe({
+        this.studentService.getStudent(this.page, params).subscribe({
             next: (response) => {
                 if (response && response.success) {
                     const students = response.data?.customer || [];
-                                        this.totalRecords = response.data?.total;
+                    this.totalRecords = response.data?.total;
 
-                            this.link = response?.data?.latestLink?.link || '';
+                    this.link = response?.data?.latestLink?.link || '';
 
                     this.ELEMENT_DATA = students.map((u: any) => ({
                         id: u.id,
@@ -182,34 +190,24 @@ export class StudentsComponent {
     }
 
     genarateLink() {
+        this.studentService.generateLink().subscribe({
+            next: (response) => {
+                if (response && response.success) {
+                    this.link = response?.data?.link;
 
-        
-      
-
-         this.studentService
-                .generateLink()
-                .subscribe({
-                    next: (response) => {
-                        if (response && response.success) {
-                            
-                            this.link = response?.data?.link;
-                     
-                            this.toastr.success(
-                                'Link Generated successfully',
-                                'Success'
-                            );
-                        } else {
-                            this.toastr.error(
-                                'Failed to Generate Link',
-                                'Error'
-                            );
-                        }
-                    },
-                    error: (error) => {
-                        console.error('Error Generate Link:', error);
-                        this.toastr.error('Error Generate Link', 'Error');
-                    },
-                });
+                    this.toastr.success(
+                        'Link Generated successfully',
+                        'Success'
+                    );
+                } else {
+                    this.toastr.error('Failed to Generate Link', 'Error');
+                }
+            },
+            error: (error) => {
+                console.error('Error Generate Link:', error);
+                this.toastr.error('Error Generate Link', 'Error');
+            },
+        });
     }
 }
 

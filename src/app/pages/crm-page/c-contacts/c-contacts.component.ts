@@ -41,7 +41,6 @@ import { CourseService } from '../../../services/course.service';
 
         MatDatepickerModule,
         MatNativeDateModule,
-        MatFormFieldModule,
         MatInputModule,
         MatSelectModule,
 
@@ -108,6 +107,7 @@ export class CContactsComponent {
     ) {}
 
     ngOnInit(): void {
+    //   this.user_type =  localStorage.getItem('user_type');
         this.getContactList();
                 this.getUserList();
         this.getCourseList();
