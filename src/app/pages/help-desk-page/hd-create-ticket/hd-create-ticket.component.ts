@@ -239,7 +239,7 @@ export class HdCreateTicketComponent {
             task_title: ['', [Validators.required, Validators.minLength(3)]],
             // activity: [[]],
             priority: ['', Validators.required],
-            assigned_to: [''],
+            assigned_to: ['', Validators.required],
             due_date: [''],
             due_time: [''],
             note: [''],
@@ -324,13 +324,8 @@ export class HdCreateTicketComponent {
                         this.isSubmitting = false;
 
                         // Handle authentication errors
-                        if (error.status === 401 || error.status === 403) {
-                            console.error(
-                                'Authentication failed, redirecting to login'
-                            );
-                            localStorage.removeItem('Authorization');
-                            this.router.navigate(['/authentication']);
-                        }
+                                            this.toastr.error('Something went wrong.', 'Error');
+
                         // You can add other error handling/notification here
                     },
                 });

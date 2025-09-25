@@ -325,7 +325,7 @@
 
 <!-- Angular Material Dialog Template -->
 <ng-template #taskDialog>
-    <h2 mat-dialog-title>Create Expenses</h2>
+    <h2 mat-dialog-title>Create Log</h2>
     <mat-dialog-content>
         <form *ngIf="expenceForm" [formGroup]="expenceForm" (ngSubmit)="createExpence()">
             <div formArrayName="expenses">
@@ -342,7 +342,7 @@
                             <!-- Calling Date & Time -->
                             <div class="col-md-4 col-sm-6 mb-25">
                                 <mat-form-field class="w-100">
-                                    <mat-label>Calling Date & Time</mat-label>
+                                    <mat-label>Calling Date</mat-label>
                                     <input matInput [matDatepicker]="callDate" formControlName="calling_date">
                                     <mat-datepicker-toggle matIconSuffix [for]="callDate"></mat-datepicker-toggle>
                                     <mat-datepicker #callDate></mat-datepicker>
@@ -537,7 +537,7 @@
     [class.rtl-enabled]="themeService.isRTLEnabled()">
     <mat-card-header>
         <mat-card-title>
-            <h5 class="mb-0">All Task</h5>
+            <h5 class="mb-0">Task Logs</h5>
             <!-- <form class="search-box position-relative">
                 <i class="material-symbols-outlined">
                     search
