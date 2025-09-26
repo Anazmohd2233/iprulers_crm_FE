@@ -65,6 +65,8 @@ export class InvoicesComponent {
     // Student Form
 
     @ViewChild('confirmDialog') confirmDialog!: TemplateRef<any>;
+        @ViewChild('confirmDialogEdit') confirmDialogEdit!: TemplateRef<any>;
+
     private toggleEvent: any;
     private toggleId!: number;
 
@@ -75,6 +77,8 @@ export class InvoicesComponent {
     studentId: any;
     editMode: boolean = false;
     paymentForm!: FormGroup;
+        editPaymentForm!: FormGroup;
+
     courses: any;
     page: number = 1;
     pageSize: number = 20;
@@ -127,6 +131,14 @@ export class InvoicesComponent {
             payment_date: ['', Validators.required],
             mode_of_payment: ['', Validators.required],
             amount: ['', [Validators.required, Validators.min(1)]],
+
+            
+        });
+
+                this.editPaymentForm = this.formBuilder.group({
+     
+            change_amount: [''],
+            change_due_date: [''],
         });
     }
 
@@ -291,7 +303,8 @@ export class InvoicesComponent {
     }
 
     onCancel(): void {
-  this.paymentForm.reset();   // clear the form
+  this.paymentForm.reset(); 
+this.editPaymentForm.reset();
   this.dialogRef.close(false); // close dialog
 }
 
@@ -364,6 +377,65 @@ export class InvoicesComponent {
         this.expandedElement =
             this.expandedElement === element ? null : element;
     }
+
+
+    onEditInstallment(element: any) {
+  console.log("Editing installment:", element);
+      this.dialogRef = this.dialog.open(this.confirmDialogEdit, {
+            width: '800',
+            data: { id: element.id },
+        });
+
+}
+
+
+
+    onSubmitEditPayment(id: any) {
+        if (this.editPaymentForm.valid) {
+            const formData = new FormData();
+            Object.keys(this.editPaymentForm.controls).forEach((key) => {
+                formData.append(key, this.editPaymentForm.get(key)?.value);
+            });
+
+            this.paymentsService.updatePayment(formData, id).subscribe({
+                next: (response) => {
+                    if (response.success) {
+                        this.editPaymentForm.reset();
+
+                        this.isSubmitting = false;
+                        this.toastr.success(
+                            'Payment Updated successfully',
+                            'Success'
+                        );
+                        this.getPaymentList();
+
+                        this.dialog.closeAll();
+                    } else {
+                        this.isSubmitting = false;
+
+                        this.toastr.error(
+                            response.message || 'Failed to Update Payment.',
+                            'Error'
+                        );
+                        console.error('❌ add failed:', response.message);
+                    }
+                },
+                error: (error) => {
+                    this.isSubmitting = false;
+
+                    const errMsg =
+                        error?.error?.message || 'Something went wrong.';
+
+                    this.toastr.error(errMsg, 'Error');
+
+                    console.error('❌ API error:', error);
+                },
+            });
+        } else {
+            this.toastr.error('Please fill all required fields.', 'Error');
+        }
+    }
+
 }
 
 export interface PeriodicElement {

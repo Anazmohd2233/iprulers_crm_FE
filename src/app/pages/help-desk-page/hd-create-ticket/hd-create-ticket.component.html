@@ -106,8 +106,7 @@
                                     <input matInput placeholder="Enter task title" formControlName="task_title">
                                     <mat-error *ngIf="task_title?.invalid && task_title?.touched">
                                         <span *ngIf="task_title?.errors?.['required']">Task title is required</span>
-                                        <span *ngIf="task_title?.errors?.['minlength']">Task title must be at least 3
-                                            characters</span>
+                                      ]
                                     </mat-error>
                                 </mat-form-field>
                             </div>

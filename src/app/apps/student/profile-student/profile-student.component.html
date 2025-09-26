@@ -128,7 +128,8 @@
 
                                                     <mat-select formControlName="course_id">
                                                         <mat-option *ngFor="let course of courses" [value]="course.id">
-                                                            {{ course.service_name }}
+                                                            {{ course.service_name }} ( {{ course.price
+                                                            }} )
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
@@ -177,6 +178,22 @@
                                                 </mat-form-field>
                                             </div>
                                         </div>
+
+
+                                        <div class="col-md-6">
+                                            <div class="mb-25">
+                                                <label class="main-label d-block lh-1 text-black  mb-15">
+                                                    Discount
+                                                </label>
+                                                <mat-form-field>
+                                                    <mat-label> Enter discount</mat-label>
+                                                    <input type="number" matInput formControlName="discount">
+
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+
+
                                     </div>
 
 
@@ -339,6 +356,12 @@
                                             </i>
                                         </a>
 
+                                         <a mat-button matTooltip="Edit Payment" (click)="onEditInstallment(element)" matTooltipPosition="above">
+                  <i class="material-symbols-outlined">
+                    edit
+                  </i>
+                </a>
+
                                         <button mat-icon-button (click)="toggleExpand(element)">
                                             <mat-icon matTooltip="Show Details">
                                                 {{expandedElement === element ? 'expand_less' : 'expand_more'}}
@@ -370,7 +393,7 @@
                                             <div class="col-2">Date</div>
                                             <div class="col-1"></div>
 
-                                            <div class="col-2">Voucher</div>
+                                            <div class="col-2">Reciept</div>
                                             <div class="col-1"></div>
 
                                         </div>
@@ -393,7 +416,7 @@
                                             <div class="col-1"></div>
 
                                             <div class="col-2 alert alert-dark">
-                                                <mat-icon matTooltip="Download Voucher">
+                                                <mat-icon matTooltip="Download Reciept">
                                                     download
                                                 </mat-icon>
                                             </div>
@@ -491,4 +514,48 @@
             Submit
         </button>
     </div>
+</ng-template>
+
+
+
+
+<ng-template #confirmDialogEdit let-data>
+  <h1 mat-dialog-title class="confirm-title">Edit Payment Details</h1>
+
+  <div mat-dialog-content class="confirm-content">
+    <form [formGroup]="editPaymentForm">
+      <div class="row border p-2 mb-25 rounded">
+
+        <!-- Date -->
+        <div class="col-md-6 col-sm-5 mb-25">
+          <mat-form-field class="w-100">
+            <mat-label>Due Date</mat-label>
+            <input matInput [matDatepicker]="payDate" formControlName="change_due_date">
+            <mat-datepicker-toggle matIconSuffix [for]="payDate"></mat-datepicker-toggle>
+            <mat-datepicker #payDate></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+
+
+        <!-- Amount -->
+        <div class="col-md-6 col-sm-5 mb-25">
+          <mat-form-field class="w-100">
+            <mat-label>Amount</mat-label>
+            <input type="number" matInput formControlName="change_amount">
+          </mat-form-field>
+        </div>
+
+      </div>
+    </form>
+  </div>
+
+  <div mat-dialog-actions class="confirm-actions">
+    <button mat-flat-button color="warn" type="reset" class="confirm-btn" (click)="onCancel()">
+      Cancel
+    </button>
+    <button mat-flat-button color="primary" class="confirm-btn" (click)="onSubmitEditPayment(data.id)" cdkFocusInitial>
+      Submit
+    </button>
+  </div>
 </ng-template>

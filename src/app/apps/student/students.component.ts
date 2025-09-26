@@ -164,8 +164,9 @@ export class StudentsComponent {
                         name: u.firstName || 'N/A',
                         email: u.email || 'N/A',
                         lead_source: u.lead_source || 'N/A',
-                        phone: u.phone || '-',
-                        courses: u?.courses?.service_name || '-',
+  phone: u.phone 
+    ? (u.code === 'OTHER' ? u.phone : `${u.code} ${u.phone}`)
+    : '-',                        courses: u?.courses?.service_name || '-',
                         createdDate: u.created_date || '-',
                         status: u.status,
                         action: '', // we will handle icons directly in template

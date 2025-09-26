@@ -24,6 +24,7 @@ import { CourseService } from '../../../services/course.service';
 import { UsersService } from '../../../services/users.service';
 import { HttpParams } from '@angular/common/http';
 import { SchoolService } from '../../../services/school.service';
+import { CountryCode } from '../../../services/enums';
 
 @Component({
     selector: 'app-c-create-contact',
@@ -56,6 +57,11 @@ export class CCreateContactComponent {
     user_type: any;
     users: any;
     school: any;
+
+        countryCodes = Object.entries(CountryCode).map(([key, value]) => ({
+    name: key.replace(/_/g, ' '), // e.g. UNITED_STATES → "UNITED STATES"
+    dial_code: value,
+  }));
 
     // File Uploader
     public multiple: boolean = false;
@@ -107,6 +113,8 @@ export class CCreateContactComponent {
             status: [''],
             lead_source: [''],
             contact_owner: [''],
+                         code: ['', Validators.required],
+
         });
     }
 
@@ -216,6 +224,8 @@ export class CCreateContactComponent {
                         status: contact.status,
                         lead_source: contact.lead_source,
                         contact_owner: contact?.contact_owner?.id || null,
+                                                                        code: contact.code || '',
+
                     });
                 } else {
                     console.error('❌ Contact not found.:');

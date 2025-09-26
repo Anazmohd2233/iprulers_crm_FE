@@ -170,13 +170,13 @@ export class AddSchoolComponent implements OnInit {
 
                     this.isLoading = false;
                 } else {
-                    this.toastr.error('Failed to load school data', 'Error');
+                    // this.toastr.error('Failed to load school data', 'Error');
                     this.isLoading = false;
                 }
             },
             error: (error) => {
                 console.error('Error loading school:', error);
-                this.toastr.error('Error loading school data', 'Error');
+                // this.toastr.error('Error loading school data', 'Error');
                 this.isLoading = false;
             },
         });

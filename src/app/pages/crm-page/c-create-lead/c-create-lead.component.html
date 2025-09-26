@@ -74,6 +74,21 @@
                         </mat-form-field>
                     </div>
                 </div>
+
+                <div class="col-md-4 col-sm-6">
+                    <div class="mb-25">
+                        <label class="main-label d-block lh-1 text-black">Country Code </label>
+                        <mat-form-field appearance="outline" class="me-2">
+                            <mat-label>Code</mat-label>
+                            <mat-select formControlName="code">
+                                <mat-option *ngFor="let c of countryCodes" [value]="c.dial_code">
+                                    {{ c.name }} ({{ c.dial_code }})
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                      
+                    </div>
+                </div>
                 <div class="col-md-4 col-sm-6">
                     <div class="mb-25">
                         <label class="main-label d-block lh-1 text-black">

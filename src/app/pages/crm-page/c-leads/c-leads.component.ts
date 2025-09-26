@@ -155,8 +155,9 @@ export class CLeadsComponent {
 
                         customer_name: u.customer_name || 'N/A',
                         email: u.email || 'N/A',
-                        phone: u.phone || '-',
-
+  phone: u.phone 
+    ? (u.code === 'OTHER' ? u.phone : `${u.code} ${u.phone}`)
+    : '-',
                         lead_source: u.lead_source || 'N/A',
 
                         courses: u?.courses?.service_name || '-',

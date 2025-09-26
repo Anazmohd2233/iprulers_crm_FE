@@ -118,7 +118,7 @@ export class ProfileStudentComponent implements OnInit {
     paymentSubmitForm!: FormGroup;
     expandedElement: any | null = null;
     pdfHead: boolean = false;
-
+   editPaymentForm!: FormGroup;
     courses: any;
     page: number = 1;
     pageSize: number = 20;
@@ -131,6 +131,8 @@ export class ProfileStudentComponent implements OnInit {
     dialogRef!: MatDialogRef<any>; // store reference
 
     @ViewChild('confirmDialog') confirmDialog!: TemplateRef<any>;
+            @ViewChild('confirmDialogEdit') confirmDialogEdit!: TemplateRef<any>;
+
     private toggleEvent: any;
     private toggleId!: number;
 
@@ -230,6 +232,8 @@ export class ProfileStudentComponent implements OnInit {
             course_id: ['', Validators.required],
             payment_type: ['', Validators.required],
             emi_months: [''],
+                        discount: [''],
+
             start_date: ['', Validators.required],
         });
 
@@ -237,6 +241,12 @@ export class ProfileStudentComponent implements OnInit {
             payment_date: ['', Validators.required],
             mode_of_payment: ['', Validators.required],
             amount: ['', [Validators.required, Validators.min(1)]],
+        });
+
+                  this.editPaymentForm = this.fb.group({
+     
+            change_amount: [''],
+            change_due_date: [''],
         });
 
         // Optional: reset emi_months if payment_type is FULL
@@ -291,6 +301,7 @@ export class ProfileStudentComponent implements OnInit {
     onCancel(): void {
         this.paymentSubmitForm.reset(); // clear the form
         this.dialogRef.close(false); // close dialog
+        this.editPaymentForm.reset();
     }
 
     toggleExpand(element: any) {
@@ -329,23 +340,16 @@ export class ProfileStudentComponent implements OnInit {
 
                     this.dataSource.data = this.ELEMENT_DATA;
                 } else {
-                    this.toastr.error('Failed to load student data', 'Error');
+                    // this.toastr.error('Failed to load student data', 'Error');
                     this.isLoading = false;
                 }
             },
             error: (error) => {
                 console.error('Error loading student:', error);
-                this.toastr.error('Error loading student data', 'Error');
+                // this.toastr.error('Error loading student data', 'Error');
                 this.isLoading = false;
 
-                // Handle authentication errors
-                if (error.status === 401 || error.status === 403) {
-                    console.error(
-                        'Authentication failed, redirecting to login'
-                    );
-                    localStorage.removeItem('Authorization');
-                    this.router.navigate(['/authentication']);
-                }
+             
             },
         });
     }
@@ -590,6 +594,65 @@ export class ProfileStudentComponent implements OnInit {
             });
         }, 100); // Wait 100ms for DOM update (can adjust if needed)
     }
+
+    
+    onEditInstallment(element: any) {
+  console.log("Editing installment:", element);
+      this.dialogRef = this.dialog.open(this.confirmDialogEdit, {
+            width: '800',
+            data: { id: element.id },
+        });
+
+}
+
+
+
+    onSubmitEditPayment(id: any) {
+        if (this.editPaymentForm.valid) {
+            const formData = new FormData();
+            Object.keys(this.editPaymentForm.controls).forEach((key) => {
+                formData.append(key, this.editPaymentForm.get(key)?.value);
+            });
+
+            this.paymentsService.updatePayment(formData, id).subscribe({
+                next: (response) => {
+                    if (response.success) {
+                        this.editPaymentForm.reset();
+
+                        this.isSubmitting = false;
+                        this.toastr.success(
+                            'Payment Updated successfully',
+                            'Success'
+                        );
+                        this.loadStudentData();
+
+                        this.dialog.closeAll();
+                    } else {
+                        this.isSubmitting = false;
+
+                        this.toastr.error(
+                            response.message || 'Failed to Update Payment.',
+                            'Error'
+                        );
+                        console.error('❌ add failed:', response.message);
+                    }
+                },
+                error: (error) => {
+                    this.isSubmitting = false;
+
+                    const errMsg =
+                        error?.error?.message || 'Something went wrong.';
+
+                    this.toastr.error(errMsg, 'Error');
+
+                    console.error('❌ API error:', error);
+                },
+            });
+        } else {
+            this.toastr.error('Please fill all required fields.', 'Error');
+        }
+    }
+
 }
 
 export interface PeriodicElement {

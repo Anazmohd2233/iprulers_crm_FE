@@ -153,13 +153,13 @@ export class EditLocationComponent implements OnInit {
 
                     this.isLoading = false;
                 } else {
-                    this.toastr.error('Failed to load location data', 'Error');
+                    // this.toastr.error('Failed to load location data', 'Error');
                     this.isLoading = false;
                 }
             },
             error: (error) => {
                 console.error('Error loading location:', error);
-                this.toastr.error('Error loading location data', 'Error');
+                // this.toastr.error('Error loading location data', 'Error');
                 this.isLoading = false;
             },
         });

@@ -21,7 +21,7 @@ import { ToastrService } from 'ngx-toastr';
 import { CommonModule, NgIf } from '@angular/common';
 import { ContactService } from '../../../services/contact.service';
 import { LeadsService } from '../../../services/lead.service';
-import { LeadStatus } from '../../../services/enums';
+import { CountryCode, LeadStatus } from '../../../services/enums';
 import { UsersService } from '../../../services/users.service';
 import { HttpParams } from '@angular/common/http';
 import { CourseService } from '../../../services/course.service';
@@ -64,6 +64,11 @@ export class CCreateLeadComponent {
     page: number = 1;
     users: any;
     courses: any;
+
+        countryCodes = Object.entries(CountryCode).map(([key, value]) => ({
+    name: key.replace(/_/g, ' '), // e.g. UNITED_STATES → "UNITED STATES"
+    dial_code: value,
+  }));
 
     constructor(
         public themeService: CustomizerSettingsService,
@@ -118,6 +123,8 @@ export class CCreateLeadComponent {
             lead_source: [''],
             created_date: [''],
             assign_to: [''],
+                         code: ['', Validators.required],
+
         });
     }
 
@@ -136,6 +143,8 @@ export class CCreateLeadComponent {
                         courses: contact?.courses?.id,
                         status: contact?.status,
                         lead_source: contact?.lead_source,
+                                                                        code: contact.code || '',
+
                     });
                 } else {
                     console.log('Lead not found.');
@@ -165,6 +174,7 @@ export class CCreateLeadComponent {
                         status: leads?.status,
                         lead_source: leads?.lead_source,
                         created_date: leads?.created_date,
+                                                                        code: leads.code || '',
 
                         assign_to: leads?.assign_to?.id,
                     });

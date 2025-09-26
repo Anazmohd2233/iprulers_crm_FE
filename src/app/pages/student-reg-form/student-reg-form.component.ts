@@ -21,6 +21,7 @@ import { NgxEditorModule, Editor, Toolbar } from 'ngx-editor';
 import { CustomizerSettingsService } from '../../customizer-settings/customizer-settings.service';
 import { StudentService } from '../../services/student.services';
 import { ToastrService } from 'ngx-toastr';
+import { CountryCode } from '../../services/enums';
 
 @Component({
     selector: 'app-student-reg-form',
@@ -57,6 +58,12 @@ export class StudentRegFormComponent {
 
     // Select Value
     contactStatusSelected = 'option1';
+
+
+    countryCodes = Object.entries(CountryCode).map(([key, value]) => ({
+    name: key.replace(/_/g, ' '), // e.g. UNITED_STATES → "UNITED STATES"
+    dial_code: value,
+  }));
 
     // Text Editor
     editor!: Editor; // Make it nullable
@@ -125,6 +132,7 @@ export class StudentRegFormComponent {
             orgName: ['', Validators.required],
             jobTitle: [''],
             status: ['', Validators.required],
+             code: ['', Validators.required],
 
             // visaStatus: [''],
             // emirates: ['', Validators.required],

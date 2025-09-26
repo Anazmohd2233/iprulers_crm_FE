@@ -5,8 +5,4 @@ export const environment = {
     // apiBaseUrl: 'http://localhost:5008',
     apiBaseUrl: 'https://iprulers.nestcrm.app',
 
-    //Domain name
-    //for ip rulers
-    // baseBaseUrl: 'http://localhost:4200',
-    // baseBaseUrl: 'https://iprulers.nestcrm.app',
 };

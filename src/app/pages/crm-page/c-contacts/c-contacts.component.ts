@@ -53,9 +53,8 @@ import { CourseService } from '../../../services/course.service';
         MatTooltipModule,
         MatProgressBarModule,
         MatIcon,
-                FormsModule, // ✅ needed for [(ngModel)]
-                NgFor
-
+        FormsModule, // ✅ needed for [(ngModel)]
+        NgFor,
     ],
     templateUrl: './c-contacts.component.html',
     styleUrl: './c-contacts.component.scss',
@@ -67,16 +66,13 @@ export class CContactsComponent {
     pageSize: number = 20;
     totalRecords: number = 0;
     contacts: any;
-        searchField: string = ''; // Initialize the property
+    searchField: string = ''; // Initialize the property
     searchFieldUser: string = '';
     users: any;
-        user_type: any;
+    user_type: any;
     searchFieldCourse: string = '';
     courses: any;
 
-
-
-    
     displayedColumns: string[] = [
         // 'select',
         // 'contactID',
@@ -84,7 +80,7 @@ export class CContactsComponent {
         'email',
         'phone',
         'courses',
-          'owner',
+        'owner',
         'lead_source',
         'status',
         'lead_status',
@@ -96,22 +92,19 @@ export class CContactsComponent {
 
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-     constructor(
+    constructor(
         public themeService: CustomizerSettingsService,
         private contactService: ContactService,
         private toastr: ToastrService,
-                private usersService: UsersService,
-                        private courseService: CourseService
-                
-
+        private usersService: UsersService,
+        private courseService: CourseService
     ) {}
 
     ngOnInit(): void {
-    //   this.user_type =  localStorage.getItem('user_type');
+        //   this.user_type =  localStorage.getItem('user_type');
         this.getContactList();
-                this.getUserList();
+        this.getUserList();
         this.getCourseList();
-
     }
 
     ngAfterViewInit() {
@@ -138,7 +131,7 @@ export class CContactsComponent {
         }
         this.selection.select(...this.dataSource.data);
     }
-      filterUser(event: any) {
+    filterUser(event: any) {
         console.log('***event***', event.value);
 
         let params = new HttpParams();
@@ -146,11 +139,11 @@ export class CContactsComponent {
         params = params.set('userId', event.value);
         this.getContactList(params);
     }
-   clearSearchUser() {
+    clearSearchUser() {
         this.searchFieldUser = ''; // Clear the input by setting the property to an empty string
         this.getUserList();
     }
-     searchUser() {
+    searchUser() {
         console.log('user search keyword', this.searchFieldUser);
         this.getUserList(this.searchFieldUser);
     }
@@ -186,23 +179,23 @@ export class CContactsComponent {
         params = params.set('schoolId', event.value);
         this.getCourseList(params);
     }
-       searchCourse() {
+    searchCourse() {
         console.log('course search keyword', this.searchFieldCourse);
         this.getCourseList(this.searchFieldCourse);
     }
-      clearSearchCourse() {
+    clearSearchCourse() {
         this.searchFieldCourse = ''; // Clear the input by setting the property to an empty string
         this.getCourseList();
     }
 
-       private getCourseList(search?: any): void {
+    private getCourseList(search?: any): void {
         let params = new HttpParams().set('status', true);
 
         if (search) {
             params = params.set('search', search);
         }
 
-        this.courseService.getCourse(this.page,params).subscribe({
+        this.courseService.getCourse(this.page, params).subscribe({
             next: (response) => {
                 if (response && response.success) {
                     this.courses = response.data?.services || [];
@@ -216,8 +209,6 @@ export class CContactsComponent {
             },
         });
     }
-
-
 
     resetFilters() {
         // this.createdDateFilter = null;
@@ -243,9 +234,7 @@ export class CContactsComponent {
         }`;
     }
 
-  
-
-      applyFilter() {
+    applyFilter() {
         // const filterValue = (event.target as HTMLInputElement).value;
         // this.dataSource.filter = filterValue.trim().toLowerCase();
 
@@ -253,12 +242,12 @@ export class CContactsComponent {
         this.getContactList(params);
     }
 
-       clearSearch() {
+    clearSearch() {
         this.getContactList();
 
         this.searchField = ''; // Clear the input by setting the property to an empty string
     }
-   private getUserList(search?: any): void {
+    private getUserList(search?: any): void {
         let params = new HttpParams().set('user_type', 'USER');
 
         if (search) {
@@ -279,7 +268,6 @@ export class CContactsComponent {
             },
         });
     }
-   
 
     private getContactList(params?: any): void {
         this.contactService.getContact(this.page, params).subscribe({
@@ -291,13 +279,17 @@ export class CContactsComponent {
                     this.ELEMENT_DATA = contacts.map((u: any) => ({
                         id: u.id,
                         contactID: u.school || 'N/A',
-                        owner:u?.contact_owner || 'N/A',
+                        owner: u?.contact_owner || 'N/A',
 
                         name: u.contact_name || 'N/A',
                         email: u.email || 'N/A',
                         lead_source: u.lead_source || 'N/A',
                         lead_status: u.lead_status || 'OTHER',
-                        phone: u.phone || '-',
+                        phone: u.phone
+                            ? u.code === 'OTHER'
+                                ? u.phone
+                                : `${u.code} ${u.phone}`
+                            : '-',
                         courses: u?.courses,
 
                         status: u.status,
@@ -322,9 +314,10 @@ export interface PeriodicElement {
     contactID: string;
     name: any;
     email: string;
+
     phone: string;
     courses: string;
-     owner: string;
+    owner: string;
     lead_source: string;
     status: any;
     lead_status: any;

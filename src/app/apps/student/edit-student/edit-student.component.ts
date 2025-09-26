@@ -22,7 +22,7 @@ import { CustomizerSettingsService } from '../../../customizer-settings/customiz
 import { StudentService } from '../../../services/student.services';
 import { ToastrService } from 'ngx-toastr';
 import { CourseService } from '../../../services/course.service';
-import { LeadStatus } from '../../../services/enums';
+import { CountryCode, LeadStatus } from '../../../services/enums';
 
 @Component({
     selector: 'app-edit-student',
@@ -51,6 +51,11 @@ export class EditStudentComponent implements OnInit {
     idProof: File | null = null;
     certificate: File | null = null;
     isSubmitting = false;
+
+    countryCodes = Object.entries(CountryCode).map(([key, value]) => ({
+        name: key.replace(/_/g, ' '), // e.g. UNITED_STATES → "UNITED STATES"
+        dial_code: value,
+    }));
 
     // Text Editor
     editor!: Editor;
@@ -152,6 +157,7 @@ export class EditStudentComponent implements OnInit {
             // visaStatus: [''],
             otherStatus: ['', Validators.required],
             // emirates: ['', Validators.required],
+            code: ['', Validators.required],
         });
     }
 
@@ -182,29 +188,23 @@ export class EditStudentComponent implements OnInit {
                         visaStatus: student.visaStatus || '',
                         otherStatus: student.otherStatus || '',
                         emirates: student.emirates || '',
+                                                code: student.code || '',
+
                     });
 
                     // Set editor content
                     this.editorContent = student.notes || '';
                     this.isLoading = false;
                 } else {
-                    this.toastr.error('Failed to load student data', 'Error');
+                    // this.toastr.error('Failed to load student data', 'Error');
                     this.isLoading = false;
                 }
             },
             error: (error) => {
                 console.error('Error loading student:', error);
-                this.toastr.error('Error loading student data', 'Error');
+                // this.toastr.error('Error loading student data', 'Error');
                 this.isLoading = false;
 
-                // Handle authentication errors
-                if (error.status === 401 || error.status === 403) {
-                    console.error(
-                        'Authentication failed, redirecting to login'
-                    );
-                    localStorage.removeItem('Authorization');
-                    this.router.navigate(['/authentication']);
-                }
             },
         });
     }
@@ -228,45 +228,38 @@ export class EditStudentComponent implements OnInit {
                 formData.append('certificate', this.certificate);
 
             if (this.editMode) {
+                this.studentService
+                    .updateStudent(formData, this.studentId)
+                    .subscribe({
+                        next: (response) => {
+                            if (response && response.success) {
+                                this.loadStudentData();
 
-
-                    this.studentService
-                .updateStudent(formData, this.studentId)
-                .subscribe({
+                                this.certificate = null;
+                                this.studentImage = null;
+                                this.idProof = null;
+                                this.toastr.success(
+                                    'Updated successfully',
+                                    'Success'
+                                );
+                            } else {
+                                this.toastr.error(
+                                    'Failed to Update student',
+                                    'Error'
+                                );
+                            }
+                            this.isSubmitting = false;
+                        },
+                        error: (error) => {
+                            console.error('Error Updated student:', error);
+                            this.toastr.error('Error Update student', 'Error');
+                            this.isSubmitting = false;
+                        },
+                    });
+            } else {
+                this.studentService.createStudent(formData).subscribe({
                     next: (response) => {
                         if (response && response.success) {
-                            this.loadStudentData();
-
-                            this.certificate = null;
-                            this.studentImage = null;
-                            this.idProof = null;
-                            this.toastr.success(
-                                'Updated successfully',
-                                'Success'
-                            );
-                        } else {
-                            this.toastr.error(
-                                'Failed to Update student',
-                                'Error'
-                            );
-                        }
-                        this.isSubmitting = false;
-                    },
-                    error: (error) => {
-                        console.error('Error Updated student:', error);
-                        this.toastr.error('Error Update student', 'Error');
-                        this.isSubmitting = false;
-                    },
-                });
-            }else{
-
-
-                      this.studentService
-                .createStudent(formData)
-                .subscribe({
-                    next: (response) => {
-                        if (response && response.success) {
-                            
                             this.router.navigate(['/student']);
 
                             this.certificate = null;
@@ -290,10 +283,7 @@ export class EditStudentComponent implements OnInit {
                         this.isSubmitting = false;
                     },
                 });
-
             }
-
-        
         } else {
             console.log('❌ Invalid Form');
             this.studentForm.markAllAsTouched();

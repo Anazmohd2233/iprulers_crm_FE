@@ -236,7 +236,7 @@ export class HdCreateTicketComponent {
 
     private initializeForm(): void {
         this.taskForm = this.formBuilder.group({
-            task_title: ['', [Validators.required, Validators.minLength(3)]],
+            task_title: ['', [Validators.required]],
             // activity: [[]],
             priority: ['', Validators.required],
             assigned_to: ['', Validators.required],
