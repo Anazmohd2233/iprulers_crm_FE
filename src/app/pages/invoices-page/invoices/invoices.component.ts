@@ -65,7 +65,8 @@ export class InvoicesComponent {
     // Student Form
 
     @ViewChild('confirmDialog') confirmDialog!: TemplateRef<any>;
-        @ViewChild('confirmDialogEdit') confirmDialogEdit!: TemplateRef<any>;
+    @ViewChild('confirmDialogEdit') confirmDialogEdit!: TemplateRef<any>;
+    @ViewChild('confirmDialogBox') confirmDialogBox!: TemplateRef<any>;
 
     private toggleEvent: any;
     private toggleId!: number;
@@ -77,7 +78,7 @@ export class InvoicesComponent {
     studentId: any;
     editMode: boolean = false;
     paymentForm!: FormGroup;
-        editPaymentForm!: FormGroup;
+    editPaymentForm!: FormGroup;
 
     courses: any;
     page: number = 1;
@@ -131,12 +132,9 @@ export class InvoicesComponent {
             payment_date: ['', Validators.required],
             mode_of_payment: ['', Validators.required],
             amount: ['', [Validators.required, Validators.min(1)]],
-
-            
         });
 
-                this.editPaymentForm = this.formBuilder.group({
-     
+        this.editPaymentForm = this.formBuilder.group({
             change_amount: [''],
             change_due_date: [''],
         });
@@ -296,18 +294,15 @@ export class InvoicesComponent {
 
         this.dialogRef.afterClosed().subscribe((result) => {
             if (result) {
-                                        
-
             }
         });
     }
 
     onCancel(): void {
-  this.paymentForm.reset(); 
-this.editPaymentForm.reset();
-  this.dialogRef.close(false); // close dialog
-}
-
+        this.paymentForm.reset();
+        this.editPaymentForm.reset();
+        this.dialogRef.close(false); // close dialog
+    }
 
     // confirmAction() {
     //     const isChecked = this.toggleEvent.checked;
@@ -378,17 +373,61 @@ this.editPaymentForm.reset();
             this.expandedElement === element ? null : element;
     }
 
-
     onEditInstallment(element: any) {
-  console.log("Editing installment:", element);
-      this.dialogRef = this.dialog.open(this.confirmDialogEdit, {
+        console.log('Editing installment:', element);
+        this.dialogRef = this.dialog.open(this.confirmDialogEdit, {
             width: '800',
             data: { id: element.id },
         });
+    }
 
-}
+    openConfirmBox(id: any) {
+        console.log('delete history:', id);
+        this.dialogRef = this.dialog.open(this.confirmDialogBox, {
+            width: '800',
+            data: { id: id },
+        });
+    }
+
+    confirmDelete(id: any) {
+        console.log('delete id:', id);
 
 
+           this.paymentsService.deletePayment(id).subscribe({
+                next: (response) => {
+                    if (response.success) {
+                    
+
+                        this.isSubmitting = false;
+                        this.toastr.success(
+                            'History deleted successfully',
+                            'Success'
+                        );
+                        this.getPaymentList();
+
+                        this.dialog.closeAll();
+                    } else {
+                        this.isSubmitting = false;
+
+                        this.toastr.error(
+                            response.message || 'Failed to Delete history.',
+                            'Error'
+                        );
+                        console.error('❌ delete failed:', response.message);
+                    }
+                },
+                error: (error) => {
+                    this.isSubmitting = false;
+
+                    const errMsg =
+                        error?.error?.message || 'Something went wrong.';
+
+                    this.toastr.error(errMsg, 'Error');
+
+                    console.error('❌ API error:', error);
+                },
+            });
+    }
 
     onSubmitEditPayment(id: any) {
         if (this.editPaymentForm.valid) {
@@ -435,7 +474,6 @@ this.editPaymentForm.reset();
             this.toastr.error('Please fill all required fields.', 'Error');
         }
     }
-
 }
 
 export interface PeriodicElement {

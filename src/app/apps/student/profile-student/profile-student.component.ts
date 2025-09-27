@@ -118,7 +118,7 @@ export class ProfileStudentComponent implements OnInit {
     paymentSubmitForm!: FormGroup;
     expandedElement: any | null = null;
     pdfHead: boolean = false;
-   editPaymentForm!: FormGroup;
+    editPaymentForm!: FormGroup;
     courses: any;
     page: number = 1;
     pageSize: number = 20;
@@ -131,7 +131,7 @@ export class ProfileStudentComponent implements OnInit {
     dialogRef!: MatDialogRef<any>; // store reference
 
     @ViewChild('confirmDialog') confirmDialog!: TemplateRef<any>;
-            @ViewChild('confirmDialogEdit') confirmDialogEdit!: TemplateRef<any>;
+    @ViewChild('confirmDialogEdit') confirmDialogEdit!: TemplateRef<any>;
 
     private toggleEvent: any;
     private toggleId!: number;
@@ -156,6 +156,8 @@ export class ProfileStudentComponent implements OnInit {
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
     @ViewChild('installmentDialog') installmentDialog!: TemplateRef<any>;
+
+    @ViewChild('confirmDialogBox') confirmDialogBox!: TemplateRef<any>;
 
     // Options for dropdowns
     leadSources = [
@@ -232,7 +234,7 @@ export class ProfileStudentComponent implements OnInit {
             course_id: ['', Validators.required],
             payment_type: ['', Validators.required],
             emi_months: [''],
-                        discount: [''],
+            discount: [''],
 
             start_date: ['', Validators.required],
         });
@@ -243,8 +245,7 @@ export class ProfileStudentComponent implements OnInit {
             amount: ['', [Validators.required, Validators.min(1)]],
         });
 
-                  this.editPaymentForm = this.fb.group({
-     
+        this.editPaymentForm = this.fb.group({
             change_amount: [''],
             change_due_date: [''],
         });
@@ -348,8 +349,6 @@ export class ProfileStudentComponent implements OnInit {
                 console.error('Error loading student:', error);
                 // this.toastr.error('Error loading student data', 'Error');
                 this.isLoading = false;
-
-             
             },
         });
     }
@@ -595,17 +594,13 @@ export class ProfileStudentComponent implements OnInit {
         }, 100); // Wait 100ms for DOM update (can adjust if needed)
     }
 
-    
     onEditInstallment(element: any) {
-  console.log("Editing installment:", element);
-      this.dialogRef = this.dialog.open(this.confirmDialogEdit, {
+        console.log('Editing installment:', element);
+        this.dialogRef = this.dialog.open(this.confirmDialogEdit, {
             width: '800',
             data: { id: element.id },
         });
-
-}
-
-
+    }
 
     onSubmitEditPayment(id: any) {
         if (this.editPaymentForm.valid) {
@@ -653,6 +648,49 @@ export class ProfileStudentComponent implements OnInit {
         }
     }
 
+    openConfirmBox(id: any) {
+        console.log('delete history:', id);
+        this.dialogRef = this.dialog.open(this.confirmDialogBox, {
+            width: '800',
+            data: { id: id },
+        });
+    }
+
+    confirmDelete(id: any) {
+        console.log('delete id:', id);
+
+        this.paymentsService.deletePayment(id).subscribe({
+            next: (response) => {
+                if (response.success) {
+                    this.isSubmitting = false;
+                    this.toastr.success(
+                        'History deleted successfully',
+                        'Success'
+                    );
+                    this.loadStudentData();
+
+                    this.dialog.closeAll();
+                } else {
+                    this.isSubmitting = false;
+
+                    this.toastr.error(
+                        response.message || 'Failed to Delete history.',
+                        'Error'
+                    );
+                    console.error('❌ delete failed:', response.message);
+                }
+            },
+            error: (error) => {
+                this.isSubmitting = false;
+
+                const errMsg = error?.error?.message || 'Something went wrong.';
+
+                this.toastr.error(errMsg, 'Error');
+
+                console.error('❌ API error:', error);
+            },
+        });
+    }
 }
 
 export interface PeriodicElement {

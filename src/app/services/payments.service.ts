@@ -33,4 +33,9 @@ export class PaymentsService {
          const url = `${this.apiUrl}/admin/leads/view/${leads_id}`;
          return this.http.get<any>(url, { params });
      }
+
+    deletePayment(leads_id: number): Observable<any> {
+        const url = `${this.apiUrl}/admin/payments/delete/${leads_id}`;
+        return this.http.delete<any>(url);  
+    }
 }
