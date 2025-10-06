@@ -121,7 +121,7 @@ export class StudentRegFormComponent {
             lastName: ['', Validators.required],
             phone: ['', Validators.required],
             whatsappNumber: ['', Validators.required],
-            email: ['', [Validators.required, Validators.email]],
+            email: [''],
             gender: ['', Validators.required],
             maritalStatus: [''],
             dob: ['', Validators.required],

@@ -55,7 +55,7 @@ export class LCreateCourseComponent {
     editMode: boolean = false;
     isSubmitting = false;
 
-       constructor(
+    constructor(
         @Inject(PLATFORM_ID) private platformId: Object,
         public themeService: CustomizerSettingsService,
         private usersService: UsersService,
@@ -63,9 +63,7 @@ export class LCreateCourseComponent {
         private route: ActivatedRoute,
         private fb: FormBuilder,
         private courseService: CourseService,
-                                private router: Router,
-        
-        
+        private router: Router
     ) {}
 
     // Text Editor
@@ -119,14 +117,14 @@ export class LCreateCourseComponent {
     // Tags Select
     tags = new FormControl('');
     tagsList: string[] = [
-        'Design',
-        'Writing',
-        'Security',
-        'Valuation',
-        'Angular',
+        'Cisco',
+        'Fortinet',
+        'Palo_Alto',
+        'Check_Point',
+        'F5',
+        'CompTIA',
+        'Microsoft',
     ];
-
- 
 
     initializeCourseForm() {
         this.courseForm = this.fb.group({
@@ -174,7 +172,7 @@ export class LCreateCourseComponent {
                         description: service?.description,
                         price: service?.price,
                         status: service?.status,
-                                                duration: service?.duration,
+                        duration: service?.duration,
 
                         // start_date: service.start_date,
                         // end_date: service.end_date,
@@ -242,7 +240,7 @@ export class LCreateCourseComponent {
             this.courseService.createCourse(formData).subscribe({
                 next: (response) => {
                     if (response.success) {
-                                                                                                    this.router.navigate(['/lms-page']);
+                        this.router.navigate(['/lms-page']);
 
                         this.isSubmitting = false;
                         this.courseForm.reset();
