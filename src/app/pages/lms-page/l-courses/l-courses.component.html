@@ -33,7 +33,7 @@
         </mat-card-title>
         <mat-card-subtitle>
             <a mat-button class="add-new-btn" routerLink="/lms-page/create-course">
-                + Add New Course
+                + Add New Service
             </a>
         </mat-card-subtitle>
     </mat-card-header>
@@ -69,7 +69,7 @@
         </mat-card-title>
         <mat-card-subtitle>
             <a mat-button class="add-new-btn" routerLink="/lms-page/create-course">
-                + Add New Course
+                + Add New Service
             </a>
         </mat-card-subtitle>
     </mat-card-header>
@@ -136,7 +136,7 @@
                     <!-- Email Column -->
                     <ng-container matColumnDef="price">
                         <th mat-header-cell *matHeaderCellDef>
-                            Course Amount
+                            Service Amount
                         </th>
                         <td mat-cell *matCellDef="let element">
                             {{element.price}}
@@ -163,10 +163,10 @@
                         </td>
                     </ng-container> -->
 
-                    <!-- Course Column -->
+                    <!-- Service Column -->
                     <ng-container matColumnDef="category">
                         <th mat-header-cell *matHeaderCellDef>
-                        Course Category
+                        Service Category
                         </th>
                         <td mat-cell *matCellDef="let element">
                             {{element.category}}
@@ -208,7 +208,7 @@
 
 
                                 <a mat-button [routerLink]="'/lms-page/create-course'"
-                                    [queryParams]="{ course_id: element.id }" matTooltip="Edit Course"
+                                    [queryParams]="{ course_id: element.id }" matTooltip="Edit Service"
                                     matTooltipPosition="above">
                                     <i class="material-symbols-outlined">
                                         edit

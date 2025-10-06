@@ -24,7 +24,7 @@
                     [class.rtl-enabled]="themeService.isRTLEnabled()">
                     <mat-card-header>
                         <mat-card-title>
-                            <h5 class="mb-0">Student Profile</h5>
+                            <h5 class="mb-0">Customer Profile</h5>
                         </mat-card-title>
 
 
@@ -34,7 +34,7 @@
                         <div class="user d-flex align-items-center">
                             <div class="image">
                                 <img [src]="student?.studentImageUrl && student.studentImageUrl.trim() !== '' ? student.studentImageUrl : 'images/profile.jpg'"
-                                    class="rounded-circle" alt="Student Image" />
+                                    class="rounded-circle" alt="Customer Image" />
                             </div>
 
 
@@ -121,7 +121,7 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="mb-25">
-                                                <label class="main-label d-block lh-1 text-black mb-15">Course</label>
+                                                <label class="main-label d-block lh-1 text-black mb-15">Service</label>
                                                 <mat-form-field>
                                                     <mat-label>Select course</mat-label>
 
@@ -259,7 +259,7 @@
                             <!-- Project Name Column -->
                             <ng-container matColumnDef="course_name">
                                 <th mat-header-cell *matHeaderCellDef>
-                                    Course Name
+                                    Service Name
                                 </th>
                                 <td mat-cell *matCellDef="let element">
                                     {{element.course_name}}

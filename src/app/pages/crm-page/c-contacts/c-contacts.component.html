@@ -57,7 +57,7 @@
             <!-- *****************************working course filter********************** -->
 
             <!-- <mat-form-field appearance="fill" class="small-form-field m-0">
-                <mat-label>Course</mat-label>
+                <mat-label>Service</mat-label>
                 <mat-select (selectionChange)="filterCourse($event)">
                     <mat-form-field appearance="outline" class="w-80">
 
@@ -181,7 +181,7 @@
                     <!-- Last Contacted Column -->
                     <ng-container matColumnDef="courses">
                         <th mat-header-cell *matHeaderCellDef>
-                            Course
+                            Service
                         </th>
                         <td mat-cell *matCellDef="let element">
                             {{element.courses?.service_name || 'N/A'}}
