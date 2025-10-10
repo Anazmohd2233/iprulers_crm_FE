@@ -41,11 +41,9 @@ import { MatInputModule } from '@angular/material/input';
         MatTableModule,
         MatButtonModule,
         CLeadKanbanComponent,
-                        FormsModule, // ✅ needed for [(ngModel)]
+        FormsModule, // ✅ needed for [(ngModel)]
         MatFormFieldModule,
-                MatInputModule,
-
-
+        MatInputModule,
     ],
     templateUrl: './c-leads.component.html',
     styleUrl: './c-leads.component.scss',
@@ -53,11 +51,11 @@ import { MatInputModule } from '@angular/material/input';
 export class CLeadsComponent {
     ELEMENT_DATA: PeriodicElement[] = [];
 
-     page: number = 1;
+    page: number = 1;
     pageSize: number = 20;
     totalRecords: number = 0;
     leads: any;
-        searchField: string = ''; // Initialize the property
+    searchField: string = ''; // Initialize the property
 
     displayedColumns: string[] = [
         // 'select',
@@ -77,7 +75,6 @@ export class CLeadsComponent {
 
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-    
     constructor(
         public themeService: CustomizerSettingsService,
         private leadsService: LeadsService,
@@ -88,17 +85,17 @@ export class CLeadsComponent {
         this.getLeadsList();
     }
 
-     ngAfterViewInit() {
+    ngAfterViewInit() {
         // listen to paginator changes
         console.log('**********page changed**********');
         this.paginator.page.subscribe((event) => {
             this.page = event.pageIndex + 1; // MatPaginator is 0-based, API is 1-based
             this.pageSize = event.pageSize;
-        this.getLeadsList();
+            this.getLeadsList();
         });
     }
 
-          applyFilter() {
+    applyFilter() {
         // const filterValue = (event.target as HTMLInputElement).value;
         // this.dataSource.filter = filterValue.trim().toLowerCase();
 
@@ -132,20 +129,17 @@ export class CLeadsComponent {
         }`;
     }
 
-  
-
-
-        clearSearch() {
+    clearSearch() {
         this.getLeadsList();
 
         this.searchField = ''; // Clear the input by setting the property to an empty string
     }
 
     private getLeadsList(params?: any): void {
-        this.leadsService.getLead(this.page,params).subscribe({
+        this.leadsService.getLead(this.page, params).subscribe({
             next: (response) => {
                 if (response && response.success) {
-                                                            this.totalRecords = response.data?.total;
+                    this.totalRecords = response.data?.total;
 
                     const leads = response.data?.leads || [];
 
@@ -155,9 +149,11 @@ export class CLeadsComponent {
 
                         customer_name: u.customer_name || 'N/A',
                         email: u.email || 'N/A',
-  phone: u.phone 
-    ? (u.code === 'OTHER' ? u.phone : `${u.code} ${u.phone}`)
-    : '-',
+                        phone: u.phone
+                            ? u.code === 'OTHER'
+                                ? u.phone
+                                : `${u.code} ${u.phone}`
+                            : '-',
                         lead_source: u.lead_source || 'N/A',
 
                         courses: u?.courses?.service_name || '-',
@@ -184,7 +180,7 @@ export class CLeadsComponent {
 
 export interface PeriodicElement {
     // contact_id: string;
-    id:any;
+    id: any;
     customer_name: any;
     email: string;
     phone: string;

@@ -252,9 +252,9 @@
                         </div>
                     </div>
 
-                    <!-- <div class="col-md-12 col-sm-06 mb-25" *ngIf="editMode">
+                    <div class="col-md-12 col-sm-06 mb-25" *ngIf="editMode">
                         <label class="main-label d-block lh-1 text-black">
-                            Activity
+                            Task Status
                         </label>
                         <div class="col-md-12 col-sm-12">
                             <div class="mb-25">
@@ -277,14 +277,13 @@
 
 
                         <mat-card-content class="example-badges mt-15 mb-25">
-                            <span class="badge text-bg-primary me-2" *ngIf="taskData?.school_visited">School
-                                visited</span>
-                            <span class="badge text-bg-success me-2" *ngIf="taskData?.class_conducted">Class
+                            <span class="badge text-bg-primary me-2" *ngIf="taskData?.data_collected">Task Completed</span>
+                            <!-- <span class="badge text-bg-success me-2" *ngIf="taskData?.class_conducted">Class
                                 conducted</span>
                             <span class="badge text-bg-warning" *ngIf="taskData?.data_collected">Data
-                                collected</span>
+                                collected</span> -->
                         </mat-card-content>
-                    </div> -->
+                    </div> 
 
                     <!-- <div class="btn-box">
                 <button mat-button type="button" (click)="openDialog()" *ngIf="editMode">
