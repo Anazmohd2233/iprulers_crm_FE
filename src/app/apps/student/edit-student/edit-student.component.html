@@ -1,7 +1,7 @@
 <!-- Breadcrumb -->
 <div class="breadcrumb-card mb-25 d-md-flex align-items-center justify-content-between">
     <h5 class="mb-0">
-        Customer Details
+        Student Details
     </h5>
     <ol class="breadcrumb list-unstyled mt-0 mb-0 pl-0">
         <li class="breadcrumb-item position-relative">
@@ -15,7 +15,7 @@
         </li>
         <li class="breadcrumb-item position-relative">
           
-                        {{ editMode ? 'Edit Customer' : 'Create Customer' }}
+                        {{ editMode ? 'Edit Student' : 'Create Student' }}
 
         </li>
     </ol>
@@ -30,7 +30,7 @@
                 <!-- First Name -->
                 <div class="col-md-3 col-sm-6">
                     <div class="mb-25">
-                        <label class="main-label d-block lh-1 text-black">Customer Name *</label>
+                        <label class="main-label d-block lh-1 text-black">Student Name *</label>
                         <mat-form-field>
                             <mat-label>Enter  Name</mat-label>
                             <input matInput formControlName="firstName" />
@@ -319,7 +319,7 @@
                             <button *ngIf="idProof" class="btn btn-sm btn-danger mt-2"
                                 (click)="removeFile('idProof')">Delete</button>
                             <!-- <div *ngIf="studentForm.get('studentImage')?.touched && studentForm.get('studentImage')?.invalid" class="text-danger">
-              Customer Image is required
+              Student Image is required
             </div> -->
                         </div>
                     </div>
@@ -341,7 +341,7 @@
 
                     <div class="col-md-3 col-sm-12">
                         <div class="mb-25">
-                            <label class="main-label d-block lh-1 text-black">Customer Image *</label>
+                            <label class="main-label d-block lh-1 text-black">Student Image *</label>
                             <!-- <file-upload class="file-uploader" (change)="onFileSelected($event, 'certificate')"></file-upload> -->
                             <input type="file" (change)="onFileSelected($event, 'studentImage')" />
 
@@ -360,7 +360,7 @@
                 <button mat-button type="submit">
                     <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1" role="status"
                         aria-hidden="true"></span>
-                  {{ editMode ? 'Edit Customer' : 'Create Customer' }}
+                  {{ editMode ? 'Edit Student' : 'Create Student' }}
                 </button>
             </div>
         </form>

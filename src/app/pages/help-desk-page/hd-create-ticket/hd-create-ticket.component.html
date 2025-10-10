@@ -45,7 +45,7 @@
                             <div class="sales-overview-info d-flex align-items-center justify-content-between">
                                 <div>
                                     <span class="sub-title d-block text-white">
-                                        Total Customers
+                                        Total Students
                                     </span>
                                     <span class="number d-block text-white fw-medium lh-1">
                                         {{taskSchool?.strength}}
@@ -307,7 +307,7 @@
 
                 <!-- <button mat-button type="button" (click)="openDialog_add_student()" *ngIf="editMode">
 
-                    <span>Add Customer</span>
+                    <span>Add Student</span>
                 </button> -->
                 <!-- <button mat-button type="button" (click)="onCancel()">
                     Cancel
@@ -374,10 +374,10 @@
                                 </mat-form-field>
                             </div>
 
-                            <!-- Customer Response -->
+                            <!-- Student Response -->
                             <div class="col-md-4 col-sm-6 mb-25">
                                 <mat-form-field class="w-100">
-                                    <mat-label>Customer Response</mat-label>
+                                    <mat-label>Student Response</mat-label>
                                     <mat-select formControlName="student_response">
                                         <mat-option value="positive">+ve</mat-option>
                                         <mat-option value="neutral">Neutral</mat-option>
@@ -386,10 +386,10 @@
                                 </mat-form-field>
                             </div>
 
-                            <!-- Customer Interest Level -->
+                            <!-- Student Interest Level -->
                             <div class="col-md-4 col-sm-6 mb-25">
                                 <mat-form-field class="w-100">
-                                    <mat-label>Customer Interest Level</mat-label>
+                                    <mat-label>Student Interest Level</mat-label>
                                     <mat-select formControlName="interest_level">
                                         <mat-option value="high">High</mat-option>
                                         <mat-option value="medium">Medium</mat-option>
@@ -472,7 +472,7 @@
 
 
 <ng-template #taskDialog_student>
-    <h2 mat-dialog-title>Create Customer</h2>
+    <h2 mat-dialog-title>Create Student</h2>
     <mat-dialog-content>
         <form *ngIf="studentForm" [formGroup]="studentForm" (ngSubmit)="createStudent()">
             <div formArrayName="students">
@@ -484,7 +484,7 @@
 
                     <div class="col-md-5 col-sm-5 mb-25">
                         <mat-form-field class="w-100">
-                            <mat-label>Customer Name</mat-label>
+                            <mat-label>Student Name</mat-label>
                             <input matInput formControlName="student_name">
                         </mat-form-field>
                     </div>
@@ -577,7 +577,7 @@
 
                     <!-- Travel Expence -->
                     <ng-container matColumnDef="student_response">
-                        <th mat-header-cell *matHeaderCellDef>Customer Response</th>
+                        <th mat-header-cell *matHeaderCellDef>Student Response</th>
                         <td mat-cell *matCellDef="let element">{{element.student_response}}</td>
                     </ng-container>
 
