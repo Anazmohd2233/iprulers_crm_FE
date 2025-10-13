@@ -3,6 +3,6 @@ export const environment = {
 
     //Backend url
     // apiBaseUrl: 'http://localhost:5008',
-    apiBaseUrl: 'https://iprulers.nestcrm.app',
+    apiBaseUrl: 'https://demo.nestcrm.app',
 
 };
