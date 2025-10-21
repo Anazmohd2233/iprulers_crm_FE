@@ -1,5 +1,5 @@
 import { NgIf } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
@@ -19,6 +19,7 @@ import { ToastrService } from 'ngx-toastr';
 import { StudentService } from '../../services/student.services';
 import { environment } from '../../../environments/environment';
 import { HttpParams } from '@angular/common/http';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-students',
@@ -52,6 +53,10 @@ export class StudentsComponent {
     totalRecords: number = 0;
     students: any;
 
+        @ViewChild('confirmDialog') confirmDialog!: TemplateRef<any>;
+    dialogRef!: MatDialogRef<any>;
+    selectedId: any;
+
     displayedColumns: string[] = [
         // 'select',
         // 'studentID',
@@ -74,7 +79,9 @@ export class StudentsComponent {
         private snackBar: MatSnackBar,
         private toastr: ToastrService,
         private studentService: StudentService,
-        private router: Router
+        private router: Router,
+                private dialog: MatDialog
+
     ) {}
 
     ngOnInit(): void {
@@ -207,6 +214,37 @@ export class StudentsComponent {
             error: (error) => {
                 console.error('Error Generate Link:', error);
                 this.toastr.error('Error Generate Link', 'Error');
+            },
+        });
+    }
+
+      openConfirmDialog(id: any) {
+        this.selectedId = id;
+        this.dialogRef = this.dialog.open(this.confirmDialog);
+    }
+
+    deleteContact() {
+        this.studentService.deleteContact(this.selectedId).subscribe({
+            next: (response) => {
+                if (response && response.success) {
+                    this.selectedId = null;
+                    this.dialogRef.close();
+                    this.getStudentList();
+
+                    if (this.dialogRef) {
+                        this.dialogRef.close();
+                    }
+                    this.toastr.success(
+                       response.message,
+                        'Success'
+                    );
+                } else {
+                    this.toastr.error(response.message, 'Error');
+                }
+            },
+            error: (error) => {
+                console.error('Error Delete student:', error);
+                this.toastr.error('Error Delete student', 'Error');
             },
         });
     }

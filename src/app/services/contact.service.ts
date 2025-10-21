@@ -16,7 +16,7 @@ export class ContactService {
         return this.http.post<any>(apiUrl, formData);
     }
 
-    updateContact(formData: any,contact_id:any): Observable<any> {
+    updateContact(formData: any, contact_id: any): Observable<any> {
         const apiUrl = `${this.apiUrl}/admin/contacts/update/${contact_id}`;
         return this.http.patch<any>(apiUrl, formData);
     }
@@ -30,10 +30,8 @@ export class ContactService {
         const url = `${this.apiUrl}/admin/contacts/view/${contact_id}`;
         return this.http.get<any>(url, { params });
     }
-
-
-
-
-
-    
+    deleteContact(id: any): Observable<any> {
+        const apiUrl = `${this.apiUrl}/admin/contacts/delete/${id}`;
+        return this.http.delete<any>(apiUrl);
+    }
 }

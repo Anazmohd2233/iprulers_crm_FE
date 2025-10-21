@@ -52,4 +52,10 @@ export class StudentService {
         const apiUrl = `${this.apiUrl}/admin/customer/validate-link/${token}`;
         return this.http.get<any>(apiUrl);
     }
+
+      deleteContact(id: any): Observable<any> {
+        const apiUrl = `${this.apiUrl}/admin/customer/delete/${id}`;
+        return this.http.delete<any>(apiUrl);
+    }
+
 }

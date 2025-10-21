@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NewLeadsComponent } from './new-leads/new-leads.component';
 import { ActiveLeadsComponent } from './active-leads/active-leads.component';
@@ -22,6 +22,7 @@ import { HttpParams } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-c-leads',
@@ -75,10 +76,16 @@ export class CLeadsComponent {
 
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
+       @ViewChild('confirmDialog') confirmDialog!: TemplateRef<any>;
+    dialogRef!: MatDialogRef<any>;
+    selectedId: any;
+
     constructor(
         public themeService: CustomizerSettingsService,
         private leadsService: LeadsService,
-        private toastr: ToastrService
+        private toastr: ToastrService,
+                private dialog: MatDialog
+
     ) {}
 
     ngOnInit(): void {
@@ -173,6 +180,38 @@ export class CLeadsComponent {
             },
             error: (error) => {
                 console.error('API error:', error);
+            },
+        });
+    }
+
+    
+    openConfirmDialog(id: any) {
+        this.selectedId = id;
+        this.dialogRef = this.dialog.open(this.confirmDialog);
+    }
+
+    deleteContact() {
+        this.leadsService.deleteContact(this.selectedId).subscribe({
+            next: (response) => {
+                if (response && response.success) {
+                    this.selectedId = null;
+                    this.dialogRef.close();
+                    this.getLeadsList();
+
+                    if (this.dialogRef) {
+                        this.dialogRef.close();
+                    }
+                    this.toastr.success(
+                       response.message,
+                        'Success'
+                    );
+                } else {
+                    this.toastr.error(response.message, 'Error');
+                }
+            },
+            error: (error) => {
+                console.error('Error Delete leads:', error);
+                this.toastr.error('Error Delete leads', 'Error');
             },
         });
     }

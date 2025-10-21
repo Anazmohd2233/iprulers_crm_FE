@@ -200,6 +200,11 @@
                                         edit
                                     </i>
                                 </a>
+                                 <button type="button" mat-button matTooltip="Delete" matTooltipPosition="above" (click)="openConfirmDialog(element.id)">
+                                    <i class="material-symbols-outlined">
+                                        delete
+                                    </i>
+                                </button>
 
 
                                 <!-- <button type="button" mat-button matTooltip="Copy Link" matTooltipPosition="above"
@@ -295,3 +300,17 @@
         </mat-card>
     </div>
 </div>
+
+<ng-template #confirmDialog let-data>
+    <h1 mat-dialog-title class="confirm-title">Delete Customer</h1>
+    <div mat-dialog-content class="confirm-content">
+        <p>Are you sure 
+            you want to delete this Customer?
+        </p>
+    </div>
+    <div mat-dialog-actions class="confirm-actions">
+        <button mat-flat-button color="warn" class="confirm-btn" (click)="dialogRef.close(false)">No</button>
+        <button mat-flat-button color="primary" class="confirm-btn" 
+            cdkFocusInitial (click)="deleteContact()">Yes</button>
+    </div>
+</ng-template>

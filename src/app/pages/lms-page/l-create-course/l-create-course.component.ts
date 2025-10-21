@@ -124,6 +124,7 @@ export class LCreateCourseComponent {
         'F5',
         'CompTIA',
         'Microsoft',
+        'Network & Security'
     ];
 
     initializeCourseForm() {

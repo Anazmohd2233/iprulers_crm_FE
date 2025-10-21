@@ -32,4 +32,9 @@ export class LeadsService {
         const url = `${this.apiUrl}/admin/leads/view/${leads_id}`;
         return this.http.get<any>(url, { params });
     }
+
+     deleteContact(id: any): Observable<any> {
+  const apiUrl = `${this.apiUrl}/admin/leads/delete/${id}`;
+        return this.http.delete<any>(apiUrl);
+    }
 }

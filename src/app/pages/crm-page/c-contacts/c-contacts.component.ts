@@ -1,5 +1,5 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
@@ -23,6 +23,7 @@ import { MatIcon } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { UsersService } from '../../../services/users.service';
 import { CourseService } from '../../../services/course.service';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-c-contacts',
@@ -92,12 +93,17 @@ export class CContactsComponent {
 
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
+    @ViewChild('confirmDialog') confirmDialog!: TemplateRef<any>;
+    dialogRef!: MatDialogRef<any>;
+    selectedId: any;
+
     constructor(
         public themeService: CustomizerSettingsService,
         private contactService: ContactService,
         private toastr: ToastrService,
         private usersService: UsersService,
-        private courseService: CourseService
+        private courseService: CourseService,
+        private dialog: MatDialog
     ) {}
 
     ngOnInit(): void {
@@ -304,6 +310,37 @@ export class CContactsComponent {
             },
             error: (error) => {
                 console.error('API error:', error);
+            },
+        });
+    }
+
+    openConfirmDialog(id: any) {
+        this.selectedId = id;
+        this.dialogRef = this.dialog.open(this.confirmDialog);
+    }
+
+    deleteContact() {
+        this.contactService.deleteContact(this.selectedId).subscribe({
+            next: (response) => {
+                if (response && response.success) {
+                    this.selectedId = null;
+                    this.dialogRef.close();
+                    this.getContactList();
+
+                    if (this.dialogRef) {
+                        this.dialogRef.close();
+                    }
+                    this.toastr.success(
+                       response.message,
+                        'Success'
+                    );
+                } else {
+                    this.toastr.error(response.message, 'Error');
+                }
+            },
+            error: (error) => {
+                console.error('Error Delete contact:', error);
+                this.toastr.error('Error Delete contact', 'Error');
             },
         });
     }
