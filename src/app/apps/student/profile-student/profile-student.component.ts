@@ -235,6 +235,8 @@ export class ProfileStudentComponent implements OnInit {
             payment_type: ['', Validators.required],
             emi_months: [''],
             discount: [''],
+                        advance: [''],
+
 
             start_date: ['', Validators.required],
         });
