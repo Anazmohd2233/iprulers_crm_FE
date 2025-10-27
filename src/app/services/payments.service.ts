@@ -4,11 +4,10 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class PaymentsService {
-
-  private apiUrl = environment.apiBaseUrl;
+    private apiUrl = environment.apiBaseUrl;
 
     constructor(private http: HttpClient) {}
 
@@ -16,8 +15,6 @@ export class PaymentsService {
         const apiUrl = `${this.apiUrl}/admin/payments/create`;
         return this.http.post<any>(apiUrl, formData);
     }
-
-    
 
     updatePayment(formData: any, leads_id: any): Observable<any> {
         const apiUrl = `${this.apiUrl}/admin/payments/update/${leads_id}`;
@@ -29,13 +26,18 @@ export class PaymentsService {
         return this.http.get<any>(url, { params });
     }
 
-     getPaymentById(leads_id: number, params?: HttpParams): Observable<any> {
-         const url = `${this.apiUrl}/admin/leads/view/${leads_id}`;
-         return this.http.get<any>(url, { params });
-     }
+    getPaymentById(leads_id: number, params?: HttpParams): Observable<any> {
+        const url = `${this.apiUrl}/admin/leads/view/${leads_id}`;
+        return this.http.get<any>(url, { params });
+    }
+
+    deleteHistory(leads_id: number): Observable<any> {
+        const url = `${this.apiUrl}/admin/payments/delete/${leads_id}`;
+        return this.http.delete<any>(url);
+    }
 
     deletePayment(leads_id: number): Observable<any> {
-        const url = `${this.apiUrl}/admin/payments/delete/${leads_id}`;
-        return this.http.delete<any>(url);  
+        const url = `${this.apiUrl}/admin/payments/delete_payment/${leads_id}`;
+        return this.http.delete<any>(url);
     }
 }

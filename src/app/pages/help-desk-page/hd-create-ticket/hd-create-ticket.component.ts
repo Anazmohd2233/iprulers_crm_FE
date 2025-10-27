@@ -390,10 +390,15 @@ export class HdCreateTicketComponent {
         });
     }
 
-    private getLeadList(): void {
+    private getLeadList(search?:any): void {
         let params = new HttpParams();
 
         // params = params.set('status', true);
+
+        
+        if (search) {
+            params = params.set('search', search);
+        }
 
         this.leadsService.getLead(this.page, params).subscribe({
             next: (response) => {
@@ -421,7 +426,7 @@ export class HdCreateTicketComponent {
                     this.taskSchool = response.task.school;
                     this.progress =
                         (response.contactCount / task.school?.strength) * 100;
-
+this.getLeadList(task?.leads?.customer_name);
                     // ✅ Patch form values
                     this.taskForm.patchValue({
                         task_title: task.task_title,
