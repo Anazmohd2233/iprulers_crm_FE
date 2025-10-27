@@ -381,23 +381,21 @@ export class InvoicesComponent {
         });
     }
 
-    openConfirmBox(id: any) {
+    openConfirmBox(id: any, type: any) {
         console.log('delete history:', id);
         this.dialogRef = this.dialog.open(this.confirmDialogBox, {
             width: '800',
-            data: { id: id },
+            data: { id: id, type: type },
         });
     }
 
-    confirmDelete(id: any) {
+    confirmDelete(id: any, type: any) {
         console.log('delete id:', id);
 
-
-           this.paymentsService.deletePayment(id).subscribe({
+        if (type === 'HISTORY') {
+            this.paymentsService.deleteHistory(id).subscribe({
                 next: (response) => {
                     if (response.success) {
-                    
-
                         this.isSubmitting = false;
                         this.toastr.success(
                             'History deleted successfully',
@@ -427,6 +425,37 @@ export class InvoicesComponent {
                     console.error('❌ API error:', error);
                 },
             });
+        } else if (type === 'PAYMENT') {
+            this.paymentsService.deletePayment(id).subscribe({
+                next: (response) => {
+                    if (response.success) {
+                        this.isSubmitting = false;
+                        this.toastr.success(
+                            'Payment deleted successfully',
+                            'Success'
+                        );
+                        this.getPaymentList();
+
+                        this.dialog.closeAll();
+                    } else {
+                        this.isSubmitting = false;
+
+                        this.toastr.error(response.message, 'Error');
+                        console.error('❌ delete failed:', response.message);
+                    }
+                },
+                error: (error) => {
+                    this.isSubmitting = false;
+
+                    const errMsg =
+                        error?.error?.message || 'Something went wrong.';
+
+                    this.toastr.error(errMsg, 'Error');
+
+                    console.error('❌ API error:', error);
+                },
+            });
+        }
     }
 
     onSubmitEditPayment(id: any) {

@@ -108,7 +108,7 @@
   </mat-dialog-content>
   <mat-dialog-actions align="end">
     <button mat-button (click)="onCancel()">Cancel</button>
-    <button mat-raised-button color="primary" (click)="confirmDelete(data.id)" cdkFocusInitial> Confirm</button>
+        <button mat-raised-button color="primary" (click)="confirmDelete(data.id , data.type)" cdkFocusInitial> Confirm</button>
   </mat-dialog-actions>
 </ng-template>
 
@@ -308,6 +308,13 @@
                   </i>
                 </a>
 
+                    <a mat-button matTooltip="Edit Payment" (click)="openConfirmBox(element.id,'PAYMENT')"
+                                            matTooltipPosition="above">
+                                            <i class="material-symbols-outlined">
+                                            delete
+                                            </i>
+                                        </a>
+
                 <button mat-icon-button (click)="toggleExpand(element)">
                   <mat-icon matTooltip="Show Details">
                     {{expandedElement === element ? 'expand_less' : 'expand_more'}}
@@ -378,9 +385,10 @@
 
                   <div class="col-1 alert alert-dark">
 
-                    <mat-icon matTooltip="Delete" (click)="openConfirmBox(d.id)">
-                      delete
-                    </mat-icon>
+                   
+                     <mat-icon matTooltip="Delete" (click)="openConfirmBox(d.id,'HISTORY')">
+                                                    delete
+                                                </mat-icon>
                   </div>
 
 
