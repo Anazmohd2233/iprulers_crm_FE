@@ -237,7 +237,7 @@ export class ProfileStudentComponent implements OnInit {
             discount: [''],
             advance: [''],
 
-            start_date: ['', Validators.required],
+            start_date: [''],
         });
 
         this.paymentSubmitForm = this.fb.group({
