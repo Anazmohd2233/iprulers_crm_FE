@@ -19,6 +19,7 @@ import { LeadConversationComponent } from './stats/lead-conversation/lead-conver
 import { RevenueGrowthComponent } from './stats/revenue-growth/revenue-growth.component';
 import { CustomizerSettingsService } from '../../customizer-settings/customizer-settings.service';
 import { DashboardService } from '../../services/dashboard.service';
+import { HttpParams } from '@angular/common/http';
 
 @Component({
     selector: 'app-crm',
@@ -57,8 +58,8 @@ export class CrmComponent {
         this.getDashboardView();
     }
 
-    private getDashboardView(): void {
-        this.dashboardService.getDashboardSummary().subscribe({
+    private getDashboardView(params?:HttpParams): void {
+        this.dashboardService.getDashboardSummary(params).subscribe({
             next: (response) => {
                 if (response && response.success) {
                     this.dashboardData = response.data || [];
@@ -75,4 +76,16 @@ export class CrmComponent {
             },
         });
     }
+
+    onDateRangeChange(range: { start: string; end: string }) {
+    console.log("Received date range in CRM:", range);
+            let params = new HttpParams();
+        if (range.start) params = params.set('start', range.start);
+                if (range.end) params = params.set('end', range.end);
+
+   
+    this.getDashboardView(params);
+   
+}
+
 }

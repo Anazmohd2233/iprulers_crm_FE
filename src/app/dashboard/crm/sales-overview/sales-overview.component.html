@@ -5,32 +5,34 @@
             <h5 class="text-white">
                 Payment Status
             </h5>
-            <!-- <div>
+            <div>
                 <button type="button" mat-button class="card-header-menu-btn" [matMenuTriggerFor]="cardHeaderMenu">
                     {{ dateForm.value.start | date }} &nbsp;|&nbsp; {{ dateForm.value.end | date }}
                 </button>
                 <mat-menu #cardHeaderMenu="matMenu" class="card-header-menu w-25" xPosition="before">
-                    <form [formGroup]="dateForm" style="padding: 15px 5px !important;">
+                    <div  style="padding: 15px 5px !important;">
                         <mat-form-field appearance="outline">
                             <mat-label>Start Date</mat-label>
-                            <input matInput [matDatepicker]="pickerStart" formControlName="start">
-                            <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
-                            <mat-datepicker #pickerStart></mat-datepicker>
+                            <input matInput [matDatepicker]="createdPicker" [(ngModel)]="createdDateFilter"
+                                (dateChange)="filterCreatedDate($event)" placeholder="Date" />
+                            <mat-datepicker-toggle matSuffix [for]="createdPicker"></mat-datepicker-toggle>
+                            <mat-datepicker #createdPicker></mat-datepicker>
                         </mat-form-field><br><br>
 
                         <mat-form-field appearance="outline" class="ms-2">
                             <mat-label>End Date</mat-label>
-                            <input matInput [matDatepicker]="pickerEnd" formControlName="end">
-                            <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
-                            <mat-datepicker #pickerEnd></mat-datepicker>
+                            <input matInput [matDatepicker]="duePicker" [(ngModel)]="filterDueDateValue"
+                                (dateChange)="filterDueDate($event)" placeholder="Date" />
+                            <mat-datepicker-toggle matSuffix [for]="duePicker"></mat-datepicker-toggle>
+                            <mat-datepicker #duePicker></mat-datepicker>
                         </mat-form-field>
-                    </form>
+                    </div>
 
                     <p>Start Date: {{ dateForm.value.start | date }}</p>
                     <p>End Date: {{ dateForm.value.end | date }}</p>
 
                 </mat-menu>
-            </div> -->
+            </div>
         </div>
         <div class="sales-overview-info d-flex align-items-center justify-content-between">
             <div>
@@ -47,15 +49,15 @@
                 <span class="number d-block text-white fw-medium lh-1">
                     {{total_paid}} </span>
 
-              
+
             </div>
 
-              <div>
-                    <span class="sub-title d-block text-white">
-                        Balance </span>
-                    <span class="number d-block text-white fw-medium lh-1">
-                        {{total_balance}} </span>
-                </div>
+            <div>
+                <span class="sub-title d-block text-white">
+                    Balance </span>
+                <span class="number d-block text-white fw-medium lh-1">
+                    {{total_balance}} </span>
+            </div>
             <!-- <div>
                 <span class="sub-title d-block text-white">
                     Today’s Sales
@@ -68,6 +70,6 @@
         <div class="progress-bar-container">
             <div class="progress-bar" [style.width.%]="payment_progress"></div>
         </div>
-     
+
     </mat-card-content>
 </mat-card>

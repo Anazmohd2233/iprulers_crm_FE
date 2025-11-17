@@ -1,4 +1,11 @@
-import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import {
+    Component,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output,
+    SimpleChanges,
+} from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -12,7 +19,7 @@ import {
     FormsModule,
     ReactiveFormsModule,
 } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 // import { BrowserModule } from '@angular/platform-browser';
@@ -36,6 +43,16 @@ import { MatButtonModule } from '@angular/material/button';
 export class SalesOverviewComponent implements OnInit {
     dateForm!: FormGroup;
     @Input() data: any;
+    @Output() dateRangeChange = new EventEmitter<{
+        start: string;
+        end: string;
+    }>();
+
+    filterCreatedDateValue: any;
+    filterDueDateValue: any;
+
+    createdDateFilter: Date | null = null;
+    dueDateFilter: Date | null = null;
 
     constructor(private fb: FormBuilder) {}
 
@@ -48,13 +65,15 @@ export class SalesOverviewComponent implements OnInit {
             start: [firstDay],
             end: [lastDay],
         });
-    }
 
+      
+      
+    }
 
     total_amount: any;
     total_balance: any;
     total_paid: any;
-    payment_progress:number=0;
+    payment_progress: number = 0;
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['data'] && this.data) {
@@ -63,8 +82,34 @@ export class SalesOverviewComponent implements OnInit {
             this.total_amount = this.data?.payments?.total_amount;
             this.total_paid = this.data?.payments?.total_paid;
             this.total_balance = this.data?.payments?.total_balance;
-                        this.payment_progress = this.data?.payments?.payment_progress;
-
+            this.payment_progress = this.data?.payments?.payment_progress;
         }
+    }
+    filterCreatedDate(event: any) {
+        if (event.value) {
+            this.filterCreatedDateValue = formatDate(
+                event.value,
+                'yyyy-MM-dd',
+                'en-US'
+            );
+        }
+         this.dateRangeChange.emit({
+                start: this.filterCreatedDateValue ,
+                end: this.filterDueDateValue,
+            });
+    }
+
+    filterDueDate(event: any) {
+        if (event.value) {
+            this.filterDueDateValue = formatDate(
+                event.value,
+                'yyyy-MM-dd',
+                'en-US'
+            );
+        }
+         this.dateRangeChange.emit({
+                start: this.filterCreatedDateValue ,
+                end: this.filterDueDateValue,
+            });
     }
 }
