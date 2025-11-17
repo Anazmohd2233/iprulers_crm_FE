@@ -20,7 +20,7 @@ import {
     ReactiveFormsModule,
     Validators,
 } from '@angular/forms';
-import { NgFor, NgIf } from '@angular/common';
+import { formatDate, NgFor, NgIf } from '@angular/common';
 import { CustomizerSettingsService } from '../../../customizer-settings/customizer-settings.service';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -33,6 +33,9 @@ import {
 } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
+import { HttpParams } from '@angular/common/http';
+import { StudentService } from '../../../services/student.services';
+import { CourseService } from '../../../services/course.service';
 
 @Component({
     selector: 'app-invoices',
@@ -88,6 +91,17 @@ export class InvoicesComponent {
     student: any;
     expandedElement: any | null = null;
 
+    filterStatusValue: any;
+    filterDueDateValue: any;
+    createdDateFilter: Date | null = null;
+    dueDateFilter: Date | null = null;
+
+    filterCouseValue: any;
+    filterStudentValue: any;
+    searchFieldStudent: string = '';
+
+    searchFieldCourse: string = '';
+
     ELEMENT_DATA: PeriodicElement[] = [];
     displayedColumns: string[] = [
         'student_name',
@@ -112,18 +126,24 @@ export class InvoicesComponent {
     installments: { amount: number; date: string }[] = [];
     courseFee: number = 0;
     balanceAmount: number = 0;
+    students: any;
+    course: any;
 
     constructor(
         public themeService: CustomizerSettingsService,
         private dialog: MatDialog,
         private toastr: ToastrService,
         private paymentsService: PaymentsService,
-        private formBuilder: FormBuilder
+        private formBuilder: FormBuilder,
+        private studentService: StudentService,
+        private courseService: CourseService
     ) {}
 
     ngOnInit(): void {
         // Check if user is authenticated
         this.getPaymentList();
+          this.getCourseList();
+        this.getStudentList();
         this.initializePyamentForm();
     }
 
@@ -240,7 +260,21 @@ export class InvoicesComponent {
     }
 
     private getPaymentList(): void {
-        this.paymentsService.getPayment(this.page).subscribe({
+        let params = new HttpParams();
+
+        if (this.filterCouseValue)
+            params = params.set('course', this.filterCouseValue);
+
+        if (this.filterDueDateValue)
+            params = params.set('dueDate', this.filterDueDateValue);
+
+        if (this.filterStudentValue)
+            params = params.set('student', this.filterStudentValue);
+
+        if (this.filterStatusValue)
+            params = params.set('status', this.filterStatusValue);
+
+        this.paymentsService.getPayment(this.page, params).subscribe({
             next: (response) => {
                 if (response && response.success) {
                     const payments = response.data?.payment || [];
@@ -501,6 +535,106 @@ export class InvoicesComponent {
             });
         } else {
             this.toastr.error('Please fill all required fields.', 'Error');
+        }
+    }
+
+    filterStatus(event: any) {
+        this.filterStatusValue = event.value;
+        this.getPaymentList();
+    }
+
+    resetFilters() {
+        this.createdDateFilter = null;
+        this.dueDateFilter = null;
+
+        this.filterDueDateValue = null;
+
+        this.getPaymentList();
+    }
+
+    filterCourse(event: any) {
+        this.filterCouseValue = event.value;
+        this.getPaymentList();
+    }
+
+    filterStudent(event: any) {
+        this.filterStudentValue = event.value;
+        this.getPaymentList();
+    }
+
+    searchStudent() {
+        console.log('student search keyword', this.searchFieldStudent);
+        this.getStudentList(this.searchFieldStudent);
+    }
+    clearSearchStudent() {
+        this.searchFieldStudent = ''; // Clear the input by setting the property to an empty string
+         this.getStudentList();
+        this.getPaymentList();
+       
+    }
+
+    searchCourse() {
+        console.log('course search keyword', this.searchFieldCourse);
+        this.getCourseList(this.searchFieldCourse);
+    }
+    clearSearchCourse() {
+        this.searchFieldCourse = ''; // Clear the input by setting the property to an empty string
+                this.getCourseList();
+
+        this.getPaymentList();
+    }
+
+    private getStudentList(search?: any): void {
+        let params = new HttpParams();
+
+        if (search) {
+            params = params.set('search', search);
+        }
+
+        this.studentService.getStudent(this.page, params).subscribe({
+            next: (response) => {
+                if (response && response.success) {
+                    this.students = response.data?.customer || [];
+                } else {
+                    // this.toastr.error('Failed to load users', 'Failed');
+                    console.error('Failed to load student:', response?.message);
+                }
+            },
+            error: (error) => {
+                console.error('API error:', error);
+            },
+        });
+    }
+
+    private getCourseList(search?: any): void {
+        let params = new HttpParams();
+
+        if (search) {
+            params = params.set('search', search);
+        }
+        this.courseService.getCourse(this.page, params).subscribe({
+            next: (response) => {
+                if (response && response.success) {
+                    this.course = response.data?.services || [];
+                } else {
+                    // this.toastr.error('Failed to load Contact', 'Failed');
+                    console.error('Failed to load courses:', response?.message);
+                }
+            },
+            error: (error) => {
+                console.error('API error:', error);
+            },
+        });
+    }
+
+       filterDueDate(event: any) {
+        if (event.value) {
+            this.filterDueDateValue = formatDate(
+                event.value,
+                'yyyy-MM-dd',
+                'en-US'
+            );
+        this.getPaymentList();
         }
     }
 }

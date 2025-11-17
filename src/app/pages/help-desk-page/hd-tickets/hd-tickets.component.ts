@@ -1,4 +1,4 @@
-import { NgIf } from '@angular/common';
+import { formatDate, NgIf } from '@angular/common';
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -20,6 +20,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { TaskService } from '../../../services/task.service';
 import { HttpParams } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
     selector: 'app-hd-tickets',
@@ -42,6 +44,10 @@ import { HttpParams } from '@angular/common/http';
         NgIf,
         MatTooltipModule,
         MatProgressBarModule,
+            FormsModule,
+        ReactiveFormsModule,
+                MatIconModule,
+
     ],
     
     templateUrl: './hd-tickets.component.html',
@@ -67,11 +73,21 @@ export class HdTicketsComponent implements OnInit {
 
     createdDateFilter: Date | null = null;
     dueDateFilter: Date | null = null;
+        logDateFilter: Date | null = null;
+
     priorityFilter: string = '';
     statusFilter: string = '';
         page: number = 1;
     pageSize: number = 20;
     totalRecords: number = 0;
+        searchField: string = ''; // Initialize the property
+    filterCreatedDateValue: any;
+    filterDueDateValue: any;
+        filterlogDateValue: any;
+
+      filterStatusValue: any;
+       filterPriorityValue: any;
+
 
     constructor(
         public themeService: CustomizerSettingsService,
@@ -94,8 +110,26 @@ export class HdTicketsComponent implements OnInit {
     }
 
     loadTasks(): void {
+            let params = new HttpParams();
+        if (this.searchField) params = params.set('search', this.searchField);
+
+        if (this.filterCreatedDateValue)
+            params = params.set('createdDate', this.filterCreatedDateValue);
+
+        if (this.filterDueDateValue)
+            params = params.set('dueDate', this.filterDueDateValue);
+
+            if (this.filterlogDateValue)
+            params = params.set('logDate', this.filterlogDateValue);
+
+               if (this.filterStatusValue)
+            params = params.set('status', this.filterStatusValue);
+
+                         if (this.filterPriorityValue)
+            params = params.set('priority', this.filterPriorityValue);
+     
         this.isLoading = true;
-        this.taskService.getTasks(this.page).subscribe({
+        this.taskService.getTasks(this.page,params).subscribe({
             next: (response: any) => {
                                                         this.totalRecords = response.data?.total;
 
@@ -129,14 +163,15 @@ export class HdTicketsComponent implements OnInit {
             ticketID: `#${task.id || 'N/A'}`,
             title: task.task_title || 'No Title',
             // type: task.task_type,
-            createdDate: task.createdAt
-                ? new Date(task.createdAt).toLocaleDateString()
-                : 'N/A',
+      createdDate: task.createdAt
+  ? new Date(task.createdAt).toLocaleDateString("en-GB")
+  : "N/A",
+
             dueDate: task.due_date
-                ? new Date(task.due_date).toLocaleDateString()
+                ? new Date(task.due_date).toLocaleDateString("en-GB")
                 : 'N/A',
                 lead: task?.leads?.customer_name || 'N/A',
-            priority: task.priority || 'Medium',
+            priority: task.priority || 'N/A',
             // school:task?.school?.school_name || 'N/A',
 
             status: task.status,
@@ -147,20 +182,9 @@ export class HdTicketsComponent implements OnInit {
         };
     }
 
-    filterCreatedDate(event: any) {
-        this.createdDateFilter = event.value;
-        this.applyAllFilters();
-    }
 
-    filterDueDate(event: any) {
-        this.dueDateFilter = event.value;
-        this.applyAllFilters();
-    }
 
-    filterPriority(event: any) {
-        this.priorityFilter = event.value;
-        this.applyAllFilters();
-    }
+
 
     applyAllFilters() {
         this.dataSource.filter = '' + Math.random(); // Trigger table refresh
@@ -205,23 +229,13 @@ export class HdTicketsComponent implements OnInit {
         };
     }
 
-    filterStatus(event: any) {
-        this.statusFilter = event.value;
-        this.applyAllFilters();
-    }
 
-    resetFilters() {
-        this.createdDateFilter = null;
-        this.dueDateFilter = null;
-        this.priorityFilter = '';
-        this.statusFilter = '';
-        this.applyAllFilters();
-    }
 
-    applyFilter(event: Event) {
-        const filterValue = (event.target as HTMLInputElement).value;
-        console.log('filterValue => ???? ', filterValue.trim().toLowerCase());
-        this.dataSource.filter = filterValue.trim().toLowerCase();
+    applyFilter() {
+        // const filterValue = (event.target as HTMLInputElement).value;
+        // this.dataSource.filter = filterValue.trim().toLowerCase();
+
+        this.loadTasks();
     }
 
     viewTask(ticketId: string): void {
@@ -238,6 +252,67 @@ export class HdTicketsComponent implements OnInit {
         console.log('Editing task:', taskId);
         // Navigate to task edit page
         this.router.navigate(['/task/edit-ticket', taskId]);
+    }
+    
+    clearSearch() {
+                this.searchField = ''; // Clear the input by setting the property to an empty string
+
+        this.loadTasks();
+
+    }
+        filterCreatedDate(event: any) {
+        if (event.value) {
+            this.filterCreatedDateValue = formatDate(
+                event.value,
+                'yyyy-MM-dd',
+                'en-US'
+            );
+            this.loadTasks();
+        }
+    }
+
+    filterDueDate(event: any) {
+        if (event.value) {
+            this.filterDueDateValue = formatDate(
+                event.value,
+                'yyyy-MM-dd',
+                'en-US'
+            );
+            this.loadTasks();
+        }
+    }
+
+       filterlogDate(event: any) {
+        if (event.value) {
+            this.filterlogDateValue = formatDate(
+                event.value,
+                'yyyy-MM-dd',
+                'en-US'
+            );
+            this.loadTasks();
+        }
+    }
+    
+    resetFilters() {
+        this.createdDateFilter = null;
+        this.dueDateFilter = null;
+           this.logDateFilter = null;
+
+        this.filterCreatedDateValue = null;
+        this.filterDueDateValue = null;
+                this.filterlogDateValue = null;
+
+
+        this.loadTasks();
+    }
+        filterStatus(event: any) {
+        this.filterStatusValue = event.value;
+        this.loadTasks();
+    }
+
+      filterPriority(event: any) {
+        this.filterPriorityValue = event.value;
+        this.loadTasks();
     }
 }
 

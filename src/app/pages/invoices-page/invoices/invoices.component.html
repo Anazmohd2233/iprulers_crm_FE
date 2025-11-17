@@ -147,24 +147,71 @@
           (keyup)="applyFilter($event)" #input>
       </form> -->
     </mat-card-title>
-    <mat-card-subtitle>
-      <!-- <button type="button" mat-button class="card-header-menu-btn" [matMenuTriggerFor]="cardHeaderMenu">
-        This Week
-      </button>
-      <mat-menu #cardHeaderMenu="matMenu" class="card-header-menu" xPosition="before">
-        <button mat-menu-item>
-          This Day
-        </button>
-        <button mat-menu-item>
-          This Week
-        </button>
-        <button mat-menu-item>
-          This Month
-        </button>
-        <button mat-menu-item>
-          This Year
-        </button>
-      </mat-menu> -->
+        <mat-card-subtitle>
+
+           <mat-form-field appearance="fill" class="small-form-field m-2">
+                <mat-label>Student</mat-label>
+                <mat-select (selectionChange)="filterStudent($event)">
+                    <mat-form-field appearance="outline" class="w-80">
+
+                        <input [ngModelOptions]="{standalone: true}" matInput [(ngModel)]="searchFieldStudent"
+                            (keyup)="searchStudent()" placeholder="search Student...">
+
+                        <!-- Clear button -->
+                        <button *ngIf="searchFieldStudent" mat-icon-button matSuffix (click)="clearSearchStudent()">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </mat-form-field>
+                    <mat-option value="">All</mat-option>
+                    <mat-option *ngFor="let s of students" [value]="s.id">{{ s.firstName }} {{ s.lastName }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+
+
+           <mat-form-field appearance="fill" class="small-form-field m-2">
+                <mat-label>Course</mat-label>
+                <mat-select (selectionChange)="filterCourse($event)">
+                    <mat-form-field appearance="outline" class="w-80">
+
+                        <input [ngModelOptions]="{standalone: true}" matInput [(ngModel)]="searchFieldCourse"
+                            (keyup)="searchCourse()" placeholder="search Course...">
+
+                        <!-- Clear button -->
+                        <button *ngIf="searchFieldCourse" mat-icon-button matSuffix (click)="clearSearchCourse()">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </mat-form-field>
+                    <mat-option value="">All</mat-option>
+                    <mat-option *ngFor="let s of course" [value]="s.id">{{ s.service_name }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+
+   <mat-form-field appearance="fill" class="small-form-field m-2">
+                <mat-label>Status</mat-label>
+                <mat-select (selectionChange)="filterStatus($event)">
+                    <mat-option value="">All</mat-option>
+                    <mat-option value="true">Paid</mat-option>
+                    <mat-option value="false">Unpaid</mat-option>
+              
+                </mat-select>
+            </mat-form-field>
+
+               <mat-form-field appearance="fill" class="small-form-field m-2">
+                <mat-label>Due Date</mat-label>
+                <input matInput [matDatepicker]="duePicker" [(ngModel)]="dueDateFilter"
+                    (dateChange)="filterDueDate($event)" placeholder="Date" />
+                <mat-datepicker-toggle matSuffix [for]="duePicker"></mat-datepicker-toggle>
+                <mat-datepicker #duePicker></mat-datepicker>
+            </mat-form-field>
+             <button mat-button class="add-new-btn" color="primary" (click)="resetFilters()"
+                style="height: 36px; padding: 0 10px; min-width: auto; margin-right: 15px;">
+                <i class="material-symbols-outlined" style="font-size: 14px;"> backspace </i>
+                Clear
+            </button>
+
+
     </mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>

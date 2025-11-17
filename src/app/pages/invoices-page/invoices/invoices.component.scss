@@ -322,3 +322,18 @@
   background-color: #28a745 !important; /* Bootstrap green */
   color: #fff !important;
 }
+
+  @media (max-width: 768px) {
+    .filter-container {
+      flex-direction: column !important;
+      align-items: stretch !important;
+  
+      .small-form-field,
+      button,
+      a.add-new-btn {
+        width: 100%;
+        margin-right: 6px;
+        margin-bottom: 8px;
+      }
+    }
+  }
