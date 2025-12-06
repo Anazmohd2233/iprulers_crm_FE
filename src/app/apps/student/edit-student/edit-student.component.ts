@@ -22,7 +22,7 @@ import { CustomizerSettingsService } from '../../../customizer-settings/customiz
 import { StudentService } from '../../../services/student.services';
 import { ToastrService } from 'ngx-toastr';
 import { CourseService } from '../../../services/course.service';
-import { CountryCode, LeadStatus } from '../../../services/enums';
+import { CountryCode, CountryList, LeadStatus } from '../../../services/enums';
 
 @Component({
     selector: 'app-edit-student',
@@ -56,6 +56,11 @@ export class EditStudentComponent implements OnInit {
         name: key.replace(/_/g, ' '), // e.g. UNITED_STATES → "UNITED STATES"
         dial_code: value,
     }));
+
+     countryNames = Object.entries(CountryList).map(([key, value]) => ({
+    name: key, // e.g. UNITED_STATES → "UNITED STATES"
+    value: value,
+  }));
 
     // Text Editor
     editor!: Editor;

@@ -179,9 +179,12 @@
                         <label class="main-label d-block lh-1 text-black">Residence Country *</label>
                         <mat-form-field>
                             <mat-label>Select country</mat-label>
-                            <mat-select formControlName="residenceCountry">
-                                <mat-option value="uae">United Arab Emirates</mat-option>
-                            </mat-select>
+                           
+               <mat-select formControlName="residenceCountry">
+                <mat-option *ngFor="let c of countryNames" [value]="c.value">
+                  {{ c.name }} ({{ c.value }})
+                </mat-option>
+              </mat-select>
                         </mat-form-field>
                         <div *ngIf="studentForm.get('residenceCountry')?.touched && studentForm.get('residenceCountry')?.invalid"
                             class="text-danger">

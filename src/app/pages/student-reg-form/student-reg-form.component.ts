@@ -21,7 +21,7 @@ import { NgxEditorModule, Editor, Toolbar } from 'ngx-editor';
 import { CustomizerSettingsService } from '../../customizer-settings/customizer-settings.service';
 import { StudentService } from '../../services/student.services';
 import { ToastrService } from 'ngx-toastr';
-import { CountryCode } from '../../services/enums';
+import { CountryCode, CountryList } from '../../services/enums';
 
 @Component({
     selector: 'app-student-reg-form',
@@ -63,6 +63,11 @@ export class StudentRegFormComponent {
     countryCodes = Object.entries(CountryCode).map(([key, value]) => ({
     name: key.replace(/_/g, ' '), // e.g. UNITED_STATES → "UNITED STATES"
     dial_code: value,
+  }));
+
+     countryNames = Object.entries(CountryList).map(([key, value]) => ({
+    name: key, // e.g. UNITED_STATES → "UNITED STATES"
+    value: value,
   }));
 
     // Text Editor
