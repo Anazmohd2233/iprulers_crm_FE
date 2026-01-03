@@ -1,37 +1,67 @@
 
-<app-stats [data]="dashboardData"></app-stats>
+<!-- <app-stats [data]="dashboardData"></app-stats> -->
+ <div class="row">
+    <div class="col-lg-6 col-xxl-3">
+
+        <app-strocked-circular-gauge-radialbar-chart />
+
+    </div>
+    <div class="col-lg-6 col-xxl-3">
+
+        <app-gradient-radialbar-chart />
+
+    </div>
+
+    <div class="col-lg-6 col-xxl-3">
+
+         <app-basic-radialbar-chart />
+
+    </div>
+        <div   class="col-lg-6 col-xxl-3">
+    
+         <app-multiple-radialbar-chart-2 />
+
+    </div>
+ </div>
 
 <div class="row">
 
-    <div class="col-lg-12 col-xxxl-4">
+    <div class="col-lg-12 col-xxxl-6">
         <div class="row">
             <div class="col-lg-12 col-xxxl-12">
 
-                <app-sales-overview [data]="dashboardData"   (dateRangeChange)="onDateRangeChange($event)"/>
+                <!-- <app-sales-overview [data]="dashboardData"   (dateRangeChange)="onDateRangeChange($event)"/> -->
+                 <app-revenue />
        
 
             </div>
-            <div class=" col-xxxl-12">
+            <div class="col-lg-12 col-xxxl-12">
 
-                <app-client-payment-status />
+                <!-- <app-pie-donut-chart /> -->
+                 <app-sales-overview [data]="dashboardData"   (dateRangeChange)="onDateRangeChange($event)"/>
+
 
             </div>
         </div>
     </div>
-    <div class="col-lg-12 col-xxxl-8">
-
-        <app-recent-leads />
-
-    </div>
-    <div class="col-lg-6 col-xxl-5">
-
-        <app-top-customers />
+    <div class="col-lg-12 col-xxxl-6">
+        <!-- <app-total-sales /> -->
+        <app-spline-area-chart />
 
     </div>
-    <div class="col-lg-6 col-xxl-7">
+    <div class="col-lg-6 col-xxl-4">
 
-        <app-to-do-list />
+        <!-- <app-pie-donut-chart /> -->
+         <app-pie-donut-chart /> 
 
+    </div>
+    <div class="col-lg-6 col-xxl-4">
+
+        <app-custom-angle-circle-radialbar-chart />
+
+    </div>
+    <div class="col-lg-12 col-xxl-4">
+        <app-multiple-radialbar-chart />
     </div>
 
     

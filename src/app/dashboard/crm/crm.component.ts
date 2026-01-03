@@ -20,6 +20,18 @@ import { RevenueGrowthComponent } from './stats/revenue-growth/revenue-growth.co
 import { CustomizerSettingsService } from '../../customizer-settings/customizer-settings.service';
 import { DashboardService } from '../../services/dashboard.service';
 import { HttpParams } from '@angular/common/http';
+import { TotalSalesComponent } from './total-sales/total-sales.component';
+import { SplineAreaChartComponent } from './spline-area-chart/spline-area-chart.component';
+import { PieDonutChartComponent } from './pie-donut-chart/pie-donut-chart.component';
+import { RevenueComponent } from './revenue/revenue.component';
+import { CustomAngleCircleRadialbarChartComponent } from './custom-angle-circle-radialbar-chart/custom-angle-circle-radialbar-chart.component';
+import { MultipleRadialbarChartComponent } from './multiple-radialbar-chart/multiple-radialbar-chart.component';
+import { StrockedCircularGaugeRadialbarChartComponent } from './strocked-circular-gauge-radialbar-chart/strocked-circular-gauge-radialbar-chart.component';
+import { GradientRadialbarChartComponent } from './gradient-radialbar-chart/gradient-radialbar-chart.component';
+import { SemiCircularGaugeRadialbarChartComponent } from './semi-circular-gauge-radialbar-chart/semi-circular-gauge-radialbar-chart.component';
+import { NgFor } from '@angular/common';
+import { BasicRadialbarChartComponent } from './basic-radialbar-chart/basic-radialbar-chart.component';
+import { MultipleRadialbarChartComponent2 } from './multi-radialbar-chart-2/multiple-radialbar-chart.component';
 
 @Component({
     selector: 'app-crm',
@@ -42,6 +54,17 @@ import { HttpParams } from '@angular/common/http';
         ActiveUsersComponent,
         LeadConversationComponent,
         RevenueGrowthComponent,
+        TotalSalesComponent,
+        SplineAreaChartComponent,
+        BasicRadialbarChartComponent,
+        PieDonutChartComponent,
+        RevenueComponent,
+        CustomAngleCircleRadialbarChartComponent,
+        MultipleRadialbarChartComponent,
+        MultipleRadialbarChartComponent2,
+        StrockedCircularGaugeRadialbarChartComponent,
+        GradientRadialbarChartComponent,
+        SemiCircularGaugeRadialbarChartComponent,
     ],
     templateUrl: './crm.component.html',
     styleUrl: './crm.component.scss',
