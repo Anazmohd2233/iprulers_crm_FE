@@ -54,7 +54,7 @@ export class MultipleRadialbarChartService {
                         offsetX: -20,
                         floating: true,
                         position: "bottom",
-                        fontSize: "11px",
+                        fontSize: "10px",
                         labels: {
                             colors: '#5B5B98'
                         },
