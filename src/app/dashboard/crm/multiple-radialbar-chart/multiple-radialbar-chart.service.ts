@@ -50,17 +50,17 @@ export class MultipleRadialbarChartService {
                     ],
                      legend: {
                         show: true,
-                        offsetY: 10,
+                        offsetY: 15 ,
                         offsetX: 0,
                         floating: true,
                         position: "bottom",
-                        fontSize: "14px",
+                        fontSize: "10px",
                         labels: {
                             colors: '#5B5B98'
                         },
-                        formatter: function(seriesName:any, opts:any) {
-                            return seriesName + ":  " + opts.w.globals.series[opts.seriesIndex];
-                        }
+                        // formatter: function(seriesName:any, opts:any) {
+                        //     return seriesName + ":  " + opts.w.globals.series[opts.seriesIndex];
+                        // }
                     }
                 };
 

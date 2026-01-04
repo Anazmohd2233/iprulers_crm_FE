@@ -31,7 +31,7 @@ export class RevenueService {
                         }
                     ],
                     chart: {
-                        height: 205,
+                        height: 360,
                         type: "area",
                         toolbar: {
                             show: false
@@ -83,7 +83,7 @@ export class RevenueService {
                         }
                     },
                     yaxis: {
-                        tickAmount: 3,
+                        tickAmount: 5,
                         labels: {
                             style: {
                                 colors: "#919aa3",

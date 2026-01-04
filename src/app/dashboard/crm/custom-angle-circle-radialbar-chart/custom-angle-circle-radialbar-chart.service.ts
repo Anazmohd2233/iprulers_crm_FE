@@ -47,7 +47,7 @@ export class CustomAngleCircleRadialbarChartService {
                         }
                     },
                     colors: [
-                        "#757FEF", "#9EA5F4",  "#F1F2FD" //"#C8CCF9",
+                        "#757FEF", "#9EA5F4",  "#C8CCF9" //"#F1F2FD",
                     ],
                     labels: [
                         "Contact", "Lead", "Student"

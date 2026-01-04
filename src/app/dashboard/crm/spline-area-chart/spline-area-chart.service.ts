@@ -31,7 +31,7 @@ export class SplineAreaChartService {
                         }
                     ],
                     chart: {
-                        height: 350,
+                        height: 330,
                         type: "area",
                         toolbar: {
                             show: true

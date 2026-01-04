@@ -32,6 +32,7 @@ import { SemiCircularGaugeRadialbarChartComponent } from './semi-circular-gauge-
 import { NgFor } from '@angular/common';
 import { BasicRadialbarChartComponent } from './basic-radialbar-chart/basic-radialbar-chart.component';
 import { MultipleRadialbarChartComponent2 } from './multi-radialbar-chart-2/multiple-radialbar-chart.component';
+import { BasicPolarChartComponent } from './basic-polar-chart/basic-polar-chart.component';
 
 @Component({
     selector: 'app-crm',
@@ -65,6 +66,7 @@ import { MultipleRadialbarChartComponent2 } from './multi-radialbar-chart-2/mult
         StrockedCircularGaugeRadialbarChartComponent,
         GradientRadialbarChartComponent,
         SemiCircularGaugeRadialbarChartComponent,
+        BasicPolarChartComponent,
     ],
     templateUrl: './crm.component.html',
     styleUrl: './crm.component.scss',

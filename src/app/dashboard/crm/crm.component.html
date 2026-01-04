@@ -3,23 +3,28 @@
  <div class="row">
     <div class="col-lg-6 col-xxl-3">
 
-        <app-strocked-circular-gauge-radialbar-chart />
+         <!-- <app-basic-radialbar-chart /> -->
+        <app-multiple-radialbar-chart />
 
     </div>
     <div class="col-lg-6 col-xxl-3">
 
-        <app-gradient-radialbar-chart />
+        <!-- <app-strocked-circular-gauge-radialbar-chart /> -->
+        <app-custom-angle-circle-radialbar-chart />
+
 
     </div>
-
     <div class="col-lg-6 col-xxl-3">
 
-         <app-basic-radialbar-chart />
+        <!-- <app-gradient-radialbar-chart /> -->
+        <app-pie-donut-chart /> 
 
     </div>
-        <div   class="col-lg-6 col-xxl-3">
+
+    <div   class="col-lg-6 col-xxl-3">
     
-         <app-multiple-radialbar-chart-2 />
+         <!-- <app-multiple-radialbar-chart-2 /> -->
+          <app-basic-polar-chart />
 
     </div>
  </div>
@@ -35,13 +40,12 @@
        
 
             </div>
-            <div class="col-lg-12 col-xxxl-12">
+            <!-- <div class="col-lg-12 col-xxxl-12">
 
-                <!-- <app-pie-donut-chart /> -->
                  <app-sales-overview [data]="dashboardData"   (dateRangeChange)="onDateRangeChange($event)"/>
 
 
-            </div>
+            </div> -->
         </div>
     </div>
     <div class="col-lg-12 col-xxxl-6">
@@ -49,19 +53,22 @@
         <app-spline-area-chart />
 
     </div>
-    <div class="col-lg-6 col-xxl-4">
+    <div class="col-lg-6 col-xxl-3">
 
-        <!-- <app-pie-donut-chart /> -->
-         <app-pie-donut-chart /> 
-
-    </div>
-    <div class="col-lg-6 col-xxl-4">
-
-        <app-custom-angle-circle-radialbar-chart />
+         <!-- <app-pie-donut-chart />  -->
 
     </div>
-    <div class="col-lg-12 col-xxl-4">
-        <app-multiple-radialbar-chart />
+    <div class="col-lg-6 col-xxl-3">
+
+
+    </div>
+    <div class="col-lg-6 col-xxl-3">
+
+        <!-- <app-custom-angle-circle-radialbar-chart /> -->
+
+    </div>
+    <div class="col-lg-12 col-xxl-3">
+        <!-- <app-multiple-radialbar-chart /> -->
     </div>
 
     
