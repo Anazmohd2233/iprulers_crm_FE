@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
@@ -10,12 +10,29 @@ import { RevenueService } from './revenue.service';
     templateUrl: './revenue.component.html',
     styleUrl: './revenue.component.scss'
 })
-export class RevenueComponent {
+export class RevenueComponent implements OnChanges, AfterViewInit {
+
+    @Input() graphData: any;
+    private viewReady = false;
     
     constructor(private revenueService: RevenueService) {}
 
-    ngOnInit(): void {
-        this.revenueService.loadChart();
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes['graphData']) {
+          this.revenueService.loadChart(this.graphData);
+        }
     }
+
+    ngOnInit(): void {
+        // this.revenueService.loadChart();
+    }
+
+    ngAfterViewInit(): void {
+    this.viewReady = true;
+
+    if (this.graphData) {
+      this.revenueService.loadChart(this.graphData);
+    }
+  }
 
 }

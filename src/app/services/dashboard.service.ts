@@ -24,5 +24,20 @@ export class DashboardService {
         return this.http.get<any>(url, { params });
     }
 
+    getDashboardDetails(month?: string): Observable<any> {
+        let params = new HttpParams();
+        if (month) {
+             params = params.set('month', String(month));
+        }
+        return this.http.get<any>(`${this.apiUrl}/admin/dashboard/details`, {params})
+    }
+
+    getDashboardPayment(week?: string | number): Observable<any> {
+        let params = new HttpParams();
+        if (week) {
+             params = params.set('next_week', String(week));
+        }
+        return this.http.get<any>(`${this.apiUrl}/admin/dashboard/payments`, {params})
+    }
 
 }

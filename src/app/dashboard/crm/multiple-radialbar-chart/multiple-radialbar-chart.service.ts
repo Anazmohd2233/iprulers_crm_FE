@@ -2,75 +2,121 @@ import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class MultipleRadialbarChartService {
 
-    private isBrowser: boolean;
+  private isBrowser: boolean;
+  private chart: any;
 
-    constructor(@Inject(PLATFORM_ID) private platformId: any) {
-        this.isBrowser = isPlatformBrowser(this.platformId);
+  constructor(@Inject(PLATFORM_ID) platformId: any) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
+
+  async loadChart(data: any): Promise<void> {
+    if (!this.isBrowser) return;
+
+    // 🔒 Guard
+    if (!data) {
+      console.warn('MultipleRadialbarChartService: invalid data', data);
+      return;
     }
 
-    async loadChart(): Promise<void> {
-        if (this.isBrowser) {
-            try {
-                // Dynamically import ApexCharts
-                const ApexCharts = (await import('apexcharts')).default;
+    try {
+      const ApexCharts = (await import('apexcharts')).default;
 
-                // Define chart options
-                const options = {
-                    series: [44, 55, 67, 83],
-                    chart: {
-                        height: 325,
-                        type: "radialBar"
-                    },
-                    plotOptions: {
-                        radialBar: {
-                            dataLabels: {
-                                name: {
-                                    fontSize: "22px"
-                                },
-                                value: {
-                                    fontSize: "16px"
-                                },
-                                total: {
-                                    show: true,
-                                    label: "Total",
-                                    formatter: function(w:any) {
-                                        return "249";
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    labels: ["Total", "Open", "Ongoing", "Completed"],
-                    colors: [
-                        "#0f79f3", "#ffb264", "#e74c3c", "#00cae3"
-                    ],
-                     legend: {
-                        show: true,
-                        offsetY: 15 ,
-                        offsetX: 0,
-                        floating: true,
-                        position: "bottom",
-                        fontSize: "10px",
-                        labels: {
-                            colors: '#5B5B98'
-                        },
-                        // formatter: function(seriesName:any, opts:any) {
-                        //     return seriesName + ":  " + opts.w.globals.series[opts.seriesIndex];
-                        // }
-                    }
-                };
+      const series = [
+        data.open ?? 0,
+        data.ongoing ?? 0,
+        data.completed ?? 0
+      ];
 
-                // Initialize and render the chart
-                const chart = new ApexCharts(document.querySelector('#multiple_radialbar_chart'), options);
-                chart.render();
-            } catch (error) {
-                console.error('Error loading ApexCharts:', error);
+      const options = {
+        series,
+        chart: {
+          height: 325,
+          type: 'radialBar'
+        },
+
+        labels: ['Open', 'Ongoing', 'Completed'],
+
+        colors: ['#0f79f3', '#ffb264', '#e74c3c'],
+
+        plotOptions: {
+          radialBar: {
+            dataLabels: {
+              name: {
+                fontSize: '22px'
+              },
+              value: {
+                fontSize: '16px',
+                formatter: (_val: number, opts: any) => {
+                  const actual = opts.w.globals?.series[opts.seriesIndex];
+                  const percent = opts.w.globals?.seriesPercent[opts.seriesIndex];
+                  return `${actual} (${percent.toFixed(1)}%)`;
+                }
+              },
+              total: {
+                show: true,
+                label: 'Total',
+                formatter: (w: any) =>
+                  w.globals?.seriesTotals.reduce(
+                    (a: number, b: number) => a + b,
+                    0
+                  )
+              }
             }
-        }
-    }
+          }
+        },
 
+        tooltip: {
+          y: {
+            formatter: (_val: number, opts: any) => {
+              const actual = opts.w.globals?.series[opts.seriesIndex];
+              const percent = opts.w.globals?.seriesPercent[opts.seriesIndex];
+              return `${actual} (${percent.toFixed(1)}%)`;
+            }
+          }
+        },
+
+        legend: {
+          show: true,
+          floating: true,
+          position: 'bottom',
+          fontSize: '12px',
+          labels: {
+            colors: '#5B5B98'
+          },
+          formatter: (name: string, opts: any) =>
+            `${name}: ${opts.w.globals?.series[opts.seriesIndex]}`
+        }
+      };
+
+      const el = document.querySelector('#multiple_radialbar_chart');
+      if (!el) {
+        console.warn('MultipleRadialbarChartService: container not found');
+        return;
+      }
+
+      if (this.chart) {
+        this.chart.destroy();
+      }
+
+      this.chart = new ApexCharts(el, options);
+      this.chart.render();
+
+    } catch (error) {
+      console.error('MultipleRadialbarChartService error:', error);
+    }
+  }
+
+  updateFromObject(data: any): void {
+    if (!this.chart) return;
+
+    this.chart.updateSeries([
+      data.open ?? 0,
+      data.ongoing ?? 0,
+      data.completed ?? 0
+    ]);
+  }
 }

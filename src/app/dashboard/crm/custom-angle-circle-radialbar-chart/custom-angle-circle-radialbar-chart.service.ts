@@ -7,12 +7,13 @@ import { isPlatformBrowser } from '@angular/common';
 export class CustomAngleCircleRadialbarChartService {
 
     private isBrowser: boolean;
+    private chart: any;
 
     constructor(@Inject(PLATFORM_ID) private platformId: any) {
         this.isBrowser = isPlatformBrowser(this.platformId);
     }
 
-    async loadChart(): Promise<void> {
+    async loadChart(data: any): Promise<void> {
         if (this.isBrowser) {
             try {
                 // Dynamically import ApexCharts
@@ -20,7 +21,12 @@ export class CustomAngleCircleRadialbarChartService {
 
                 // Define chart options
                 const options = {
-                    series: [100, 90, 80],
+                    // series: [100, 90, 80],
+                    series: [
+                        data?.contacts ?? 0,
+                        data?.leads ?? 0,
+                        data?.customer ?? 0
+                    ],
                     chart: {
                         height: 325,
                         type: "radialBar"
@@ -41,7 +47,9 @@ export class CustomAngleCircleRadialbarChartService {
                                     show: false
                                 },
                                 value: {
-                                    show: false
+                                    show: false,
+                                                                        formatter: (val: number) => val.toString() // NO %
+
                                 }
                             }
                         }
@@ -69,12 +77,30 @@ export class CustomAngleCircleRadialbarChartService {
                 };
 
                 // Initialize and render the chart
-                const chart = new ApexCharts(document.querySelector('#custom_angle_circle_radialbar_chart'), options);
-                chart.render();
+                // const chart = new ApexCharts(document.querySelector('#custom_angle_circle_radialbar_chart'), options);
+                // chart.render();
+                this.chart = new ApexCharts(document.querySelector('#custom_angle_circle_radialbar_chart'), options);
+                this.chart.render();
             } catch (error) {
                 console.error('Error loading ApexCharts:', error);
             }
         }
+    }
+
+    updateSeries(series: number[]): void {
+        if (this.chart) {
+        this.chart.updateSeries(series);
+        }
+    }
+
+    updateFromObject(data: any): void {
+        if (!this.chart) return;
+
+        this.chart.updateSeries([
+            data?.contacts ?? 0,
+            data?.leads ?? 0,
+            data?.customer ?? 0
+        ]);
     }
 
 }

@@ -73,6 +73,8 @@ import { BasicPolarChartComponent } from './basic-polar-chart/basic-polar-chart.
 })
 export class CrmComponent {
     dashboardData: any;
+    dashboardDetails: any;
+    dashboardPayments: any;
 
     constructor(
         public themeService: CustomizerSettingsService,
@@ -81,6 +83,8 @@ export class CrmComponent {
 
     ngOnInit(): void {
         this.getDashboardView();
+        this.getDashboardDetails();
+        this.getDashboardPayment();
     }
 
     private getDashboardView(params?:HttpParams): void {
@@ -103,14 +107,36 @@ export class CrmComponent {
     }
 
     onDateRangeChange(range: { start: string; end: string }) {
-    console.log("Received date range in CRM:", range);
-            let params = new HttpParams();
-        if (range.start) params = params.set('start', range.start);
-                if (range.end) params = params.set('end', range.end);
+        console.log("Received date range in CRM:", range);
+                let params = new HttpParams();
+            if (range.start) params = params.set('start', range.start);
+                    if (range.end) params = params.set('end', range.end);
 
-   
-    this.getDashboardView(params);
-   
-}
+    
+        this.getDashboardView(params);
+    
+    }
+
+    private getDashboardDetails(month?:string): void {
+        this.dashboardService.getDashboardDetails(month).subscribe({
+            next: (res: any) => {
+                if (res.success) {
+                    this.dashboardDetails = res.data;
+                }
+            }
+        })
+    }
+
+    private getDashboardPayment(week?:string | number): void {
+        this.dashboardService.getDashboardPayment(week).subscribe({
+            next: (res: any) => {
+                                    console.log('Res =>> ',res)
+
+                if (res.success) {
+                    this.dashboardPayments = res.data;
+                }
+            }
+        })
+    }
 
 }

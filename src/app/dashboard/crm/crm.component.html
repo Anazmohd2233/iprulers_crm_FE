@@ -1,75 +1,47 @@
 
 <!-- <app-stats [data]="dashboardData"></app-stats> -->
- <div class="row">
+@defer {
+     <div class="row">
     <div class="col-lg-6 col-xxl-3">
 
-         <!-- <app-basic-radialbar-chart /> -->
-        <app-multiple-radialbar-chart />
+        <app-multiple-radialbar-chart [chartData]="dashboardDetails?.tasks" />
 
     </div>
     <div class="col-lg-6 col-xxl-3">
 
-        <!-- <app-strocked-circular-gauge-radialbar-chart /> -->
-        <app-custom-angle-circle-radialbar-chart />
+        <app-custom-angle-circle-radialbar-chart [chartData]="dashboardDetails?.lead_conversion" />
 
 
     </div>
     <div class="col-lg-6 col-xxl-3">
 
-        <!-- <app-gradient-radialbar-chart /> -->
-        <app-pie-donut-chart /> 
+        <app-pie-donut-chart [chartData]="dashboardDetails?.sources" /> 
 
     </div>
 
     <div   class="col-lg-6 col-xxl-3">
     
-         <!-- <app-multiple-radialbar-chart-2 /> -->
-          <app-basic-polar-chart />
+          <app-basic-polar-chart [chartData]="dashboardDetails?.source_conversion" />
 
     </div>
  </div>
+}
+@defer {
+    <div class="row">
 
-<div class="row">
+        <div class="col-lg-12 col-xxxl-6">
+            <div class="row">
+                <div class="col-lg-12 col-xxxl-12">
 
-    <div class="col-lg-12 col-xxxl-6">
-        <div class="row">
-            <div class="col-lg-12 col-xxxl-12">
-
-                <!-- <app-sales-overview [data]="dashboardData"   (dateRangeChange)="onDateRangeChange($event)"/> -->
-                 <app-revenue />
-       
-
+                    <app-revenue [graphData]="dashboardPayments" />
+        
+                </div>
             </div>
-            <!-- <div class="col-lg-12 col-xxxl-12">
-
-                 <app-sales-overview [data]="dashboardData"   (dateRangeChange)="onDateRangeChange($event)"/>
-
-
-            </div> -->
         </div>
-    </div>
-    <div class="col-lg-12 col-xxxl-6">
-        <!-- <app-total-sales /> -->
-        <app-spline-area-chart />
-
-    </div>
-    <div class="col-lg-6 col-xxl-3">
-
-         <!-- <app-pie-donut-chart />  -->
-
-    </div>
-    <div class="col-lg-6 col-xxl-3">
-
-
-    </div>
-    <div class="col-lg-6 col-xxl-3">
-
-        <!-- <app-custom-angle-circle-radialbar-chart /> -->
-
-    </div>
-    <div class="col-lg-12 col-xxl-3">
-        <!-- <app-multiple-radialbar-chart /> -->
-    </div>
-
+        <div class="col-lg-12 col-xxxl-6">
     
-</div>
+            <app-spline-area-chart [graphData]="dashboardPayments" />
+
+        </div>    
+    </div>
+}

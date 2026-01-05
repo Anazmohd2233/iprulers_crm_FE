@@ -1,125 +1,253 @@
+// import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+// import { isPlatformBrowser } from '@angular/common';
+
+// @Injectable({
+//     providedIn: 'root'
+// })
+// export class SplineAreaChartService {
+
+//     private isBrowser: boolean;
+
+//     constructor(@Inject(PLATFORM_ID) private platformId: any) {
+//         this.isBrowser = isPlatformBrowser(this.platformId);
+//     }
+
+//     async loadChart(): Promise<void> {
+//         if (this.isBrowser) {
+//             try {
+//                 // Dynamically import ApexCharts
+//                 const ApexCharts = (await import('apexcharts')).default;
+
+//                 // Define chart options
+//                 const options = {
+//                     series: [
+//                         {
+//                             name: "Target Amount",
+//                             data: [31, 40, 28, 51, 42, 109, 100,31, 40, 28, 51, 42]
+//                         },
+//                         {
+//                             name: "Collected Amount",
+//                             data: [11, 32, 45, 32, 34, 52, 41,11, 32, 45, 32, 34]
+//                         }
+//                     ],
+//                     chart: {
+//                         height: 330,
+//                         type: "area",
+//                         toolbar: {
+//                             show: true
+//                         }
+//                     },
+//                     dataLabels: {
+//                         enabled: false
+//                     },
+//                     stroke: {
+//                         curve: "smooth"
+//                     },
+//                     colors: [
+//                         "#796df6", "#0f79f3"
+//                     ],
+//                     xaxis: {
+//                         type: "category",
+//                         categories: [
+//                             "January",
+//                             "February",
+//                             "March",
+//                             "April",
+//                             "May",
+//                             "June",
+//                             "July",
+//                             "August",
+//                             "September",
+//                             "October",
+//                             "November",
+//                             "December"
+//                         ],
+//                         axisBorder: {
+//                             show: false,
+//                             color: '#e0e0e0'
+//                         },
+//                         axisTicks: {
+//                             show: true,
+//                             color: '#e0e0e0'
+//                         },
+//                         labels: {
+//                             show: true,
+//                             style: {
+//                                 colors: "#919aa3",
+//                                 fontSize: "14px"
+//                             }
+//                         }
+//                     },
+//                     tooltip: {
+//                         x: {
+//                             format: "dd/MM/yy HH:mm"
+//                         }
+//                     },
+//                     yaxis: {
+//                         labels: {
+//                             show: true,
+//                             style: {
+//                                 colors: "#919aa3",
+//                                 fontSize: "14px"
+//                             }
+//                         },
+//                         axisBorder: {
+//                             show: false
+//                         }
+//                     },
+//                     legend: {
+//                         show: true,
+//                         fontSize: '14px',
+//                         labels: {
+//                             colors: "#919aa3"
+//                         },
+//                         itemMargin: {
+//                             horizontal: 10,
+//                             vertical: 0
+//                         }
+//                     },
+//                     grid: {
+//                         show: true,
+//                         strokeDashArray: 5,
+//                         borderColor: "#e0e0e0"
+//                     }
+//                 };
+
+//                 // Initialize and render the chart
+//                 const chart = new ApexCharts(document.querySelector('#spline_area_chart'), options);
+//                 chart.render();
+//             } catch (error) {
+//                 console.error('Error loading ApexCharts:', error);
+//             }
+//         }
+//     }
+
+// }
+
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class SplineAreaChartService {
 
-    private isBrowser: boolean;
+  private isBrowser: boolean;
+  private chart: any;
 
-    constructor(@Inject(PLATFORM_ID) private platformId: any) {
-        this.isBrowser = isPlatformBrowser(this.platformId);
+  private readonly months = [
+    'january', 'february', 'march', 'april',
+    'may', 'june', 'july', 'august',
+    'september', 'october', 'november', 'december'
+  ];
+
+  constructor(@Inject(PLATFORM_ID) platformId: any) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
+
+  async loadChart(data: any): Promise<void> {
+    if (!this.isBrowser) return;
+
+    // 🔒 Guard
+    if (!data?.monthly) {
+      console.warn('SplineAreaChartService: monthly data missing', data);
+      return;
     }
 
-    async loadChart(): Promise<void> {
-        if (this.isBrowser) {
-            try {
-                // Dynamically import ApexCharts
-                const ApexCharts = (await import('apexcharts')).default;
+    try {
+      const ApexCharts = (await import('apexcharts')).default;
 
-                // Define chart options
-                const options = {
-                    series: [
-                        {
-                            name: "Target Amount",
-                            data: [31, 40, 28, 51, 42, 109, 100,31, 40, 28, 51, 42]
-                        },
-                        {
-                            name: "Collected Amount",
-                            data: [11, 32, 45, 32, 34, 52, 41,11, 32, 45, 32, 34]
-                        }
-                    ],
-                    chart: {
-                        height: 330,
-                        type: "area",
-                        toolbar: {
-                            show: true
-                        }
-                    },
-                    dataLabels: {
-                        enabled: false
-                    },
-                    stroke: {
-                        curve: "smooth"
-                    },
-                    colors: [
-                        "#796df6", "#0f79f3"
-                    ],
-                    xaxis: {
-                        type: "category",
-                        categories: [
-                            "January",
-                            "February",
-                            "March",
-                            "April",
-                            "May",
-                            "June",
-                            "July",
-                            "August",
-                            "September",
-                            "October",
-                            "November",
-                            "December"
-                        ],
-                        axisBorder: {
-                            show: false,
-                            color: '#e0e0e0'
-                        },
-                        axisTicks: {
-                            show: true,
-                            color: '#e0e0e0'
-                        },
-                        labels: {
-                            show: true,
-                            style: {
-                                colors: "#919aa3",
-                                fontSize: "14px"
-                            }
-                        }
-                    },
-                    tooltip: {
-                        x: {
-                            format: "dd/MM/yy HH:mm"
-                        }
-                    },
-                    yaxis: {
-                        labels: {
-                            show: true,
-                            style: {
-                                colors: "#919aa3",
-                                fontSize: "14px"
-                            }
-                        },
-                        axisBorder: {
-                            show: false
-                        }
-                    },
-                    legend: {
-                        show: true,
-                        fontSize: '14px',
-                        labels: {
-                            colors: "#919aa3"
-                        },
-                        itemMargin: {
-                            horizontal: 10,
-                            vertical: 0
-                        }
-                    },
-                    grid: {
-                        show: true,
-                        strokeDashArray: 5,
-                        borderColor: "#e0e0e0"
-                    }
-                };
+      const targetAmount = this.months.map(
+        m => data.monthly[m]?.target_amount ?? 0
+      );
 
-                // Initialize and render the chart
-                const chart = new ApexCharts(document.querySelector('#spline_area_chart'), options);
-                chart.render();
-            } catch (error) {
-                console.error('Error loading ApexCharts:', error);
+      const collectedAmount = this.months.map(
+        m => data.monthly[m]?.collected_amount ?? 0
+      );
+
+      const monthLabels = this.months.map(
+        m => m.charAt(0).toUpperCase() + m.slice(1)
+      );
+
+      const options = {
+        series: [
+          {
+            name: 'Target Amount',
+            data: targetAmount
+          },
+          {
+            name: 'Collected Amount',
+            data: collectedAmount
+          }
+        ],
+        chart: {
+          height: 330,
+          type: 'area',
+          toolbar: { show: true }
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: 'smooth'
+        },
+        colors: ['#796df6', '#0f79f3'],
+        xaxis: {
+          categories: monthLabels,
+          axisBorder: { show: false },
+          axisTicks: { show: true },
+          labels: {
+            style: {
+              colors: '#919aa3',
+              fontSize: '14px'
             }
+          }
+        },
+        yaxis: {
+          labels: {
+            formatter: (val: number) => `₹${val}`,
+            style: {
+              colors: '#919aa3',
+              fontSize: '14px'
+            }
+          }
+        },
+        tooltip: {
+          y: {
+            formatter: (val: number) => `₹${val}`
+          }
+        },
+        legend: {
+          show: true,
+          fontSize: '14px',
+          labels: {
+            colors: '#919aa3'
+          },
+          itemMargin: {
+            horizontal: 10
+          }
+        },
+        grid: {
+          strokeDashArray: 5,
+          borderColor: '#e0e0e0'
         }
-    }
+      };
 
+      const el = document.querySelector('#spline_area_chart');
+      if (!el) {
+        console.warn('SplineAreaChartService: chart container missing');
+        return;
+      }
+
+      if (this.chart) {
+        this.chart.destroy();
+      }
+
+      this.chart = new ApexCharts(el, options);
+      this.chart.render();
+
+    } catch (error) {
+      console.error('Spline area chart error:', error);
+    }
+  }
 }

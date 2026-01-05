@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input, SimpleChanges } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { CustomAngleCircleRadialbarChartService } from './custom-angle-circle-radialbar-chart.service';
 
@@ -10,12 +10,20 @@ import { CustomAngleCircleRadialbarChartService } from './custom-angle-circle-ra
 })
 export class CustomAngleCircleRadialbarChartComponent {
 
+    @Input() chartData: any;
+
     constructor(
         private customAngleCircleRadialbarChartService: CustomAngleCircleRadialbarChartService
     ) {}
 
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes['chartData']) {
+            this.customAngleCircleRadialbarChartService.loadChart(this.chartData);
+        }
+    }
+
     ngOnInit(): void {
-        this.customAngleCircleRadialbarChartService.loadChart();
+        // this.customAngleCircleRadialbarChartService.loadChart(this.chartData);
     }
 
 }
