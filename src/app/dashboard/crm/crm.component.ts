@@ -33,6 +33,7 @@ import { NgFor } from '@angular/common';
 import { BasicRadialbarChartComponent } from './basic-radialbar-chart/basic-radialbar-chart.component';
 import { MultipleRadialbarChartComponent2 } from './multi-radialbar-chart-2/multiple-radialbar-chart.component';
 import { BasicPolarChartComponent } from './basic-polar-chart/basic-polar-chart.component';
+import { CoreService } from '../../services/core.service';
 
 @Component({
     selector: 'app-crm',
@@ -78,16 +79,19 @@ export class CrmComponent {
 
     constructor(
         public themeService: CustomizerSettingsService,
-        private dashboardService: DashboardService
+        private dashboardService: DashboardService,
+        private coreService: CoreService
     ) {}
 
     ngOnInit(): void {
         this.getDashboardView();
         this.getDashboardDetails();
         this.getDashboardPayment();
+        this.getCalenderData();
     }
 
     private getDashboardView(params?:HttpParams): void {
+        this.coreService.showLoader()
         this.dashboardService.getDashboardSummary(params).subscribe({
             next: (response) => {
                 if (response && response.success) {
@@ -99,6 +103,7 @@ export class CrmComponent {
                         response?.message
                     );
                 }
+                this.coreService.hideLoader()
             },
             error: (error) => {
                 console.error('API error:', error);
@@ -118,24 +123,36 @@ export class CrmComponent {
     }
 
     private getDashboardDetails(month?:string): void {
+        this.coreService.showLoader()
         this.dashboardService.getDashboardDetails(month).subscribe({
             next: (res: any) => {
                 if (res.success) {
                     this.dashboardDetails = res.data;
+                    this.coreService.hideLoader()
                 }
             }
         })
     }
 
     private getDashboardPayment(week?:string | number): void {
+        this.coreService.showLoader()
         this.dashboardService.getDashboardPayment(week).subscribe({
             next: (res: any) => {
-                                    console.log('Res =>> ',res)
-
                 if (res.success) {
                     this.dashboardPayments = res.data;
+                    this.coreService.hideLoader()
                 }
             }
+        })
+    }
+
+    getCalenderData(){
+        this.coreService.selectedMonth$.subscribe(month => {
+            if (month) {
+        // this.selectedMonth = month;
+        console.log('📊 Month changed to:', month);
+        // this.loadDashboardData(month); 
+      }
         })
     }
 

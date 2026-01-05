@@ -13,7 +13,7 @@ export class MultipleRadialbarChartService {
     this.isBrowser = isPlatformBrowser(platformId);
   }
 
-  async loadChart(data: any): Promise<void> {
+  async loadChart(data: any = {open: 0,ongoing: 0,completed:0}): Promise<void> {
     if (!this.isBrowser) return;
 
     // 🔒 Guard

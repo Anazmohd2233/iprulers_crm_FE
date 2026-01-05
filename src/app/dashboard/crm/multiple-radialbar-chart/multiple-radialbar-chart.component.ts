@@ -24,7 +24,7 @@ export class MultipleRadialbarChartComponent implements OnChanges, AfterViewInit
     }
 
     ngOnInit(): void {
-        this.multipleRadialbarChartService.loadChart(this.chartData);
+        // this.multipleRadialbarChartService.loadChart(this.chartData);
     }
 
     ngAfterViewInit(): void {

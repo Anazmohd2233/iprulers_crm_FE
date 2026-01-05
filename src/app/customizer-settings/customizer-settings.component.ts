@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-customizer-settings',
-    imports: [NgClass, MatDividerModule, MatIconModule, MatButtonModule, NgScrollbarModule, NgIf],
+    imports: [NgClass, MatDividerModule, MatIconModule, MatButtonModule, NgScrollbarModule],
     templateUrl: './customizer-settings.component.html',
     styleUrl: './customizer-settings.component.scss'
 })
