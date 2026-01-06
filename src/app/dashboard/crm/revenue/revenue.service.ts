@@ -170,7 +170,7 @@ export class RevenueService {
         chart: {
           height: 360,
           type: 'area',
-          toolbar: { show: false }
+          toolbar: { show: true }
         },
         dataLabels: {
           enabled: false
