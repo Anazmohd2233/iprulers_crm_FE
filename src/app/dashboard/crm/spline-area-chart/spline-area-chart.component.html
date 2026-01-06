@@ -5,6 +5,32 @@
                 Fees Collection
             </h5>
         </mat-card-title>
+        <mat-card-subtitle>
+            <button
+                type="button"
+                mat-button
+                class="card-header-menu-btn"
+                [matMenuTriggerFor]="cardHeaderMenu">
+
+                Year ({{ selectedYear() }})
+            </button>
+
+            <mat-menu
+                #cardHeaderMenu="matMenu"
+                class="card-header-menu"
+                xPosition="before">
+
+                @for (year of years(); track year) {
+                <button
+                    mat-menu-item
+                    (click)="selectYear(year)">
+                    {{ year }}
+                </button>
+                }
+
+            </mat-menu>
+        </mat-card-subtitle>
+
     </mat-card-header>
     <mat-card-content>
         <div id="spline_area_chart"></div>

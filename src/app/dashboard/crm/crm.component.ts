@@ -137,9 +137,9 @@ export class CrmComponent {
         })
     }
 
-    private getDashboardPayment(week?:string | number): void {
+    private getDashboardPayment(year?:string | number): void {
         this.coreService.showLoader()
-        this.dashboardService.getDashboardPayment(week).subscribe({
+        this.dashboardService.getDashboardPayment(year).subscribe({
             next: (res: any) => {
                 if (res.success) {
                     this.dashboardPayments = res.data;
@@ -162,6 +162,14 @@ export class CrmComponent {
     private generateMonths(): void {
         const now = new Date(); 
         this.selectedMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+    }
+
+    getYearByPayment(year: any) {
+        if (year !== 2026) {
+            this.getDashboardPayment(year);
+        } else {
+            this.getDashboardPayment();
+        }
     }
 
 }

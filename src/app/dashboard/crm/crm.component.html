@@ -44,7 +44,7 @@
             </div>
             <div class="col-lg-12 col-xxxl-6">
         
-                <app-spline-area-chart [graphData]="dashboardPayments" />
+                <app-spline-area-chart [graphData]="dashboardPayments" (yearChange)="getYearByPayment($event)" />
 
             </div>    
         </div>

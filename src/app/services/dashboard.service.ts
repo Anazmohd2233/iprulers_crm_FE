@@ -32,10 +32,10 @@ export class DashboardService {
         return this.http.get<any>(`${this.apiUrl}/admin/dashboard/details`, {params})
     }
 
-    getDashboardPayment(week?: string | number): Observable<any> {
+    getDashboardPayment(year?: string | number): Observable<any> {
         let params = new HttpParams();
-        if (week) {
-             params = params.set('next_week', String(week));
+        if (year) {
+             params = params.set('year', String(year));
         }
         return this.http.get<any>(`${this.apiUrl}/admin/dashboard/payments`, {params})
     }
