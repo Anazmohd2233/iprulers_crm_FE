@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { AfterViewInit, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { PieDonutChartService } from './pie-donut-chart.service';
 
@@ -8,7 +8,7 @@ import { PieDonutChartService } from './pie-donut-chart.service';
     templateUrl: './pie-donut-chart.component.html',
     styleUrl: './pie-donut-chart.component.scss'
 })
-export class PieDonutChartComponent implements OnChanges {
+export class PieDonutChartComponent implements OnChanges, AfterViewInit {
 
     @Input() chartData: any;
 
@@ -19,14 +19,17 @@ export class PieDonutChartComponent implements OnChanges {
     ngOnChanges(changes: SimpleChanges) {
         if (changes['chartData']) {
             // this.pieDonutChartService.updateFromObject(this.chartData);
-                    this.pieDonutChartService.loadChart(this.chartData);
-
+            this.pieDonutChartService.loadChart(this.chartData);
         }
 
     }
 
     ngOnInit(): void {
         // this.pieDonutChartService.loadChart(this.chartData);
+    }
+
+    ngAfterViewInit(): void {
+        this.pieDonutChartService.loadChart(this.chartData);
     }
 
 }

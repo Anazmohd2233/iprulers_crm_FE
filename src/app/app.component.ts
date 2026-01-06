@@ -10,10 +10,11 @@ import { ToggleService } from './common/sidebar/toggle.service';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { LoaderComponent } from './common/loader/loader.component';
 
 @Component({
     selector: 'app-root',
-    imports: [RouterOutlet, CommonModule, SidebarComponent, HeaderComponent, FooterComponent, CustomizerSettingsComponent, NgClass,   MatInputModule,
+    imports: [RouterOutlet, CommonModule, SidebarComponent, HeaderComponent, FooterComponent, CustomizerSettingsComponent, NgClass, LoaderComponent,  MatInputModule,
    MatDatepickerModule,
    MatNativeDateModule],
     templateUrl: './app.component.html',

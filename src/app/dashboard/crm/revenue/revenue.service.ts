@@ -203,7 +203,7 @@ export class RevenueService {
         yaxis: {
           tickAmount: 5,
           labels: {
-            formatter: (val: number) => `₹${val}`,
+            formatter: (val: number) => `AED ${val}`,
             style: {
               colors: '#919aa3',
               fontSize: '14px'
@@ -222,7 +222,7 @@ export class RevenueService {
         },
         tooltip: {
           y: {
-            formatter: (val: number) => `₹${val}`
+            formatter: (val: number) => `AED ${val}`
           }
         }
       };

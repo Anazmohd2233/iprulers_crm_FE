@@ -1,47 +1,52 @@
 
 <!-- <app-stats [data]="dashboardData"></app-stats> -->
-@defer {
+@if(dashboardDetails) {
+    @defer {
      <div class="row">
-    <div class="col-lg-6 col-xxl-3">
+        <div class="col-lg-6 col-xxl-3">
 
-        <app-multiple-radialbar-chart [chartData]="dashboardDetails?.tasks" />
+            <app-multiple-radialbar-chart [chartData]="dashboardDetails?.tasks" />
 
-    </div>
-    <div class="col-lg-6 col-xxl-3">
+        </div>
+        <div class="col-lg-6 col-xxl-3">
 
-        <app-custom-angle-circle-radialbar-chart [chartData]="dashboardDetails?.lead_conversion" />
+            <app-custom-angle-circle-radialbar-chart [chartData]="dashboardDetails?.lead_conversion" />
 
 
-    </div>
-    <div class="col-lg-6 col-xxl-3">
+        </div>
+        <div class="col-lg-6 col-xxl-3">
 
-        <app-pie-donut-chart [chartData]="dashboardDetails?.sources" /> 
+            <app-pie-donut-chart [chartData]="dashboardDetails?.sources" /> 
 
-    </div>
+        </div>
 
-    <div   class="col-lg-6 col-xxl-3">
-    
-          <app-basic-polar-chart [chartData]="dashboardDetails?.source_conversion" />
-
-    </div>
- </div>
-}
-@defer {
-    <div class="row">
-
-        <div class="col-lg-12 col-xxxl-6">
-            <div class="row">
-                <div class="col-lg-12 col-xxxl-12">
-
-                    <app-revenue [graphData]="dashboardPayments" />
+        <div   class="col-lg-6 col-xxl-3">
         
+            <app-basic-polar-chart [chartData]="dashboardDetails?.source_conversion" />
+
+        </div>
+    </div>
+    }
+}
+
+@if(dashboardPayments) {
+    @defer {
+        <div class="row">
+
+            <div class="col-lg-12 col-xxxl-6">
+                <div class="row">
+                    <div class="col-lg-12 col-xxxl-12">
+
+                        <app-revenue [graphData]="dashboardPayments" />
+            
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-lg-12 col-xxxl-6">
-    
-            <app-spline-area-chart [graphData]="dashboardPayments" />
+            <div class="col-lg-12 col-xxxl-6">
+        
+                <app-spline-area-chart [graphData]="dashboardPayments" />
 
-        </div>    
-    </div>
+            </div>    
+        </div>
+    }
 }

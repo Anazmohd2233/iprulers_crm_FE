@@ -76,12 +76,15 @@ export class CrmComponent {
     dashboardData: any;
     dashboardDetails: any;
     dashboardPayments: any;
+    selectedMonth: string = '';
 
     constructor(
         public themeService: CustomizerSettingsService,
         private dashboardService: DashboardService,
         private coreService: CoreService
-    ) {}
+    ) {
+        this.generateMonths();
+    }
 
     ngOnInit(): void {
         this.getDashboardView();
@@ -148,12 +151,17 @@ export class CrmComponent {
 
     getCalenderData(){
         this.coreService.selectedMonth$.subscribe(month => {
-            if (month) {
-        // this.selectedMonth = month;
-        console.log('📊 Month changed to:', month);
-        // this.loadDashboardData(month); 
-      }
+            if (month != this.selectedMonth) {
+                this.getDashboardDetails(month);
+            } else {
+                this.getDashboardDetails();
+            }
         })
+    }
+
+    private generateMonths(): void {
+        const now = new Date(); 
+        this.selectedMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
     }
 
 }

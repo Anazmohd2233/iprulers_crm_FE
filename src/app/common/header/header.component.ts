@@ -246,11 +246,9 @@ export class HeaderComponent {
             this.showMonthDropdown = true;
             this.generateMonths();
         }
-        // Restore the last selected month (or default to current)
         if (!this.selectedMonth) {
             this.selectedMonth = this.coreService.getCurrentMonth();
         }
-        // Optional: ensure service has the value
         this.coreService.setSelectedMonth(this.selectedMonth);
     } else {
         this.showMonthDropdown = false;
@@ -270,19 +268,17 @@ export class HeaderComponent {
 
     // Header Sticky
     isSticky: boolean = false;
-    @HostListener('window:scroll', ['$event'])
-    checkScroll() {
-        const scrollPosition =
-            window.scrollY ||
-            document.documentElement.scrollTop ||
-            document.body.scrollTop ||
-            0;
-        if (scrollPosition >= 50) {
-            this.isSticky = true;
-        } else {
-            this.isSticky = false;
-        }
+   @HostListener('window:scroll', ['$event'])
+    checkScroll(event: Event) {
+    const scrollPosition =
+        window.scrollY ||
+        document.documentElement.scrollTop ||
+        document.body.scrollTop ||
+        0;
+
+    this.isSticky = scrollPosition >= 50;
     }
+
 
     // Dark Mode
     toggleTheme() {
@@ -295,7 +291,6 @@ export class HeaderComponent {
                 if (response && response.success) {
                     this.users = response.data || [];
                 } else {
-                    // this.toastr.error('Failed to load users', 'Failed');
                     console.error('Failed to load profile:', response?.message);
                 }
             },
@@ -306,7 +301,6 @@ export class HeaderComponent {
     }
 
     onLogout() {
-        // 🟢 Example: Clear local storage/session
         localStorage.removeItem('token');
         localStorage.removeItem('user_type');
 
@@ -314,12 +308,6 @@ export class HeaderComponent {
 
         sessionStorage.clear();
 
-        // 🟢 (Optional) Call API to invalidate session
-        // this.authService.logout().subscribe(() => {
-        //   this.router.navigate(['/authentication/logout']);
-        // });
-
-        // 🟢 Redirect after logout
         this.router.navigate(['/authentication/logout']);
     }
 
