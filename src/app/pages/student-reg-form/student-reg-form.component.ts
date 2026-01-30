@@ -175,13 +175,25 @@ export class StudentRegFormComponent {
                         this.idProof = null;
                         this.toastr.success('Created successfully', 'Success');
                     } else {
-                        this.toastr.error('Failed to Create student', 'Error');
+                        this.toastr.error(
+                            this.getApiErrorMessage(
+                                response,
+                                'Failed to Create student'
+                            ),
+                            'Error'
+                        );
                     }
                     this.isSubmitting = false;
                 },
                 error: (error) => {
                     console.error('Error Creating student:', error);
-                    this.toastr.error('Error Creating student', 'Error');
+                    this.toastr.error(
+                        this.getApiErrorMessage(
+                            error,
+                            'Error Creating student'
+                        ),
+                        'Error'
+                    );
                     this.isSubmitting = false;
                 },
             });
@@ -245,5 +257,16 @@ export class StudentRegFormComponent {
             this.toastr.error('Missing token in URL', 'Error');
             // this.router.navigate(['/link-expired']);
         }
+    }
+
+    private getApiErrorMessage(
+        responseOrError: any,
+        fallbackMessage: string
+    ): string {
+        return (
+            responseOrError?.message ||
+            responseOrError?.error?.message ||
+            fallbackMessage
+        );
     }
 }

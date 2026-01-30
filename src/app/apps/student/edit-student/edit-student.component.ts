@@ -249,7 +249,10 @@ export class EditStudentComponent implements OnInit {
                                 );
                             } else {
                                 this.toastr.error(
-                                    'Failed to Update student',
+                                    this.getApiErrorMessage(
+                                        response,
+                                        'Failed to Update student'
+                                    ),
                                     'Error'
                                 );
                             }
@@ -257,7 +260,13 @@ export class EditStudentComponent implements OnInit {
                         },
                         error: (error) => {
                             console.error('Error Updated student:', error);
-                            this.toastr.error('Error Update student', 'Error');
+                            this.toastr.error(
+                                this.getApiErrorMessage(
+                                    error,
+                                    'Error Update student'
+                                ),
+                                'Error'
+                            );
                             this.isSubmitting = false;
                         },
                     });
@@ -276,7 +285,10 @@ export class EditStudentComponent implements OnInit {
                             );
                         } else {
                             this.toastr.error(
-                                'Failed to Create student',
+                                this.getApiErrorMessage(
+                                    response,
+                                    'Failed to Create student'
+                                ),
                                 'Error'
                             );
                         }
@@ -284,7 +296,13 @@ export class EditStudentComponent implements OnInit {
                     },
                     error: (error) => {
                         console.error('Error Create student:', error);
-                        this.toastr.error('Error Create student', 'Error');
+                        this.toastr.error(
+                            this.getApiErrorMessage(
+                                error,
+                                'Error Create student'
+                            ),
+                            'Error'
+                        );
                         this.isSubmitting = false;
                     },
                 });
@@ -354,5 +372,16 @@ export class EditStudentComponent implements OnInit {
                 console.error('API error:', error);
             },
         });
+    }
+
+    private getApiErrorMessage(
+        responseOrError: any,
+        fallbackMessage: string
+    ): string {
+        return (
+            responseOrError?.message ||
+            responseOrError?.error?.message ||
+            fallbackMessage
+        );
     }
 }
