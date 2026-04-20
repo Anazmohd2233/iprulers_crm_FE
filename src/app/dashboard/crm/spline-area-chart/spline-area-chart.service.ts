@@ -182,14 +182,27 @@ export class SplineAreaChartService {
         ],
         chart: {
           height: 330,
-          type: 'area',
+          type: 'bar',
           toolbar: { show: true }
+        },
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            columnWidth: '45%',
+            borderRadius: 4,
+            borderRadiusApplication: 'end'
+          }
         },
         dataLabels: {
           enabled: false
         },
         stroke: {
-          curve: 'smooth'
+          show: true,
+          width: 2,
+          colors: ['transparent']
+        },
+        fill: {
+          opacity: 1
         },
         colors: ['#796df6', '#0f79f3'],
         xaxis: {
