@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { RouterLink } from '@angular/router';
 import {
     FormBuilder,
     FormGroup,
@@ -20,11 +18,9 @@ import { UsersService } from '../../services/users.service';
 @Component({
     selector: 'app-sign-in',
     imports: [
-        RouterLink,
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,
-        MatCheckboxModule,
         ReactiveFormsModule,
         NgIf,
     ],

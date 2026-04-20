@@ -204,7 +204,7 @@ export class SplineAreaChartService {
         fill: {
           opacity: 1
         },
-        colors: ['#796df6', '#0f79f3'],
+        colors: ['#c31010', '#2aed14'],
         xaxis: {
           categories: monthLabels,
           axisBorder: { show: false },
