@@ -199,11 +199,19 @@
             </mat-form-field>
 
                <mat-form-field appearance="fill" class="small-form-field m-2">
-                <mat-label>Due Date</mat-label>
-                <input matInput [matDatepicker]="duePicker" [(ngModel)]="dueDateFilter"
-                    (dateChange)="filterDueDate($event)" placeholder="Date" />
-                <mat-datepicker-toggle matSuffix [for]="duePicker"></mat-datepicker-toggle>
-                <mat-datepicker #duePicker></mat-datepicker>
+                <mat-label>From Date</mat-label>
+                <input matInput [matDatepicker]="fromPicker" [(ngModel)]="fromDateFilter"
+                    (dateChange)="filterFromDate($event)" placeholder="From date" />
+                <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+                <mat-datepicker #fromPicker></mat-datepicker>
+            </mat-form-field>
+
+               <mat-form-field appearance="fill" class="small-form-field m-2">
+                <mat-label>To Date</mat-label>
+                <input matInput [matDatepicker]="toPicker" [(ngModel)]="toDateFilter"
+                    (dateChange)="filterToDate($event)" placeholder="To date" />
+                <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+                <mat-datepicker #toPicker></mat-datepicker>
             </mat-form-field>
              <button mat-button class="add-new-btn" color="primary" (click)="resetFilters()"
                 style="height: 36px; padding: 0 10px; min-width: auto; margin-right: 15px;">

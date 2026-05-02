@@ -92,9 +92,11 @@ export class InvoicesComponent {
     expandedElement: any | null = null;
 
     filterStatusValue: any;
-    filterDueDateValue: any;
     createdDateFilter: Date | null = null;
-    dueDateFilter: Date | null = null;
+    fromDateFilter: Date | null = null;
+    toDateFilter: Date | null = null;
+    filterFromDateValue: string | null = null;
+    filterToDateValue: string | null = null;
 
     filterCouseValue: any;
     filterStudentValue: any;
@@ -265,8 +267,11 @@ export class InvoicesComponent {
         if (this.filterCouseValue)
             params = params.set('course', this.filterCouseValue);
 
-        if (this.filterDueDateValue)
-            params = params.set('dueDate', this.filterDueDateValue);
+        if (this.filterFromDateValue)
+            params = params.set('from_date', this.filterFromDateValue);
+
+        if (this.filterToDateValue)
+            params = params.set('to_date', this.filterToDateValue);
 
         if (this.filterStudentValue)
             params = params.set('student', this.filterStudentValue);
@@ -545,9 +550,11 @@ export class InvoicesComponent {
 
     resetFilters() {
         this.createdDateFilter = null;
-        this.dueDateFilter = null;
+        this.fromDateFilter = null;
+        this.toDateFilter = null;
 
-        this.filterDueDateValue = null;
+        this.filterFromDateValue = null;
+        this.filterToDateValue = null;
 
         this.getPaymentList();
     }
@@ -627,15 +634,30 @@ export class InvoicesComponent {
         });
     }
 
-       filterDueDate(event: any) {
+       filterFromDate(event: any) {
         if (event.value) {
-            this.filterDueDateValue = formatDate(
+            this.filterFromDateValue = formatDate(
                 event.value,
                 'yyyy-MM-dd',
                 'en-US'
             );
-        this.getPaymentList();
+        } else {
+            this.filterFromDateValue = null;
         }
+        this.getPaymentList();
+    }
+
+    filterToDate(event: any) {
+        if (event.value) {
+            this.filterToDateValue = formatDate(
+                event.value,
+                'yyyy-MM-dd',
+                'en-US'
+            );
+        } else {
+            this.filterToDateValue = null;
+        }
+        this.getPaymentList();
     }
 }
 
